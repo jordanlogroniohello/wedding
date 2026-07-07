@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>You're Invited | Jordan & Angelica — November 27, 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <canvas id="particle-canvas"></canvas>
+
+  <div class="book-wrapper">
+    <div class="book" id="book">
+
+      <!-- Page 1: Cover -->
+      <div class="page">
+        <div class="page-front page-cover">
+          <div class="ornate-border"></div>
+          <div class="page-content">
+            <p class="pre-text">Together with their families</p>
+            <div class="divider"><span>✦</span></div>
+            <h1 class="couple-names">Jordan <span class="amp">&</span> Angelica</h1>
+            <p class="pre-text">request the pleasure of your company<br>at their wedding celebration</p>
+            <div class="divider"><span>✦</span></div>
+            <p class="date-display">November 27, 2026</p>
+            <p class="open-hint">tap to open ›</p>
+          </div>
+        </div>
+        <div class="page-back"></div>
+      </div>
+
+      <!-- Page 2: Our Story -->
+      <div class="page">
+        <div class="page-front">
+          <div class="ornate-border"></div>
+          <div class="page-content">
+            <p class="section-label">Our Love Story</p>
+            <div class="divider"><span>✦</span></div>
+            <h2 class="script-heading">Two souls, one heart</h2>
+            <p class="body-text">
+              From the moment we met, we knew our lives
+              would never be the same. What started as
+              a beautiful friendship blossomed into
+              a love story we never want to end.
+            </p>
+            <div class="divider"><span>❦</span></div>
+            <p class="quote-text">"Whatever our souls are made of,<br>yours and mine are the same."</p>
+            <p class="quote-author">— Emily Brontë</p>
+          </div>
+        </div>
+        <div class="page-back"></div>
+      </div>
+
+      <!-- Page 3: Ceremony -->
+      <div class="page">
+        <div class="page-front">
+          <div class="ornate-border"></div>
+          <div class="page-content">
+            <p class="section-label">The Ceremony</p>
+            <div class="divider"><span>✦</span></div>
+            <p class="detail-sub">Saturday</p>
+            <h2 class="detail-main">November Twenty-Seventh</h2>
+            <p class="detail-sub">Two Thousand and Twenty-Six</p>
+            <p class="detail-time">at four o'clock in the afternoon</p>
+            <div class="divider sm"><span>◆</span></div>
+            <p class="venue-name">Venue Name</p>
+            <p class="venue-addr">123 Beautiful Street<br>City, State 12345</p>
+          </div>
+        </div>
+        <div class="page-back"></div>
+      </div>
+
+      <!-- Page 4: Reception -->
+      <div class="page">
+        <div class="page-front">
+          <div class="ornate-border"></div>
+          <div class="page-content">
+            <p class="section-label">The Reception</p>
+            <div class="divider"><span>✦</span></div>
+            <p class="body-text">Dinner &amp; Dancing to Follow</p>
+            <div class="schedule-block">
+              <p class="schedule-row"><span class="schedule-key">Cocktails</span><span>5:00 PM</span></p>
+              <p class="schedule-row"><span class="schedule-key">Dinner</span><span>6:00 PM</span></p>
+              <p class="schedule-row"><span class="schedule-key">Dancing</span><span>7:00 PM</span></p>
+            </div>
+            <div class="divider sm"><span>◆</span></div>
+            <p class="venue-name">Reception Venue</p>
+            <p class="venue-addr">456 Elegant Avenue<br>City, State 12345</p>
+            <div class="divider sm"><span>◆</span></div>
+            <p class="dress-code">Attire: Semi-Formal</p>
+          </div>
+        </div>
+        <div class="page-back"></div>
+      </div>
+
+      <!-- Page 5: RSVP -->
+      <div class="page">
+        <div class="page-front">
+          <div class="ornate-border"></div>
+          <div class="page-content">
+            <p class="section-label">RSVP</p>
+            <div class="divider"><span>✦</span></div>
+            <p class="body-text">Kindly respond by<br><strong>October 15, 2026</strong></p>
+            <form class="rsvp-form" onsubmit="return false">
+              <input type="text" placeholder="Your Full Name" class="rsvp-input">
+              <div class="rsvp-toggle">
+                <button type="button" class="rsvp-btn active">Joyfully Accept</button>
+                <button type="button" class="rsvp-btn">Regretfully Decline</button>
+              </div>
+              <input type="number" placeholder="Number of Guests" class="rsvp-input" min="1" max="5">
+              <input type="text" placeholder="Dietary Restrictions" class="rsvp-input">
+              <button type="button" class="rsvp-submit">Send RSVP</button>
+            </form>
+          </div>
+        </div>
+        <div class="page-back"></div>
+      </div>
+
+      <!-- Page 6: Thank You -->
+      <div class="page">
+        <div class="page-front page-closing">
+          <div class="ornate-border"></div>
+          <div class="page-content">
+            <p class="section-label">Thank You</p>
+            <div class="divider"><span>✦</span></div>
+            <p class="body-text">
+              We are so grateful for your<br>
+              love and support.
+            </p>
+            <h2 class="script-heading">We can't wait to<br>celebrate with you!</h2>
+            <div class="divider"><span>❦</span></div>
+            <p class="closing-label">With love,</p>
+            <p class="couple-names sm">Jordan &amp; Angelica</p>
+            <p class="hashtag">#exchANGEofVowsWithDAN</p>
+          </div>
+        </div>
+        <div class="page-back"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Sound Toggle -->
+  <button class="sound-toggle" id="sound-toggle" aria-label="Toggle sound">
+    <span class="sound-on">&#9835;</span>
+    <span class="sound-off">&#9835;</span>
+  </button>
+
+  <!-- Navigation -->
+  <div class="nav-controls">
+    <button class="nav-btn" id="prev-btn" aria-label="Previous page"><span>‹</span></button>
+    <div class="page-indicator" id="page-indicator">1 / 6</div>
+    <button class="nav-btn" id="next-btn" aria-label="Next page"><span>›</span></button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
