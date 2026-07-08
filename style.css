@@ -1346,29 +1346,76 @@ body {
 
 /* ---- Phone landscape (short height) ---- */
 @media (max-height: 500px) {
-  .page-content { padding: 16px 14px; gap: 4px; }
-  .couple-names { font-size: clamp(1.2rem, 4vw, 2rem); }
-  .script-heading { font-size: clamp(1rem, 3.5vw, 1.5rem); }
-  .monogram { font-size: clamp(1.8rem, 6vw, 3rem); }
-  .countdown { margin-top: 4px; }
-  .countdown-num { font-size: clamp(0.9rem, 3vw, 1.2rem); }
-  .nav-controls { bottom: 6px; }
-  .nav-btn { width: 32px; height: 32px; font-size: 1rem; }
-  .sound-toggle { top: 10px; right: 10px; width: 34px; height: 34px; }
+  /* Allow page content to scroll so nothing is cut off */
+  .leaf-front, .leaf-back, .page-static {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 
-  /* Gallery — compact for landscape phones */
-  .gallery-scroll { padding: 20px 10px 30px; gap: 14px; margin-top: 45px; }
-  .clothesline { padding: 28px 12px 8px; gap: 10px; }
-  .photo-slot { width: clamp(55px, 12vh, 85px); }
-  .polaroid-cap { max-width: clamp(55px, 12vh, 85px); }
-  .anime-music-bar { margin-top: 42px; }
-}
+  .page-content { padding: 12px 12px; gap: 3px; }
+  .ornate-border { inset: 6px; }
+  .couple-names { font-size: clamp(1rem, 3.5vw, 1.6rem); }
+  .couple-names.sm { font-size: clamp(0.9rem, 3vw, 1.3rem); }
+  .script-heading { font-size: clamp(0.9rem, 3vw, 1.3rem); }
+  .monogram { font-size: clamp(1.5rem, 5vw, 2.2rem); }
+  .pre-text { font-size: clamp(0.55rem, 2vw, 0.75rem); }
+  .section-label { font-size: clamp(0.45rem, 1.5vw, 0.6rem); }
+  .body-text { font-size: clamp(0.6rem, 2vw, 0.8rem); }
+  .detail-main { font-size: clamp(0.8rem, 3vw, 1.1rem); }
+  .detail-sub { font-size: clamp(0.45rem, 1.5vw, 0.6rem); }
+  .detail-time { font-size: clamp(0.6rem, 2vw, 0.75rem); }
+  .venue-name { font-size: clamp(0.65rem, 2.2vw, 0.85rem); }
+  .venue-addr { font-size: clamp(0.55rem, 1.8vw, 0.7rem); }
+  .quote-text { font-size: clamp(0.6rem, 2vw, 0.75rem); }
+  .date-display { font-size: clamp(0.5rem, 1.8vw, 0.7rem); }
+  .open-hint { font-size: 0.45rem; margin-top: 4px; }
+  .divider { width: 45%; margin: 1px 0; }
+  .divider.sm { width: 30%; }
 
-/* ---- Very small phones ---- */
-@media (max-width: 380px) {
-  .page-content { padding: 18px 12px; gap: 5px; }
-  .ornate-border { inset: 8px; }
-  .chibi-couple { gap: 6px; }
-  .chibi-head { width: 40px; height: 40px; }
-  .chibi-body { width: 28px; height: 22px; }
+  .countdown { margin-top: 2px; gap: 4px; }
+  .countdown-num { font-size: clamp(0.8rem, 2.5vw, 1rem); }
+  .countdown-label { font-size: 0.35rem; }
+  .countdown-sep { font-size: 0.8rem; margin-bottom: 8px; }
+
+  /* Chibis — much smaller */
+  .chibi-couple { gap: 6px; margin: 4px 0; }
+  .chibi-head { width: 34px; height: 34px; }
+  .chibi-eyes { margin-top: 12px; gap: 7px; }
+  .chibi-eye { width: 3px; height: 4px; }
+  .chibi-blush { width: 7px; height: 4px; bottom: 10px; }
+  .chibi-blush.left { left: 4px; }
+  .chibi-blush.right { right: 4px; }
+  .chibi-mouth { width: 4px; height: 2px; margin-top: 2px; }
+  .groom-hair { height: 16px; }
+  .groom-hair::after { width: 10px; height: 7px; top: 3px; }
+  .bride-hair { height: 22px; top: -2px; left: -3px; right: -3px; }
+  .bride-hair::before, .bride-hair::after { bottom: -10px; width: 7px; height: 14px; }
+  .chibi-veil { width: 24px; height: 30px; top: -5px; right: -5px; }
+  .chibi-body { width: 26px; height: 18px; margin-top: -3px; }
+  .chibi-bowtie { width: 7px; height: 4px; top: 2px; }
+  .chibi-name { font-size: 0.4rem; margin-top: 2px; }
+  .chibi-heart { font-size: 0.65rem; margin-bottom: 18px; }
+  .gallery-btn { padding: 6px 16px; font-size: 0.5rem; margin-top: 3px; }
+
+  /* RSVP compact */
+  .rsvp-input { padding: 4px 2px; font-size: 0.7rem; }
+  .rsvp-btn { padding: 4px 2px; font-size: clamp(0.4rem, 1.5vw, 0.55rem); }
+  .rsvp-submit { padding: 5px; font-size: 0.5rem; }
+  .rsvp-form { gap: 6px; }
+
+  /* Schedule compact */
+  .schedule-row { font-size: clamp(0.6rem, 2vw, 0.75rem); }
+  .schedule-block { gap: 3px; }
+
+  .nav-controls { bottom: 4px; }
+  .nav-btn { width: 30px; height: 30px; font-size: 0.9rem; }
+  .page-indicator { font-size: 0.55rem; }
+  .sound-toggle { top: 8px; right: 8px; width: 30px; height: 30px; font-size: 0.85rem; }
+
+  /* Gallery modal compact */
+  .gallery-scroll { padding: 16px 10px 24px; gap: 10px; margin-top: 42px; }
+  .clothesline { padding: 24px 10px 6px; gap: 8px; }
+  .photo-slot { width: clamp(50px, 11vh, 75px); }
+  .polaroid-cap { max-width: clamp(50px, 11vh, 75px); }
+  .anime-music-bar { margin-top: 38px; }
 }
