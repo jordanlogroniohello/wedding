@@ -600,16 +600,28 @@
     new GalleryModal();
     startCountdown();
 
-    // Rotate hint dismiss
+    // Rotate hint — uses actual device orientation, not viewport
     const rotateHint = document.getElementById('rotate-hint');
+    let hintDismissed = false;
+
+    function checkOrientation() {
+      if (hintDismissed) return;
+      const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isPortrait = screen.orientation
+        ? screen.orientation.type.includes('portrait')
+        : screen.height > screen.width;
+      rotateHint.classList.toggle('show', isMobile && isPortrait);
+    }
+
     document.getElementById('rotate-hint-skip').addEventListener('click', () => {
-      rotateHint.classList.add('dismissed');
+      hintDismissed = true;
+      rotateHint.classList.remove('show');
     });
-    // Auto-dismiss when they rotate to landscape
-    window.addEventListener('orientationchange', () => {
-      if (window.innerWidth > window.innerHeight) {
-        rotateHint.classList.add('dismissed');
-      }
-    });
+
+    if (screen.orientation) {
+      screen.orientation.addEventListener('change', checkOrientation);
+    }
+    window.addEventListener('resize', checkOrientation);
+    checkOrientation();
   });
 })();

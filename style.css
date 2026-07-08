@@ -58,7 +58,7 @@ body {
 /* ---- Book ---- */
 .book {
   position: relative;
-  width: min(880px, 88vw);
+  width: min(880px, 88vw, 130vh);
   aspect-ratio: 3 / 2;
   transform-style: preserve-3d;
   animation: bookEnter 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -132,7 +132,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .page-left-base {
   left: 0;
@@ -176,7 +177,8 @@ body {
   inset: 0;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  overflow: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1303,10 +1305,8 @@ body {
   cursor: pointer;
 }
 
-/* Show rotate hint on portrait mobile */
-@media (max-width: 768px) and (orientation: portrait) {
-  .rotate-hint:not(.dismissed) { display: flex; }
-}
+/* Rotate hint (shown via JS when device is portrait mobile) */
+.rotate-hint.show { display: flex; }
 
 /* ---- Tablet landscape (768–1024) ---- */
 @media (max-width: 1024px) {
@@ -1347,12 +1347,6 @@ body {
 
 /* ---- Phone landscape (short height) ---- */
 @media (max-height: 500px) {
-  /* Allow page content to scroll so nothing is cut off */
-  .leaf-front, .leaf-back, .page-static {
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
   .page-content { padding: 12px 12px; gap: 3px; }
   .ornate-border { inset: 6px; }
   .couple-names { font-size: clamp(1rem, 3.5vw, 1.6rem); }
