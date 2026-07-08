@@ -1031,25 +1031,60 @@ body {
 
 /* ---- Demon Slayer / Anime Theme ---- */
 #theme-anime {
-  background: linear-gradient(135deg, #0d0015 0%, #1a0a2e 40%, #2d1040 100%);
+  background: #1a1a2e;
 }
 
-/* Geometric Japanese pattern overlay */
+/* Split background: Nezuko (left) + Zenitsu (right) */
 .anime-bg {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  opacity: 0.08;
-  background-image:
-    repeating-linear-gradient(60deg, #FFD700 0px, transparent 1px, transparent 16px),
-    repeating-linear-gradient(-60deg, #FFD700 0px, transparent 1px, transparent 16px),
-    repeating-linear-gradient(0deg, #FFD700 0px, transparent 1px, transparent 16px);
+  overflow: hidden;
 }
 
-/* Anime clothesline — glowing string */
+/* Nezuko — pink asanoha pattern (left half) */
+.anime-bg::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-color: #E8829B;
+  background-image:
+    repeating-linear-gradient(
+      0deg, transparent 0 18px, rgba(90,15,45,0.3) 18px 19px),
+    repeating-linear-gradient(
+      60deg, transparent 0 18px, rgba(90,15,45,0.3) 18px 19px),
+    repeating-linear-gradient(
+      -60deg, transparent 0 18px, rgba(90,15,45,0.3) 18px 19px),
+    repeating-linear-gradient(
+      30deg, transparent 0 18px, rgba(90,15,45,0.15) 18px 19px),
+    repeating-linear-gradient(
+      -30deg, transparent 0 18px, rgba(90,15,45,0.15) 18px 19px),
+    repeating-linear-gradient(
+      90deg, transparent 0 18px, rgba(90,15,45,0.15) 18px 19px);
+}
+
+/* Zenitsu — yellow-orange with white triangles (right half) */
+.anime-bg::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 50%;
+  height: 100%;
+  background-color: #FFAA00;
+  background-image:
+    url('assets/zenitsu-pattern.svg'),
+    linear-gradient(180deg, #FFC107 0%, #FF9800 50%, #F57C00 100%);
+  background-size: 120px 120px, 100% 100%;
+}
+
+/* Anime clothesline */
 .anime-line::before {
-  border-bottom-color: #FFD700;
-  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+  border-bottom-color: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Anime polaroid frames */
@@ -1057,13 +1092,13 @@ body {
   border: 2px solid transparent;
   background:
     linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(135deg, #FF6B9D, #FFD700, #FF6B9D) border-box;
+    linear-gradient(135deg, #E8829B, #FFC107, #E8829B) border-box;
   padding: 4px 4px 22px;
 }
 .anime-frame::before {
-  background: linear-gradient(180deg, #FFD700 0%, #B8860B 100%);
+  background: linear-gradient(180deg, #D4736A 0%, #8B4040 100%);
 }
-.anime-frame .polaroid-cap { color: rgba(255, 255, 255, 0.6); }
+.anime-frame .polaroid-cap { color: #555; }
 
 /* Music bar */
 .anime-music-bar {
@@ -1080,25 +1115,26 @@ body {
   font-weight: 300;
   font-size: 0.55rem;
   letter-spacing: 1px;
-  background: rgba(255, 215, 0, 0.15);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  color: #FFD700;
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #fff;
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s;
+  backdrop-filter: blur(4px);
   animation: musicPulse 2s ease-in-out infinite;
 }
 .anime-music-btn:hover {
-  background: rgba(255, 215, 0, 0.3);
+  background: rgba(255, 255, 255, 0.45);
 }
 .anime-music-btn.playing {
   animation: none;
-  background: rgba(255, 215, 0, 0.25);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 @keyframes musicPulse {
-  0%, 100% { box-shadow: 0 0 0 rgba(255, 215, 0, 0); }
-  50%      { box-shadow: 0 0 12px rgba(255, 215, 0, 0.3); }
+  0%, 100% { box-shadow: 0 0 0 rgba(255, 255, 255, 0); }
+  50%      { box-shadow: 0 0 12px rgba(255, 255, 255, 0.4); }
 }
 
 /* Anime scroll area needs less top margin since music bar takes space */
