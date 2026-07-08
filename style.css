@@ -28,7 +28,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at 50% 40%, #162B22 0%, var(--bg-green) 70%);
+  background: radial-gradient(ellipse at 50% 40%, #0F211A 0%, #060F0A 60%, #030805 100%);
   overflow: hidden;
   font-family: var(--font-serif);
   color: var(--dark-green);
@@ -64,9 +64,10 @@ body {
   animation: bookEnter 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
   border-radius: 6px;
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.5),
-    0 8px 20px rgba(0, 0, 0, 0.3),
-    0 0 100px rgba(201, 169, 110, 0.04);
+    0 20px 60px rgba(0, 0, 0, 0.7),
+    0 8px 25px rgba(0, 0, 0, 0.5),
+    0 0 120px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(201, 169, 110, 0.05);
 }
 
 @keyframes bookEnter {
