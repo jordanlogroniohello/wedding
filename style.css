@@ -1253,16 +1253,122 @@ body {
 .page-active .page-content > *:nth-child(10) { transition-delay: 0.80s; }
 .page-active .page-content > *:nth-child(11) { transition-delay: 0.88s; }
 
-/* ---- Responsive ---- */
-@media (max-width: 680px) {
-  .book { width: 95vw; }
-  .page-content { padding: 28px 18px; gap: 7px; }
-  .schedule-block { width: 85%; }
-  .rsvp-form { width: 92%; }
-  .nav-controls { bottom: 12px; gap: 12px; }
-  .gallery-grid { width: 85%; gap: 6px; }
+/* ============================================
+   Responsive — Mobile / Tablet / Landscape
+   ============================================ */
+
+/* Rotate-to-landscape hint (portrait mobile only) */
+.rotate-hint {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg-green);
+  color: var(--gold-light);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  text-align: center;
+  padding: 30px;
+}
+.rotate-hint-icon {
+  font-size: 2.5rem;
+  animation: rotatePhone 2s ease-in-out infinite;
+}
+@keyframes rotatePhone {
+  0%, 100% { transform: rotate(0deg); }
+  30%, 70% { transform: rotate(90deg); }
+}
+.rotate-hint-text {
+  font-family: var(--font-sans);
+  font-weight: 200;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  line-height: 1.8;
+}
+.rotate-hint-skip {
+  margin-top: 8px;
+  padding: 8px 20px;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  background: transparent;
+  border: 1px solid var(--gold-faint);
+  color: var(--gold-light);
+  border-radius: 20px;
+  cursor: pointer;
 }
 
+/* Show rotate hint on portrait mobile */
+@media (max-width: 768px) and (orientation: portrait) {
+  .rotate-hint:not(.dismissed) { display: flex; }
+}
+
+/* ---- Tablet landscape (768–1024) ---- */
+@media (max-width: 1024px) {
+  .book { width: min(880px, 92vw); }
+}
+
+/* ---- Small tablet / large phone landscape ---- */
+@media (max-width: 768px) {
+  .book { width: 96vw; }
+  .page-content { padding: 24px 16px; gap: 6px; }
+  .schedule-block { width: 85%; }
+  .rsvp-form { width: 92%; }
+  .nav-controls { bottom: 10px; gap: 10px; }
+
+  /* Gallery modal */
+  .gallery-tabs { padding: 12px 10px 0; gap: 3px; }
+  .theme-tab { padding: 6px 14px; font-size: 0.55rem; }
+  .gallery-close { top: 10px; right: 12px; width: 34px; height: 34px; font-size: 1.2rem; }
+
+  /* Clothesline: horizontal scroll if too many photos */
+  .clothesline {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 32px 16px 10px;
+    gap: 14px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .clothesline::before { left: 0; right: 0; }
+
+  .photo-slot { width: clamp(65px, 18vw, 100px); }
+  .polaroid-cap { max-width: clamp(65px, 18vw, 100px); font-size: 0.4rem; }
+  .polaroid { padding: 4px 4px 18px; }
+
+  .anime-music-bar { margin-top: 48px; padding: 8px 10px 0; }
+  .anime-music-btn { font-size: 0.5rem; padding: 5px 12px; }
+}
+
+/* ---- Phone landscape (short height) ---- */
 @media (max-height: 500px) {
-  .page-content { padding: 20px 16px; gap: 5px; }
+  .page-content { padding: 16px 14px; gap: 4px; }
+  .couple-names { font-size: clamp(1.2rem, 4vw, 2rem); }
+  .script-heading { font-size: clamp(1rem, 3.5vw, 1.5rem); }
+  .monogram { font-size: clamp(1.8rem, 6vw, 3rem); }
+  .countdown { margin-top: 4px; }
+  .countdown-num { font-size: clamp(0.9rem, 3vw, 1.2rem); }
+  .nav-controls { bottom: 6px; }
+  .nav-btn { width: 32px; height: 32px; font-size: 1rem; }
+  .sound-toggle { top: 10px; right: 10px; width: 34px; height: 34px; }
+
+  /* Gallery — compact for landscape phones */
+  .gallery-scroll { padding: 20px 10px 30px; gap: 14px; margin-top: 45px; }
+  .clothesline { padding: 28px 12px 8px; gap: 10px; }
+  .photo-slot { width: clamp(55px, 12vh, 85px); }
+  .polaroid-cap { max-width: clamp(55px, 12vh, 85px); }
+  .anime-music-bar { margin-top: 42px; }
+}
+
+/* ---- Very small phones ---- */
+@media (max-width: 380px) {
+  .page-content { padding: 18px 12px; gap: 5px; }
+  .ornate-border { inset: 8px; }
+  .chibi-couple { gap: 6px; }
+  .chibi-head { width: 40px; height: 40px; }
+  .chibi-body { width: 28px; height: 22px; }
 }

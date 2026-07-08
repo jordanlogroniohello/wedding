@@ -599,5 +599,17 @@
     new MagicalBook(bookEl, ps, sound);
     new GalleryModal();
     startCountdown();
+
+    // Rotate hint dismiss
+    const rotateHint = document.getElementById('rotate-hint');
+    document.getElementById('rotate-hint-skip').addEventListener('click', () => {
+      rotateHint.classList.add('dismissed');
+    });
+    // Auto-dismiss when they rotate to landscape
+    window.addEventListener('orientationchange', () => {
+      if (window.innerWidth > window.innerHeight) {
+        rotateHint.classList.add('dismissed');
+      }
+    });
   });
 })();
