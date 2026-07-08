@@ -435,6 +435,100 @@
     }
   }
 
+  // ---- Gallery Modal ----
+  class GalleryModal {
+    constructor() {
+      this.modal = document.getElementById('gallery-modal');
+      this.closeBtn = document.getElementById('gallery-close');
+      this.tabs = [...document.querySelectorAll('.theme-tab')];
+      this.sections = [...document.querySelectorAll('.theme-section')];
+      this.audio = document.getElementById('anime-audio');
+      this.musicBtn = document.getElementById('anime-music-btn');
+      this.isPlaying = false;
+
+      // Open from gallery button
+      document.querySelector('.gallery-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        this.open();
+      });
+
+      // Close
+      this.closeBtn.addEventListener('click', () => this.close());
+      this.modal.addEventListener('click', (e) => {
+        if (e.target === this.modal) this.close();
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.modal.classList.contains('open')) this.close();
+      });
+
+      // Theme tabs
+      this.tabs.forEach(tab => {
+        tab.addEventListener('click', () => this.switchTheme(tab.dataset.theme));
+      });
+
+      // Music toggle
+      this.musicBtn.addEventListener('click', () => this.toggleMusic());
+    }
+
+    open() {
+      this.modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    close() {
+      this.modal.classList.remove('open');
+      document.body.style.overflow = '';
+      this.stopMusic();
+    }
+
+    switchTheme(theme) {
+      this.tabs.forEach(t => t.classList.toggle('active', t.dataset.theme === theme));
+      this.sections.forEach(s => {
+        s.classList.toggle('active', s.id === `theme-${theme}`);
+      });
+
+      // Auto-play music for anime theme, stop for others
+      if (theme === 'anime') {
+        this.playMusic();
+      } else {
+        this.stopMusic();
+      }
+    }
+
+    playMusic() {
+      if (!this.audio.src && this.audio.querySelector('source')) {
+        this.audio.load();
+      }
+      this.audio.play().then(() => {
+        this.isPlaying = true;
+        this.musicBtn.classList.add('playing');
+        this.musicBtn.innerHTML = '&#9835; Playing: Gurenge — LiSA (tap to pause)';
+      }).catch(() => {
+        // Audio file not found or autoplay blocked
+        this.musicBtn.innerHTML = '&#9835; Tap to play: Gurenge — LiSA';
+      });
+    }
+
+    stopMusic() {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+      this.isPlaying = false;
+      this.musicBtn.classList.remove('playing');
+      this.musicBtn.innerHTML = '&#9835; Now Playing: Gurenge — LiSA';
+    }
+
+    toggleMusic() {
+      if (this.isPlaying) {
+        this.audio.pause();
+        this.isPlaying = false;
+        this.musicBtn.classList.remove('playing');
+        this.musicBtn.innerHTML = '&#9835; Tap to play: Gurenge — LiSA';
+      } else {
+        this.playMusic();
+      }
+    }
+  }
+
   // ---- Countdown Timer ----
   function startCountdown() {
     const wedding = new Date('2026-11-27T16:00:00').getTime();
@@ -468,6 +562,7 @@
     const sound = new SoundEngine();
     const bookEl = document.getElementById('book');
     new MagicalBook(bookEl, ps, sound);
+    new GalleryModal();
     startCountdown();
   });
 })();

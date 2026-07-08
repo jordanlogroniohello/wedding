@@ -237,6 +237,70 @@
     </div>
   </div>
 
+  <!-- Gallery Modal -->
+  <div class="gallery-modal" id="gallery-modal">
+    <button class="gallery-close" id="gallery-close">&times;</button>
+
+    <!-- Theme Tabs -->
+    <div class="gallery-tabs">
+      <button class="theme-tab active" data-theme="countryside">Countryside</button>
+      <button class="theme-tab" data-theme="anime">Demon Slayer</button>
+    </div>
+
+    <!-- Countryside Theme -->
+    <div class="theme-section active" id="theme-countryside">
+      <div class="gallery-scroll">
+        <div class="clothesline">
+          <div class="polaroid" style="--rot:-4deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 1</p></div>
+          <div class="polaroid" style="--rot:3deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 2</p></div>
+          <div class="polaroid" style="--rot:-2deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 3</p></div>
+          <div class="polaroid" style="--rot:5deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 4</p></div>
+          <div class="polaroid" style="--rot:-3deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 5</p></div>
+        </div>
+        <div class="clothesline">
+          <div class="polaroid" style="--rot:2deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 6</p></div>
+          <div class="polaroid" style="--rot:-5deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 7</p></div>
+          <div class="polaroid" style="--rot:4deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 8</p></div>
+          <div class="polaroid" style="--rot:-2deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 9</p></div>
+        </div>
+        <div class="clothesline">
+          <div class="polaroid" style="--rot:3deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 10</p></div>
+          <div class="polaroid" style="--rot:-4deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 11</p></div>
+          <div class="polaroid" style="--rot:2deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 12</p></div>
+          <div class="polaroid" style="--rot:-3deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 13</p></div>
+          <div class="polaroid" style="--rot:5deg"><div class="photo-slot"></div><p class="polaroid-cap">Photo 14</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demon Slayer Theme -->
+    <div class="theme-section" id="theme-anime">
+      <div class="anime-bg"></div>
+      <div class="anime-music-bar" id="anime-music-bar">
+        <button class="anime-music-btn" id="anime-music-btn">&#9835; Now Playing: Gurenge — LiSA</button>
+      </div>
+      <div class="gallery-scroll">
+        <div class="clothesline anime-line">
+          <div class="polaroid anime-frame" style="--rot:-3deg"><div class="photo-slot"></div><p class="polaroid-cap">Zenitsu & Nezuko 1</p></div>
+          <div class="polaroid anime-frame" style="--rot:4deg"><div class="photo-slot"></div><p class="polaroid-cap">Zenitsu & Nezuko 2</p></div>
+          <div class="polaroid anime-frame" style="--rot:-2deg"><div class="photo-slot"></div><p class="polaroid-cap">Zenitsu & Nezuko 3</p></div>
+          <div class="polaroid anime-frame" style="--rot:3deg"><div class="photo-slot"></div><p class="polaroid-cap">Zenitsu & Nezuko 4</p></div>
+        </div>
+        <div class="clothesline anime-line">
+          <div class="polaroid anime-frame" style="--rot:2deg"><div class="photo-slot"></div><p class="polaroid-cap">Zenitsu & Nezuko 5</p></div>
+          <div class="polaroid anime-frame" style="--rot:-4deg"><div class="photo-slot"></div><p class="polaroid-cap">Zenitsu & Nezuko 6</p></div>
+          <div class="polaroid anime-frame" style="--rot:3deg"><div class="photo-slot"></div><p class="polaroid-cap">Zenitsu & Nezuko 7</p></div>
+          <div class="polaroid anime-frame" style="--rot:-2deg"><div class="photo-slot"></div><p class="polaroid-cap">Zenitsu & Nezuko 8</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audio for Demon Slayer theme -->
+    <audio id="anime-audio" loop preload="none">
+      <source src="audio/gurenge.mp3" type="audio/mpeg">
+    </audio>
+  </div>
+
   <!-- Sound Toggle -->
   <button class="sound-toggle" id="sound-toggle" aria-label="Toggle sound">
     <span class="sound-on">&#9835;</span>
