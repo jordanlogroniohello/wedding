@@ -341,7 +341,7 @@
           btn.classList.add('active');
         });
       });
-      document.querySelectorAll('.rsvp-input, .rsvp-submit').forEach((el) => {
+      document.querySelectorAll('.rsvp-input, .rsvp-submit, .gallery-btn').forEach((el) => {
         el.addEventListener('click', (e) => e.stopPropagation());
       });
 

@@ -553,19 +553,222 @@ body {
 }
 .schedule-key { font-weight: 500; letter-spacing: 1px; }
 
-/* ---- Gallery Grid ---- */
-.gallery-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-  width: 75%;
-  margin: 6px 0;
+/* ---- Chibi Characters ---- */
+.chibi-couple {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 10px;
+  margin: 8px 0;
 }
-.gallery-placeholder {
-  aspect-ratio: 1;
-  border: 1px dashed var(--gold-faint);
+
+.chibi {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: chibiJiggle 1.8s ease-in-out infinite;
+}
+.chibi-bride { animation-delay: 0.3s; }
+
+@keyframes chibiJiggle {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25%      { transform: translateX(-4px) rotate(-3deg); }
+  75%      { transform: translateX(4px) rotate(3deg); }
+}
+
+.chibi-head {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  z-index: 2;
+}
+
+.chibi-face {
+  position: absolute;
+  inset: 0;
+  background: #FDEBD0;
+  border-radius: 50%;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.chibi-eyes {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+}
+.chibi-eye {
+  width: 5px;
+  height: 6px;
+  background: var(--dark-green);
+  border-radius: 50%;
+  animation: chibiBlink 3.5s ease-in-out infinite;
+}
+.chibi-bride .chibi-eye { animation-delay: 0.5s; }
+
+@keyframes chibiBlink {
+  0%, 42%, 48%, 100% { transform: scaleY(1); }
+  45%                { transform: scaleY(0.1); }
+}
+
+.chibi-blush {
+  position: absolute;
+  bottom: 14px;
+  width: 10px;
+  height: 6px;
+  background: rgba(255, 150, 150, 0.35);
+  border-radius: 50%;
+}
+.chibi-blush.left  { left: 6px; }
+.chibi-blush.right { right: 6px; }
+
+.chibi-mouth {
+  width: 6px;
+  height: 3px;
+  border-bottom: 2px solid #C07A6E;
+  border-radius: 0 0 50% 50%;
+  margin: 3px auto 0;
+}
+
+/* Groom hair */
+.groom-hair {
+  position: absolute;
+  top: -2px;
+  left: 2px;
+  right: 2px;
+  height: 24px;
+  background: #3A2A1A;
+  border-radius: 50% 50% 0 0;
+  z-index: 3;
+}
+.groom-hair::after {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: -2px;
+  width: 14px;
+  height: 10px;
+  background: #3A2A1A;
+  border-radius: 40% 60% 0 40%;
+  z-index: 4;
+}
+
+/* Bride hair */
+.bride-hair {
+  position: absolute;
+  top: -3px;
+  left: -4px;
+  right: -4px;
+  height: 32px;
+  background: #2A1A0A;
+  border-radius: 50% 50% 30% 30%;
+  z-index: 1;
+}
+.bride-hair::before,
+.bride-hair::after {
+  content: '';
+  position: absolute;
+  bottom: -16px;
+  width: 10px;
+  height: 22px;
+  background: #2A1A0A;
+  border-radius: 0 0 40% 40%;
+}
+.bride-hair::before { left: 0; }
+.bride-hair::after  { right: 0; }
+
+/* Veil */
+.chibi-veil {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 36px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 0 60% 50% 0;
+  z-index: 0;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Bodies */
+.chibi-body {
+  position: relative;
+  width: 36px;
+  height: 28px;
+  margin-top: -4px;
+  border-radius: 8px 8px 14px 14px;
+  z-index: 1;
+}
+.groom-body {
+  background: var(--dark-green);
+}
+.bride-body {
+  background: #F8F0F0;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Bowtie */
+.chibi-bowtie {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 6px;
+  background: var(--gold);
+  clip-path: polygon(0 50%, 35% 0, 35% 100%, 50% 50%, 65% 0, 65% 100%, 100% 50%);
+}
+
+.chibi-name {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 0.5rem;
+  letter-spacing: 1px;
+  color: var(--dark-green);
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+/* Heart between chibis */
+.chibi-heart {
+  color: #D4736A;
+  font-size: 1rem;
+  margin-bottom: 28px;
+  animation: heartBeat 1.2s ease-in-out infinite;
+}
+
+@keyframes heartBeat {
+  0%, 100% { transform: scale(1); }
+  15%      { transform: scale(1.25); }
+  30%      { transform: scale(1); }
+  45%      { transform: scale(1.15); }
+  60%      { transform: scale(1); }
+}
+
+/* Gallery Button */
+.gallery-btn {
+  display: inline-block;
+  margin-top: 6px;
+  padding: 9px 24px;
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--beige);
+  background: var(--dark-green);
   border-radius: 4px;
-  background: rgba(201, 169, 110, 0.04);
+  cursor: pointer;
+  transition: background 0.3s;
+  animation: btnGlow 2s ease-in-out infinite;
+}
+.gallery-btn:hover { background: var(--gold); }
+
+@keyframes btnGlow {
+  0%, 100% { box-shadow: 0 0 0 rgba(201, 169, 110, 0); }
+  50%      { box-shadow: 0 0 14px rgba(201, 169, 110, 0.35); }
 }
 
 /* ---- RSVP Form ---- */
