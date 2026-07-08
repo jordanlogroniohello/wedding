@@ -445,6 +445,8 @@
       this.audio = document.getElementById('anime-audio');
       this.musicBtn = document.getElementById('anime-music-btn');
       this.isPlaying = false;
+      this.triangleInterval = null;
+      this.animeBg = document.querySelector('.anime-bg');
 
       // Open from gallery button
       document.querySelector('.gallery-btn').addEventListener('click', (e) => {
@@ -479,6 +481,7 @@
       this.modal.classList.remove('open');
       document.body.style.overflow = '';
       this.stopMusic();
+      this.stopTriangles();
     }
 
     switchTheme(theme) {
@@ -487,12 +490,44 @@
         s.classList.toggle('active', s.id === `theme-${theme}`);
       });
 
-      // Auto-play music for anime theme, stop for others
       if (theme === 'anime') {
         this.playMusic();
+        this.startTriangles();
       } else {
         this.stopMusic();
+        this.stopTriangles();
       }
+    }
+
+    // Spawn floating Zenitsu triangles
+    spawnTriangle() {
+      const tri = document.createElement('div');
+      tri.className = 'zenitsu-triangle' + (Math.random() < 0.25 ? ' bright' : '');
+      const size = 0.6 + Math.random() * 1;
+      tri.style.setProperty('--x', Math.random() * 100 + '%');
+      tri.style.setProperty('--dur', (6 + Math.random() * 8) + 's');
+      tri.style.setProperty('--delay', '0s');
+      tri.style.setProperty('--spin', (120 + Math.random() * 240) + 'deg');
+      tri.style.transform = `scale(${size})`;
+      this.animeBg.appendChild(tri);
+      // Clean up after animation
+      setTimeout(() => tri.remove(), 16000);
+    }
+
+    startTriangles() {
+      this.stopTriangles();
+      // Spawn initial batch
+      for (let i = 0; i < 15; i++) {
+        setTimeout(() => this.spawnTriangle(), i * 300);
+      }
+      // Keep spawning
+      this.triangleInterval = setInterval(() => this.spawnTriangle(), 500);
+    }
+
+    stopTriangles() {
+      clearInterval(this.triangleInterval);
+      this.triangleInterval = null;
+      this.animeBg.querySelectorAll('.zenitsu-triangle').forEach(t => t.remove());
     }
 
     playMusic() {
