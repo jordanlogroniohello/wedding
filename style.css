@@ -1260,53 +1260,6 @@ body {
    Responsive — Mobile / Tablet / Landscape
    ============================================ */
 
-/* Rotate-to-landscape hint (portrait mobile only) */
-.rotate-hint {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: var(--bg-green);
-  color: var(--gold-light);
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  text-align: center;
-  padding: 30px;
-}
-.rotate-hint-icon {
-  font-size: 2.5rem;
-  animation: rotatePhone 2s ease-in-out infinite;
-}
-@keyframes rotatePhone {
-  0%, 100% { transform: rotate(0deg); }
-  30%, 70% { transform: rotate(90deg); }
-}
-.rotate-hint-text {
-  font-family: var(--font-sans);
-  font-weight: 200;
-  font-size: 0.8rem;
-  letter-spacing: 2px;
-  line-height: 1.8;
-}
-.rotate-hint-skip {
-  margin-top: 8px;
-  padding: 8px 20px;
-  font-family: var(--font-sans);
-  font-weight: 300;
-  font-size: 0.6rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  background: transparent;
-  border: 1px solid var(--gold-faint);
-  color: var(--gold-light);
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-/* Rotate hint (shown via JS when device is portrait mobile) */
-.rotate-hint.show { display: flex; }
 
 /* ---- Tablet landscape (768–1024) ---- */
 @media (max-width: 1024px) {
