@@ -431,6 +431,32 @@
     }
   }
 
+  // ---- Countdown Timer ----
+  function startCountdown() {
+    const wedding = new Date('2026-11-27T16:00:00').getTime();
+    const els = {
+      days: document.getElementById('cd-days'),
+      hours: document.getElementById('cd-hours'),
+      mins: document.getElementById('cd-mins'),
+      secs: document.getElementById('cd-secs'),
+    };
+
+    function update() {
+      const diff = Math.max(0, wedding - Date.now());
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      els.days.textContent = String(d).padStart(3, '0');
+      els.hours.textContent = String(h).padStart(2, '0');
+      els.mins.textContent = String(m).padStart(2, '0');
+      els.secs.textContent = String(s).padStart(2, '0');
+    }
+
+    update();
+    setInterval(update, 1000);
+  }
+
   // ---- Init ----
   window.addEventListener('DOMContentLoaded', () => {
     const canvas = document.getElementById('particle-canvas');
@@ -438,5 +464,6 @@
     const sound = new SoundEngine();
     const bookEl = document.getElementById('book');
     new MagicalBook(bookEl, ps, sound);
+    startCountdown();
   });
 })();
