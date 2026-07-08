@@ -75,16 +75,18 @@
     }
 
     spawnAmbient() {
-      const count = Math.min(35, Math.floor(window.innerWidth / 30));
+      const count = Math.min(70, Math.floor(window.innerWidth / 14));
       for (let i = 0; i < count; i++) {
+        // Mix of sizes: mostly small with some larger bright ones
+        const isBright = Math.random() < 0.2;
         this.particles.push(new Particle(
           Math.random() * this.canvas.width,
           Math.random() * this.canvas.height,
           {
-            vx: (Math.random() - 0.5) * 0.3,
-            vy: -(Math.random() * 0.4 + 0.1),
-            size: Math.random() * 2 + 0.5,
-            maxLife: 200 + Math.random() * 300,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: -(Math.random() * 0.5 + 0.05),
+            size: isBright ? (Math.random() * 2.5 + 1.5) : (Math.random() * 1.5 + 0.3),
+            maxLife: 150 + Math.random() * 350,
             twinkle: true,
           }
         ));
@@ -126,7 +128,7 @@
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       if (this.mouse.x > 0) this.addTrail();
       const ambientCount = this.particles.filter(p => p.twinkle).length;
-      if (ambientCount < 15) this.spawnAmbient();
+      if (ambientCount < 35) this.spawnAmbient();
       this.particles = this.particles.filter((p) => {
         const alive = p.update();
         if (alive) p.draw(this.ctx);
