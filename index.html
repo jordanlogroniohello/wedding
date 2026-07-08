@@ -13,12 +13,37 @@
 
   <canvas id="particle-canvas"></canvas>
 
-  <div class="book-wrapper">
+  <div class="book-scene">
     <div class="book" id="book">
 
-      <!-- Page 1: Cover -->
-      <div class="page">
-        <div class="page-front page-cover">
+      <!-- Spine -->
+      <div class="spine"></div>
+
+      <!-- Page edges (right side) -->
+      <div class="page-edges"></div>
+
+      <!-- Static: Inside Front Cover (left base) -->
+      <div class="page-static page-left-base page-dark">
+        <div class="page-content">
+          <div class="monogram">J <span class="amp">&</span> A</div>
+          <div class="divider gold-on-dark"><span>✦</span></div>
+          <p class="date-display light">27 · 11 · 2026</p>
+        </div>
+      </div>
+
+      <!-- Static: Inside Back Cover (right base) -->
+      <div class="page-static page-right-base page-dark">
+        <div class="page-content">
+          <div class="divider gold-on-dark"><span>❦</span></div>
+          <p class="hashtag-large">#exchANGEofvowsWithDAN</p>
+          <div class="divider gold-on-dark"><span>❦</span></div>
+          <p class="date-display light">November 27, 2026</p>
+        </div>
+      </div>
+
+      <!-- Leaf 0 -->
+      <div class="leaf" data-leaf="0">
+        <div class="leaf-front">
           <div class="ornate-border"></div>
           <div class="page-content">
             <p class="pre-text">Together with their families</p>
@@ -30,12 +55,7 @@
             <p class="open-hint">tap to open ›</p>
           </div>
         </div>
-        <div class="page-back"></div>
-      </div>
-
-      <!-- Page 2: Our Story -->
-      <div class="page">
-        <div class="page-front">
+        <div class="leaf-back">
           <div class="ornate-border"></div>
           <div class="page-content">
             <p class="section-label">Our Love Story</p>
@@ -52,12 +72,11 @@
             <p class="quote-author">— Emily Brontë</p>
           </div>
         </div>
-        <div class="page-back"></div>
       </div>
 
-      <!-- Page 3: Ceremony -->
-      <div class="page">
-        <div class="page-front">
+      <!-- Leaf 1 -->
+      <div class="leaf" data-leaf="1">
+        <div class="leaf-front">
           <div class="ornate-border"></div>
           <div class="page-content">
             <p class="section-label">The Ceremony</p>
@@ -71,12 +90,7 @@
             <p class="venue-addr">123 Beautiful Street<br>City, State 12345</p>
           </div>
         </div>
-        <div class="page-back"></div>
-      </div>
-
-      <!-- Page 4: Reception -->
-      <div class="page">
-        <div class="page-front">
+        <div class="leaf-back">
           <div class="ornate-border"></div>
           <div class="page-content">
             <p class="section-label">The Reception</p>
@@ -94,12 +108,25 @@
             <p class="dress-code">Attire: Semi-Formal</p>
           </div>
         </div>
-        <div class="page-back"></div>
       </div>
 
-      <!-- Page 5: RSVP -->
-      <div class="page">
-        <div class="page-front">
+      <!-- Leaf 2 -->
+      <div class="leaf" data-leaf="2">
+        <div class="leaf-front">
+          <div class="ornate-border"></div>
+          <div class="page-content">
+            <p class="section-label">Our Memories</p>
+            <div class="divider"><span>✦</span></div>
+            <div class="gallery-grid">
+              <div class="gallery-placeholder"></div>
+              <div class="gallery-placeholder"></div>
+              <div class="gallery-placeholder"></div>
+              <div class="gallery-placeholder"></div>
+            </div>
+            <p class="body-text muted-text">Photos coming soon</p>
+          </div>
+        </div>
+        <div class="leaf-back">
           <div class="ornate-border"></div>
           <div class="page-content">
             <p class="section-label">RSVP</p>
@@ -117,12 +144,11 @@
             </form>
           </div>
         </div>
-        <div class="page-back"></div>
       </div>
 
-      <!-- Page 6: Thank You -->
-      <div class="page">
-        <div class="page-front page-closing">
+      <!-- Leaf 3 -->
+      <div class="leaf" data-leaf="3">
+        <div class="leaf-front">
           <div class="ornate-border"></div>
           <div class="page-content">
             <p class="section-label">Thank You</p>
@@ -133,12 +159,17 @@
             </p>
             <h2 class="script-heading">We can't wait to<br>celebrate with you!</h2>
             <div class="divider"><span>❦</span></div>
-            <p class="closing-label">With love,</p>
-            <p class="couple-names sm">Jordan &amp; Angelica</p>
-            <p class="hashtag">#exchANGEofVowsWithDAN</p>
           </div>
         </div>
-        <div class="page-back"></div>
+        <div class="leaf-back">
+          <div class="ornate-border"></div>
+          <div class="page-content">
+            <p class="closing-label">With love,</p>
+            <h2 class="couple-names sm">Jordan &amp; Angelica</h2>
+            <div class="divider"><span>❦</span></div>
+            <p class="date-display">27 · 11 · 2026</p>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -153,7 +184,7 @@
   <!-- Navigation -->
   <div class="nav-controls">
     <button class="nav-btn" id="prev-btn" aria-label="Previous page"><span>‹</span></button>
-    <div class="page-indicator" id="page-indicator">1 / 6</div>
+    <div class="page-indicator" id="page-indicator">1 / 5</div>
     <button class="nav-btn" id="next-btn" aria-label="Next page"><span>›</span></button>
   </div>
 

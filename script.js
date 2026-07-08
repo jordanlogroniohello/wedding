@@ -1,5 +1,5 @@
 // ============================================
-// Magical Wedding Storybook
+// Magical Wedding Storybook v2 — Open Book
 // ============================================
 
 (function () {
@@ -124,19 +124,14 @@
 
     loop() {
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
       if (this.mouse.x > 0) this.addTrail();
-
-      // Respawn ambient when count drops
       const ambientCount = this.particles.filter(p => p.twinkle).length;
       if (ambientCount < 15) this.spawnAmbient();
-
       this.particles = this.particles.filter((p) => {
         const alive = p.update();
         if (alive) p.draw(this.ctx);
         return alive;
       });
-
       requestAnimationFrame(() => this.loop());
     }
   }
@@ -173,61 +168,52 @@
       const sr = ctx.sampleRate;
       const now = ctx.currentTime;
 
-      // --- Layer 1: Main paper sweep / whoosh ---
+      // Layer 1: Main paper sweep
       const sweepLen = Math.floor(sr * 0.55);
       const sweepBuf = ctx.createBuffer(1, sweepLen, sr);
       const sweep = sweepBuf.getChannelData(0);
       for (let i = 0; i < sweepLen; i++) {
         const t = i / sr;
-        // Bell curve envelope peaking at ~0.18s
         const env = Math.exp(-Math.pow((t - 0.18) / 0.1, 2));
         sweep[i] = (Math.random() * 2 - 1) * env;
       }
       const sweepSrc = ctx.createBufferSource();
       sweepSrc.buffer = sweepBuf;
-
       const sweepBP = ctx.createBiquadFilter();
       sweepBP.type = 'bandpass';
       sweepBP.Q.value = 0.5;
-      // Sweep frequency upward then back down (mimics page arc)
       sweepBP.frequency.setValueAtTime(1800, now);
       sweepBP.frequency.linearRampToValueAtTime(5500, now + 0.2);
       sweepBP.frequency.linearRampToValueAtTime(2200, now + 0.5);
-
       const sweepGain = ctx.createGain();
       sweepGain.gain.value = 0.2;
-
       sweepSrc.connect(sweepBP);
       sweepBP.connect(sweepGain);
       sweepGain.connect(ctx.destination);
       sweepSrc.start(now);
 
-      // --- Layer 2: High-freq crinkle / texture ---
+      // Layer 2: High-freq crinkle
       const crinkleLen = Math.floor(sr * 0.25);
       const crinkleBuf = ctx.createBuffer(1, crinkleLen, sr);
       const crinkle = crinkleBuf.getChannelData(0);
       for (let i = 0; i < crinkleLen; i++) {
         const t = i / sr;
         const env = Math.exp(-t / 0.05) * 0.6;
-        // Sparse crackle: only some samples have signal
         crinkle[i] = (Math.random() < 0.35 ? (Math.random() * 2 - 1) : 0) * env;
       }
       const crinkleSrc = ctx.createBufferSource();
       crinkleSrc.buffer = crinkleBuf;
-
       const crinkleHP = ctx.createBiquadFilter();
       crinkleHP.type = 'highpass';
       crinkleHP.frequency.value = 3500;
-
       const crinkleGain = ctx.createGain();
       crinkleGain.gain.value = 0.1;
-
       crinkleSrc.connect(crinkleHP);
       crinkleHP.connect(crinkleGain);
       crinkleGain.connect(ctx.destination);
       crinkleSrc.start(now + 0.04);
 
-      // --- Layer 3: Soft low thump (page landing) ---
+      // Layer 3: Soft low thump (page landing)
       const thumpLen = Math.floor(sr * 0.15);
       const thumpBuf = ctx.createBuffer(1, thumpLen, sr);
       const thump = thumpBuf.getChannelData(0);
@@ -237,26 +223,22 @@
       }
       const thumpSrc = ctx.createBufferSource();
       thumpSrc.buffer = thumpBuf;
-
       const thumpLP = ctx.createBiquadFilter();
       thumpLP.type = 'lowpass';
       thumpLP.frequency.value = 600;
-
       const thumpGain = ctx.createGain();
       thumpGain.gain.value = 0.18;
-
       thumpSrc.connect(thumpLP);
       thumpLP.connect(thumpGain);
       thumpGain.connect(ctx.destination);
       thumpSrc.start(now + 0.32);
     }
 
-    // Magical chime — ascending arpeggio
+    // Magical chime arpeggio
     playChime(direction = 1) {
       this.init();
       if (this.muted) return;
       const ctx = this.ctx;
-      // C5, E5, G5, C6 — major arpeggio
       const notes = [523.25, 659.25, 783.99, 1046.5];
       const sequence = direction > 0 ? notes : [...notes].reverse();
 
@@ -265,7 +247,6 @@
         osc.type = 'sine';
         osc.frequency.value = freq;
 
-        // Add a subtle harmonic
         const osc2 = ctx.createOscillator();
         osc2.type = 'sine';
         osc2.frequency.value = freq * 2;
@@ -285,47 +266,24 @@
         osc2.connect(gain2);
         gain.connect(ctx.destination);
         gain2.connect(ctx.destination);
-
         osc.start(startTime);
         osc.stop(startTime + 1.5);
         osc2.start(startTime);
         osc2.stop(startTime + 1);
       });
     }
-
-    // Soft shimmer — for ambient sparkle moments
-    playShimmer() {
-      this.init();
-      if (this.muted) return;
-      const ctx = this.ctx;
-      const freq = 1200 + Math.random() * 1800;
-
-      const osc = ctx.createOscillator();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-
-      const gain = ctx.createGain();
-      const now = ctx.currentTime;
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.025, now + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.6);
-    }
   }
 
-  // ---- Book Controller ----
+  // ---- Book Controller (Spread View) ----
   class MagicalBook {
-    constructor(bookEl, particleSystem, soundEngine) {
+    constructor(bookEl, ps, sound) {
       this.book = bookEl;
-      this.ps = particleSystem;
-      this.sound = soundEngine;
-      this.pages = [...bookEl.querySelectorAll('.page')];
-      this.total = this.pages.length;
-      this.current = 0;
+      this.ps = ps;
+      this.sound = sound;
+      this.leaves = [...bookEl.querySelectorAll('.leaf')];
+      this.totalLeaves = this.leaves.length;
+      this.currentSpread = 0;            // 0 … totalLeaves
+      this.totalSpreads = this.totalLeaves + 1;
       this.animating = false;
 
       this.prevBtn = document.getElementById('prev-btn');
@@ -336,23 +294,20 @@
     }
 
     init() {
-      // Set initial z-index stacking
-      this.pages.forEach((page, i) => {
-        page.style.zIndex = this.total - i;
+      // Initial z-index stacking (leaf 0 on top)
+      this.leaves.forEach((leaf, i) => {
+        leaf.style.zIndex = this.totalLeaves - i;
       });
 
-      // Mark first page as active
-      this.pages[0].classList.add('active');
-
-      // Click on book
+      // Click on book — right half = next, left half = prev
       this.book.addEventListener('click', (e) => {
         const rect = this.book.getBoundingClientRect();
         const x = e.clientX - rect.left;
-        if (x > rect.width * 0.35) this.next();
+        if (x > rect.width * 0.5) this.next();
         else this.prev();
       });
 
-      // Navigation buttons
+      // Nav buttons
       this.prevBtn.addEventListener('click', (e) => { e.stopPropagation(); this.prev(); });
       this.nextBtn.addEventListener('click', (e) => { e.stopPropagation(); this.next(); });
 
@@ -375,7 +330,7 @@
         }
       });
 
-      // RSVP toggle buttons
+      // RSVP interactivity
       document.querySelectorAll('.rsvp-btn').forEach((btn) => {
         btn.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -383,77 +338,96 @@
           btn.classList.add('active');
         });
       });
-
-      // Prevent form inputs from triggering page turn
       document.querySelectorAll('.rsvp-input, .rsvp-submit').forEach((el) => {
         el.addEventListener('click', (e) => e.stopPropagation());
       });
 
       this.updateUI();
+
+      // Activate initial spread after entrance animation
+      setTimeout(() => this.updateActivePages(), 600);
     }
 
     next() {
-      if (this.animating || this.current >= this.total - 1) return;
+      if (this.animating || this.currentSpread >= this.totalLeaves) return;
       this.animating = true;
 
-      const page = this.pages[this.current];
-      page.classList.remove('active');
-      page.classList.add('flipped');
+      // Clear current active pages
+      this.clearActivePages();
 
-      // Sound effects
+      const leaf = this.leaves[this.currentSpread];
+      leaf.classList.add('flipped');
+      // Raise z-index so this leaf's back shows on top (left side)
+      leaf.style.zIndex = this.totalLeaves + this.currentSpread + 1;
+
+      // Sound & particles from spine
       this.sound.playPageTurn();
       this.sound.playChime(1);
-
-      // Particle burst from the spine
       const rect = this.book.getBoundingClientRect();
-      this.ps.burst(rect.left, rect.top + rect.height / 2, 30);
+      this.ps.burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 30);
 
-      this.current++;
+      this.currentSpread++;
       this.updateUI();
 
-      // After animation, lower flipped page z-index and activate new page
-      const onEnd = () => {
-        page.style.zIndex = 0;
-        this.pages[this.current].classList.add('active');
+      leaf.addEventListener('transitionend', () => {
+        this.updateActivePages();
         this.animating = false;
-        page.removeEventListener('transitionend', onEnd);
-      };
-      page.addEventListener('transitionend', onEnd);
+      }, { once: true });
     }
 
     prev() {
-      if (this.animating || this.current <= 0) return;
+      if (this.animating || this.currentSpread <= 0) return;
       this.animating = true;
 
-      this.pages[this.current].classList.remove('active');
-      this.current--;
+      // Clear current active pages
+      this.clearActivePages();
 
-      const page = this.pages[this.current];
-      page.style.zIndex = this.total - this.current;
-      page.classList.remove('flipped');
+      this.currentSpread--;
+      const leaf = this.leaves[this.currentSpread];
+      // Restore z-index before un-flipping
+      leaf.style.zIndex = this.totalLeaves - this.currentSpread;
+      leaf.classList.remove('flipped');
 
-      // Sound effects
+      // Sound & particles
       this.sound.playPageTurn();
       this.sound.playChime(-1);
-
-      // Particle burst
       const rect = this.book.getBoundingClientRect();
-      this.ps.burst(rect.left, rect.top + rect.height / 2, 25);
+      this.ps.burst(rect.left + rect.width / 2, rect.top + rect.height / 2, 25);
 
       this.updateUI();
 
-      const onEnd = () => {
-        page.classList.add('active');
+      leaf.addEventListener('transitionend', () => {
+        this.updateActivePages();
         this.animating = false;
-        page.removeEventListener('transitionend', onEnd);
-      };
-      page.addEventListener('transitionend', onEnd);
+      }, { once: true });
+    }
+
+    clearActivePages() {
+      this.book.querySelectorAll('.page-active').forEach(el => el.classList.remove('page-active'));
+    }
+
+    updateActivePages() {
+      this.clearActivePages();
+
+      // Left page: back of most recently flipped leaf, or left base
+      if (this.currentSpread > 0) {
+        this.leaves[this.currentSpread - 1].querySelector('.leaf-back').classList.add('page-active');
+      } else {
+        this.book.querySelector('.page-left-base').classList.add('page-active');
+      }
+
+      // Right page: front of next unflipped leaf, or right base
+      if (this.currentSpread < this.totalLeaves) {
+        this.leaves[this.currentSpread].querySelector('.leaf-front').classList.add('page-active');
+      } else {
+        this.book.querySelector('.page-right-base').classList.add('page-active');
+      }
     }
 
     updateUI() {
-      this.indicator.textContent = `${this.current + 1} / ${this.total}`;
-      this.prevBtn.disabled = this.current === 0;
-      this.nextBtn.disabled = this.current === this.total - 1;
+      this.indicator.textContent = `${this.currentSpread + 1} / ${this.totalSpreads}`;
+      this.prevBtn.disabled = this.currentSpread === 0;
+      this.nextBtn.disabled = this.currentSpread === this.totalLeaves;
     }
   }
 
