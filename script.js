@@ -289,6 +289,7 @@
       this.prevBtn = document.getElementById('prev-btn');
       this.nextBtn = document.getElementById('next-btn');
       this.indicator = document.getElementById('page-indicator');
+      this.pageEdges = bookEl.querySelector('.page-edges');
 
       this.init();
     }
@@ -428,6 +429,7 @@
       this.indicator.textContent = `${this.currentSpread + 1} / ${this.totalSpreads}`;
       this.prevBtn.disabled = this.currentSpread === 0;
       this.nextBtn.disabled = this.currentSpread === this.totalLeaves;
+      this.pageEdges.classList.toggle('hidden', this.currentSpread === this.totalLeaves);
     }
   }
 
