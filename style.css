@@ -28,7 +28,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(ellipse at 50% 40%, #0F211A 0%, #060F0A 60%, #030805 100%);
+  background: radial-gradient(ellipse at 50% 40%, #162B22 0%, var(--bg-green) 70%);
   overflow: hidden;
   font-family: var(--font-serif);
   color: var(--dark-green);
@@ -58,16 +58,15 @@ body {
 /* ---- Book ---- */
 .book {
   position: relative;
-  width: min(880px, 88vw, 130vh);
-  aspect-ratio: 3 / 2;
+  width: 80vw;
+  height: 80vh;
   transform-style: preserve-3d;
   animation: bookEnter 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
   border-radius: 6px;
   box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.7),
-    0 8px 25px rgba(0, 0, 0, 0.5),
-    0 0 120px rgba(0, 0, 0, 0.4),
-    0 0 80px rgba(201, 169, 110, 0.05);
+    0 20px 60px rgba(0, 0, 0, 0.5),
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 100px rgba(201, 169, 110, 0.04);
 }
 
 @keyframes bookEnter {
@@ -931,105 +930,135 @@ body {
   background: linear-gradient(180deg, #E8DCC8 0%, #D4C5A9 40%, #C8B898 100%);
 }
 
-/* ---- Clothesline ---- */
-.clothesline {
-  position: relative;
+/* ---- Hanger Marquee ---- */
+.hanger-wrapper {
+  position: absolute;
+  inset: 0;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  gap: clamp(10px, 3vw, 24px);
-  padding: 36px 10px 10px;
-  width: 100%;
-  max-width: 900px;
+  margin-top: 50px;
 }
-/* The sagging string */
-.clothesline::before {
+
+.hanger-line {
+  position: relative;
+  width: 100%;
+  height: 65vh;
+  min-height: 300px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+/* Taut string/wire — sits at the clothespin midpoint */
+.hanger-line::before {
   content: '';
   position: absolute;
-  top: 10px;
-  left: 3%;
-  right: 3%;
-  height: 34px;
-  border-bottom: 2px solid #A08B6B;
-  border-radius: 0 0 50% 50%;
+  top: 130px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #5C4228, #8B7355 10%, #8B7355 90%, #5C4228);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  z-index: 3;
   pointer-events: none;
+}
+
+.hanger-marquee {
+  overflow: hidden;
+  width: 100%;
+}
+.hanger-track {
+  display: flex;
+  gap: 40px;
+  padding: 65px 20px 10px;
+  width: max-content;
+  animation: hangerScroll 40s linear infinite;
+  align-items: flex-start;
+}
+.hanger-marquee:hover .hanger-track {
+  animation-play-state: paused;
+}
+
+@keyframes hangerScroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* ---- Polaroid ---- */
 .polaroid {
   position: relative;
   background: #fff;
-  padding: 5px 5px 22px;
-  box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.12);
-  transform: rotate(var(--rot, 0deg));
-  transition: transform 0.3s, box-shadow 0.3s;
+  padding: 6px 6px 28px;
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.12);
   cursor: pointer;
   flex-shrink: 0;
-  animation: sway 3s ease-in-out infinite;
-  animation-delay: calc(var(--rot, 0) * 80ms);
+  transform-origin: top center;
+  animation: swing 3s ease-in-out infinite;
+  animation-delay: var(--swing-delay, 0s);
 }
 .polaroid:nth-child(even) { animation-direction: reverse; }
 
 .polaroid:hover {
-  transform: rotate(0deg) scale(1.15) translateY(-6px);
-  box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.2);
+  animation-play-state: paused;
+  transform: rotate(0deg) scale(1.08);
+  box-shadow: 4px 8px 24px rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
 
-@keyframes sway {
+@keyframes swing {
   0%, 100% { transform: rotate(var(--rot, 0deg)); }
-  50%      { transform: rotate(calc(var(--rot, 0deg) + 2deg)); }
+  25%      { transform: rotate(calc(var(--rot, 0deg) + 4deg)); }
+  75%      { transform: rotate(calc(var(--rot, 0deg) - 4deg)); }
 }
 
-/* Clip/pin on top */
+/* Clothespin — clamps over the wire onto the photo */
 .polaroid::before {
   content: '';
   position: absolute;
-  top: -10px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
-  width: 8px;
-  height: 18px;
-  background: linear-gradient(180deg, #B89B6A 0%, #8B7355 100%);
+  width: 10px;
+  height: 36px;
+  background: linear-gradient(180deg, #C4A87A 0%, #B08B5A 40%, #A08060 60%, #8B6B40 100%);
   border-radius: 2px 2px 1px 1px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.25);
+  z-index: 4;
 }
-/* Clip slit */
+/* Clip spring/grip band — the metal ring in the middle */
 .polaroid::after {
   content: '';
   position: absolute;
-  top: -3px;
+  top: -16px;
   left: 50%;
   transform: translateX(-50%);
-  width: 4px;
-  height: 5px;
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 0 0 1px 1px;
+  width: 14px;
+  height: 4px;
+  background: #888;
+  border-radius: 1px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  z-index: 5;
 }
 
 /* Photo placeholder */
 .photo-slot {
-  width: clamp(80px, 14vw, 120px);
+  width: clamp(160px, 25vh, 260px);
   aspect-ratio: 3 / 4;
   background: linear-gradient(135deg, #e8e0d4 0%, #d4cbbe 100%);
-  border: 1px dashed rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  border-radius: 2px;
 }
 
 .polaroid-cap {
   font-family: var(--font-serif);
-  font-weight: 300;
+  font-weight: 400;
   font-style: italic;
-  font-size: clamp(0.45rem, 1.5vw, 0.6rem);
+  font-size: 0.75rem;
   color: #777;
   text-align: center;
-  margin-top: 3px;
+  margin-top: 2px;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: clamp(80px, 14vw, 120px);
 }
 
 /* ---- Demon Slayer / Anime Theme ---- */
@@ -1087,24 +1116,170 @@ body {
   100% { transform: translateY(-10vh) rotate(var(--spin, 180deg)); opacity: 0; }
 }
 
-/* Anime clothesline */
-.anime-line::before {
-  border-bottom-color: rgba(255, 255, 255, 0.55);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+/* ---- Japanese Scroll (Kakemono style) ---- */
+.scroll-wrapper {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  padding: 55px 20px 10px;
 }
 
-/* Anime polaroid frames */
-.anime-frame {
-  border: 2px solid transparent;
+.jp-scroll {
+  position: relative;
+  width: 92%;
+  height: 65vh;
+  min-height: 300px;
+  margin: 0 auto;
+}
+
+/* Weathered wooden dowels (jiku) */
+.scroll-rod {
+  width: 36px;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 4;
   background:
-    linear-gradient(#fff, #fff) padding-box,
-    linear-gradient(135deg, #E8829B, #FFC107, #E8829B) border-box;
-  padding: 4px 4px 22px;
+    /* Cylindrical shading */
+    linear-gradient(90deg,
+      rgba(0,0,0,0.3) 0%,
+      rgba(0,0,0,0.05) 18%,
+      rgba(255,255,255,0.08) 35%,
+      rgba(0,0,0,0.03) 55%,
+      rgba(0,0,0,0.15) 75%,
+      rgba(0,0,0,0.35) 100%
+    ),
+    /* Worn wood grain */
+    repeating-linear-gradient(
+      180deg,
+      #5A3A1E 0px, #4E3218 3px,
+      #3E2810 3px, #4A2E16 5px,
+      #5A3A1E 5px, #4E3218 8px,
+      #3E2810 8px, #5A3A1E 12px
+    );
 }
-.anime-frame::before {
-  background: linear-gradient(180deg, #D4736A 0%, #8B4040 100%);
+.scroll-rod.left {
+  left: 0;
+  border-radius: 14px 0 0 14px;
+  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.4);
 }
-.anime-frame .polaroid-cap { color: #555; }
+.scroll-rod.right {
+  right: 0;
+  border-radius: 0 14px 14px 0;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.4);
+}
+
+/* Worn knob end caps */
+.scroll-rod::before,
+.scroll-rod::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 46px;
+  height: 22px;
+  background:
+    radial-gradient(ellipse at 40% 30%, rgba(255,255,255,0.1), transparent 50%),
+    linear-gradient(180deg, #5A3A1E, #3E2810 30%, #2E1E0A 50%, #3E2810 70%, #5A3A1E);
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  z-index: 5;
+}
+.scroll-rod::before { top: -8px; }
+.scroll-rod::after { bottom: -8px; }
+
+/* Burnt parchment background — filtered separately, no content */
+.scroll-burnt-bg {
+  position: absolute;
+  top: 0;
+  left: 28px;
+  right: 28px;
+  bottom: 0;
+  z-index: 1;
+  filter: url(#burnt-paper);
+  background: #DECCAA;
+  background-image:
+    linear-gradient(90deg, rgba(75, 42, 12, 0.8) 0%, rgba(100, 60, 20, 0.4) 3%, transparent 15%),
+    linear-gradient(270deg, rgba(75, 42, 12, 0.8) 0%, rgba(100, 60, 20, 0.4) 3%, transparent 15%),
+    linear-gradient(180deg, rgba(75, 42, 12, 0.65) 0%, transparent 12%),
+    linear-gradient(0deg, rgba(75, 42, 12, 0.65) 0%, transparent 12%),
+    radial-gradient(circle at 0% 0%, rgba(55, 30, 8, 0.75) 0%, transparent 16%),
+    radial-gradient(circle at 100% 0%, rgba(55, 30, 8, 0.75) 0%, transparent 16%),
+    radial-gradient(circle at 0% 100%, rgba(55, 30, 8, 0.75) 0%, transparent 16%),
+    radial-gradient(circle at 100% 100%, rgba(55, 30, 8, 0.75) 0%, transparent 16%),
+    radial-gradient(ellipse at 20% 30%, rgba(110, 75, 30, 0.12) 0%, transparent 10%),
+    radial-gradient(ellipse at 70% 55%, rgba(110, 75, 30, 0.1) 0%, transparent 12%),
+    radial-gradient(ellipse at 50% 50%, rgba(245, 230, 200, 0.45) 0%, transparent 40%);
+}
+
+/* Sharp content on top — NO filter */
+.scroll-content {
+  position: absolute;
+  top: 0;
+  left: 28px;
+  right: 28px;
+  bottom: 0;
+  z-index: 2;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+/* Marquee */
+.marquee {
+  overflow: hidden;
+  width: 100%;
+}
+.marquee-track {
+  display: flex;
+  gap: 40px;
+  padding: 0 20px;
+  width: max-content;
+  animation: scrollMarquee 35s linear infinite;
+}
+
+@keyframes scrollMarquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.scroll-photo {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.scroll-photo .photo-slot {
+  width: clamp(180px, 30vh, 320px);
+  aspect-ratio: 3 / 4;
+  border-radius: 4px;
+  border: none;
+  box-shadow: 3px 4px 12px rgba(0, 0, 0, 0.12);
+  background-size: cover;
+  background-position: center;
+  background-color: #e8e0d4;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.scroll-photo:hover .photo-slot {
+  transform: scale(1.05);
+  box-shadow: 4px 8px 20px rgba(0, 0, 0, 0.25);
+}
+.scroll-cap {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-style: italic;
+  font-size: 0.8rem;
+  color: #7A6540;
+  white-space: nowrap;
+}
 
 /* Music bar */
 .anime-music-bar {
