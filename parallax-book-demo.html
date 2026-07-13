@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200">
+  <title>Jordan & Angelica — 3D Book</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Great+Vibes&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark-green: #2D4A3E;
+      --deep-green: #1E3329;
+      --beige: #F5F0E8;
+      --beige-mid: #EDE6D8;
+      --gold: #C9A96E;
+      --gold-light: #E8D5A3;
+      --gold-faint: rgba(201, 169, 110, 0.3);
+      --font-script: 'Great Vibes', cursive;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'Josefin Sans', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      height: 100vh; overflow: hidden;
+      background: #050a08;
+      font-family: var(--font-serif);
+      color: var(--dark-green);
+    }
+
+    /* ===== Parallax Background ===== */
+    .scene { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+    .layer {
+      position: absolute; inset: -80px;
+      transition: transform 0.12s ease-out;
+      will-change: transform;
+    }
+    .sky { background: radial-gradient(ellipse at 50% 25%, #122820 0%, #0a1810 50%, #050a08 100%); }
+    .stars { position: absolute; inset: 0; }
+    .star {
+      position: absolute; background: #fff; border-radius: 50%;
+      animation: twinkle var(--dur) ease-in-out infinite var(--delay);
+    }
+    @keyframes twinkle { 0%,100% { opacity: 0.15; } 50% { opacity: 1; } }
+    .moon {
+      position: absolute; top: 8%; right: 18%; width: 70px; height: 70px;
+      background: radial-gradient(circle at 35% 35%, #F5F0E0, #E8D5A3 60%, rgba(200,180,140,0.2));
+      border-radius: 50%;
+      box-shadow: 0 0 40px rgba(232,213,163,0.15), 0 0 100px rgba(232,213,163,0.08);
+    }
+    .mountains { top: auto; height: 50%; }
+    .mountain { position: absolute; bottom: 0; }
+    .m1 { left: -5%; width: 45%; height: 100%; background: #0a1810; clip-path: polygon(0% 100%, 15% 40%, 35% 55%, 55% 20%, 80% 50%, 100% 100%); }
+    .m2 { right: -5%; width: 50%; height: 85%; background: #0c1e14; clip-path: polygon(0% 100%, 20% 50%, 40% 25%, 60% 10%, 80% 35%, 100% 100%); }
+    .trees { top: auto; height: 38%; }
+    .tree-line {
+      position: absolute; bottom: 0; width: 100%; height: 100%; background: #0d1f15;
+      clip-path: polygon(0% 100%,0% 60%,3% 38%,6% 52%,9% 28%,12% 48%,15% 18%,18% 42%,21% 22%,24% 38%,27% 15%,30% 35%,33% 20%,36% 40%,39% 12%,42% 32%,45% 18%,48% 38%,51% 10%,54% 30%,57% 22%,60% 42%,63% 15%,66% 35%,69% 25%,72% 45%,75% 18%,78% 38%,81% 28%,84% 48%,87% 20%,90% 35%,93% 25%,96% 45%,100% 30%,100% 100%);
+    }
+    .ground { top: auto; height: 18%; background: linear-gradient(180deg, #0F2218, #0a1810); }
+    .firefly {
+      position: absolute; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow: 0 0 8px var(--gold), 0 0 20px rgba(201,169,110,0.3);
+      animation: ffFloat var(--dur) ease-in-out infinite var(--delay);
+    }
+    @keyframes ffFloat {
+      0%,100% { transform: translate(0,0); opacity: 0.2; }
+      25% { transform: translate(15px,-25px); opacity: 1; }
+      50% { transform: translate(-12px,-40px); opacity: 0.5; }
+      75% { transform: translate(18px,-18px); opacity: 0.8; }
+    }
+    .petal {
+      position: absolute; width: 8px; height: 12px;
+      background: rgba(220,180,160,0.35); border-radius: 50% 50% 50% 0;
+      animation: petalFall var(--dur) linear infinite var(--delay);
+    }
+    @keyframes petalFall {
+      0% { transform: translate(0,-10vh) rotate(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      100% { transform: translate(var(--drift),110vh) rotate(360deg); opacity: 0; }
+    }
+    .vignette {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none; z-index: 10;
+    }
+
+    /* ===== 3D Book ===== */
+    .book-scene {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 5;
+      perspective: 2000px;
+    }
+
+    .book-3d {
+      position: relative;
+      width: 700px; height: 480px;
+      transform-style: preserve-3d;
+      transform: rotateX(8deg) rotateY(-2deg);
+      transition: transform 0.3s ease-out;
+    }
+
+    /* Spine */
+    .book-spine {
+      position: absolute;
+      left: calc(50% - 6px); width: 12px; height: 100%;
+      background: linear-gradient(90deg, rgba(0,0,0,0.2), var(--deep-green) 25%, var(--deep-green) 75%, rgba(0,0,0,0.2));
+      transform: translateZ(6px);
+      z-index: 200;
+      border-left: 1px solid rgba(201,169,110,0.2);
+      border-right: 1px solid rgba(201,169,110,0.2);
+    }
+
+    /* Page edges */
+    .book-edges {
+      position: absolute; right: -5px; top: 4px; bottom: 4px; width: 5px;
+      background: repeating-linear-gradient(to bottom, var(--beige) 0px, var(--beige-mid) 0.5px, var(--beige) 1px);
+      border-radius: 0 2px 2px 0;
+      transform: translateZ(3px);
+      box-shadow: 1px 0 3px rgba(0,0,0,0.15);
+      z-index: 50;
+    }
+
+    /* Pages */
+    .page {
+      position: absolute; width: 50%; height: 100%;
+      left: 50%;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+    .page.flipped { transform: rotateY(-180deg); }
+
+    .page-front, .page-back {
+      position: absolute; inset: 0;
+      backface-visibility: hidden;
+      border-radius: 0 8px 8px 0;
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(160deg, var(--beige) 0%, var(--beige-mid) 50%, var(--beige) 100%);
+    }
+    .page-back {
+      transform: rotateY(180deg);
+      border-radius: 8px 0 0 8px;
+    }
+    /* Binding shadow */
+    .page-front::after {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 28px;
+      background: linear-gradient(to right, rgba(0,0,0,0.06), transparent);
+      pointer-events: none;
+    }
+    .page-back::after {
+      content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 28px;
+      background: linear-gradient(to left, rgba(0,0,0,0.06), transparent);
+      pointer-events: none;
+    }
+
+    /* Static pages */
+    .page-static {
+      position: absolute; width: 50%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .page-left { left: 0; border-radius: 8px 0 0 8px; }
+    .page-right { left: 50%; border-radius: 0 8px 8px 0; }
+    .page-dark {
+      background: var(--deep-green);
+      background-image: radial-gradient(circle, rgba(201,169,110,0.04) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+
+    /* Page content */
+    .pg { width: 100%; padding: 30px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+    .pg .label { font-family: var(--font-sans); font-weight: 300; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: #8B6F3A; }
+    .pg .names { font-family: var(--font-script); font-size: 2.2rem; color: var(--dark-green); }
+    .pg .names .amp { font-family: var(--font-serif); font-style: italic; font-weight: 300; font-size: 0.6em; }
+    .pg .pre { font-weight: 300; font-style: italic; font-size: 0.85rem; color: var(--dark-green); opacity: 0.75; line-height: 1.6; }
+    .pg .date { font-family: var(--font-sans); font-weight: 200; font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; color: var(--dark-green); }
+    .pg .script { font-family: var(--font-script); font-size: 1.5rem; color: var(--dark-green); line-height: 1.5; }
+    .pg .body { font-weight: 300; font-size: 0.85rem; line-height: 1.8; color: var(--dark-green); opacity: 0.8; }
+    .pg .detail-main { font-weight: 500; font-size: 1.1rem; color: var(--dark-green); }
+    .pg .venue { font-weight: 600; font-size: 0.9rem; color: var(--dark-green); }
+    .pg .venue-addr { font-weight: 300; font-size: 0.75rem; color: var(--dark-green); opacity: 0.65; line-height: 1.5; }
+    .pg .hint { font-family: var(--font-sans); font-weight: 200; font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase; color: #8B6F3A; margin-top: 10px; animation: hintP 2.5s ease-in-out infinite; }
+    @keyframes hintP { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+    .div { display: flex; align-items: center; width: 55%; gap: 8px; color: #8B6F3A; font-size: 0.5rem; }
+    .div::before, .div::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-faint), transparent); }
+
+    /* Dark page text */
+    .pg-dark { color: var(--gold-light); }
+    .pg-dark .monogram { font-family: var(--font-script); font-size: 3rem; color: var(--gold); }
+    .pg-dark .monogram .amp { font-family: var(--font-serif); font-style: italic; font-weight: 300; font-size: 0.5em; }
+    .pg-dark .date { color: var(--gold-light); }
+    .pg-dark .hashtag { font-family: var(--font-sans); font-weight: 200; font-size: 0.65rem; letter-spacing: 2px; color: var(--gold); }
+
+    /* Book shadow on "table" */
+    .book-shadow {
+      position: absolute;
+      bottom: -30px; left: 10%; right: 10%; height: 40px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.4), transparent 70%);
+      filter: blur(10px);
+      transform: translateZ(-10px);
+    }
+
+    /* Nav */
+    .nav {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 20px; z-index: 100;
+    }
+    .nav-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(201,169,110,0.4);
+      background: rgba(30,51,41,0.6); color: var(--gold-light);
+      font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; backdrop-filter: blur(8px); transition: all 0.3s;
+    }
+    .nav-btn:hover { background: rgba(201,169,110,0.3); }
+    .nav-btn:disabled { opacity: 0.25; cursor: default; }
+    .pg-num {
+      font-family: var(--font-sans); font-weight: 200; font-size: 0.7rem;
+      letter-spacing: 2px; color: var(--gold-light); min-width: 50px; text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="scene" id="scene">
+    <div class="layer sky" data-depth="0.02">
+      <div class="stars" id="stars"></div>
+      <div class="moon"></div>
+    </div>
+    <div class="layer mountains" data-depth="0.04">
+      <div class="mountain m1"></div>
+      <div class="mountain m2"></div>
+    </div>
+    <div class="layer trees" data-depth="0.08">
+      <div class="tree-line"></div>
+    </div>
+    <div class="layer ground" data-depth="0.1"></div>
+    <div class="layer" data-depth="0.06" id="fireflies"></div>
+    <div class="layer" data-depth="0.15" id="petals"></div>
+    <div class="vignette"></div>
+
+    <!-- 3D Book -->
+    <div class="book-scene">
+      <div class="book-3d" id="book">
+        <div class="book-spine"></div>
+        <div class="book-edges" id="edges"></div>
+        <div class="book-shadow"></div>
+
+        <!-- Left base: monogram -->
+        <div class="page-static page-left page-dark">
+          <div class="pg pg-dark">
+            <div class="monogram">J <span class="amp">&</span> A</div>
+            <div class="div"><span>✦</span></div>
+            <p class="date">27 · 11 · 2026</p>
+          </div>
+        </div>
+
+        <!-- Right base: hashtag -->
+        <div class="page-static page-right page-dark">
+          <div class="pg pg-dark">
+            <div class="div"><span>❦</span></div>
+            <p class="hashtag">#exchANGEofvowsWithDAN</p>
+            <div class="div"><span>❦</span></div>
+            <p class="date">November 27, 2026</p>
+          </div>
+        </div>
+
+        <!-- Leaf 0: Cover / Love Story -->
+        <div class="page" data-leaf="0">
+          <div class="page-front">
+            <div class="pg">
+              <p class="pre">Together with their families</p>
+              <div class="div"><span>✦</span></div>
+              <h1 class="names">Jordan <span class="amp">&</span> Angelica</h1>
+              <p class="pre">request the pleasure of your company<br>at their wedding celebration</p>
+              <div class="div"><span>✦</span></div>
+              <p class="date">November 27, 2026</p>
+              <p class="hint">click to turn page ›</p>
+            </div>
+          </div>
+          <div class="page-back">
+            <div class="pg">
+              <p class="label">Our Love Story</p>
+              <div class="div"><span>✦</span></div>
+              <h2 class="script">Two souls, one heart</h2>
+              <p class="body">From the moment we met, we knew our lives would never be the same. What started as a beautiful friendship blossomed into a love story we never want to end.</p>
+              <div class="div"><span>❦</span></div>
+              <p class="pre">"Whatever our souls are made of,<br>yours and mine are the same."</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaf 1: Ceremony / Reception -->
+        <div class="page" data-leaf="1">
+          <div class="page-front">
+            <div class="pg">
+              <p class="label">The Ceremony</p>
+              <div class="div"><span>✦</span></div>
+              <p class="pre">Saturday</p>
+              <p class="detail-main">November Twenty-Seventh</p>
+              <p class="pre">at four o'clock in the afternoon</p>
+              <div class="div"><span>◆</span></div>
+              <p class="venue">Venue Name</p>
+              <p class="venue-addr">123 Beautiful Street<br>City, State 12345</p>
+            </div>
+          </div>
+          <div class="page-back">
+            <div class="pg">
+              <p class="label">The Reception</p>
+              <div class="div"><span>✦</span></div>
+              <p class="body">Dinner & Dancing to Follow</p>
+              <div class="div"><span>◆</span></div>
+              <p class="venue">Reception Venue</p>
+              <p class="venue-addr">456 Elegant Avenue<br>City, State 12345</p>
+              <div class="div"><span>◆</span></div>
+              <p class="pre">Attire: Semi-Formal</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaf 2: Gallery / RSVP -->
+        <div class="page" data-leaf="2">
+          <div class="page-front">
+            <div class="pg">
+              <p class="label">Our Memories</p>
+              <div class="div"><span>✦</span></div>
+              <p class="body">Photos coming soon</p>
+            </div>
+          </div>
+          <div class="page-back">
+            <div class="pg">
+              <p class="label">RSVP</p>
+              <div class="div"><span>✦</span></div>
+              <p class="body">Kindly respond by<br><strong>October 15, 2026</strong></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaf 3: Thank You / Closing -->
+        <div class="page" data-leaf="3">
+          <div class="page-front">
+            <div class="pg">
+              <p class="label">Thank You</p>
+              <div class="div"><span>✦</span></div>
+              <p class="body">We are so grateful for your love and support.</p>
+              <h2 class="script">We can't wait to celebrate with you!</h2>
+            </div>
+          </div>
+          <div class="page-back">
+            <div class="pg">
+              <p class="pre">With love,</p>
+              <h2 class="names" style="font-size:1.8rem">Jordan <span class="amp">&</span> Angelica</h2>
+              <div class="div"><span>❦</span></div>
+              <p class="date">27 · 11 · 2026</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <div class="nav">
+    <button class="nav-btn" id="prev">‹</button>
+    <div class="pg-num" id="pg-num">1 / 5</div>
+    <button class="nav-btn" id="next">›</button>
+  </div>
+
+  <script>
+    // Stars
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 150; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.left = Math.random()*100+'%';
+      s.style.top = Math.random()*55+'%';
+      const sz = (Math.random()*2.5+0.5)+'px';
+      s.style.width = s.style.height = sz;
+      s.style.setProperty('--dur', (2+Math.random()*4)+'s');
+      s.style.setProperty('--delay', Math.random()*4+'s');
+      starsEl.appendChild(s);
+    }
+
+    // Fireflies
+    const ffEl = document.getElementById('fireflies');
+    for (let i = 0; i < 30; i++) {
+      const f = document.createElement('div');
+      f.className = 'firefly';
+      f.style.left = Math.random()*100+'%';
+      f.style.top = (35+Math.random()*55)+'%';
+      f.style.setProperty('--dur', (4+Math.random()*6)+'s');
+      f.style.setProperty('--delay', Math.random()*6+'s');
+      ffEl.appendChild(f);
+    }
+
+    // Petals
+    const pEl = document.getElementById('petals');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.style.left = Math.random()*100+'%';
+      p.style.setProperty('--dur', (6+Math.random()*6)+'s');
+      p.style.setProperty('--delay', Math.random()*8+'s');
+      p.style.setProperty('--drift', (Math.random()*100-50)+'px');
+      pEl.appendChild(p);
+    }
+
+    // Parallax + 3D book tilt
+    const layers = document.querySelectorAll('.layer[data-depth]');
+    const book = document.getElementById('book');
+    const cx = window.innerWidth/2, cy = window.innerHeight/2;
+
+    document.addEventListener('mousemove', e => {
+      const dx = (e.clientX-cx)/cx;
+      const dy = (e.clientY-cy)/cy;
+
+      // Parallax layers
+      layers.forEach(l => {
+        const d = parseFloat(l.dataset.depth);
+        l.style.transform = `translate(${dx*d*80}px, ${dy*d*60}px)`;
+      });
+
+      // 3D book tilt follows mouse
+      book.style.transform = `rotateX(${8 - dy*6}deg) rotateY(${-2 + dx*8}deg)`;
+    });
+
+    // Book page flip logic
+    const pages = [...document.querySelectorAll('.page')];
+    const totalLeaves = pages.length;
+    const totalSpreads = totalLeaves + 1;
+    const edges = document.getElementById('edges');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const pgNum = document.getElementById('pg-num');
+    let current = 0;
+    let animating = false;
+
+    pages.forEach((p, i) => p.style.zIndex = totalLeaves - i);
+
+    function updateUI() {
+      pgNum.textContent = `${current+1} / ${totalSpreads}`;
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === totalLeaves;
+      edges.style.opacity = current === totalLeaves ? '0' : '1';
+    }
+
+    function next() {
+      if (animating || current >= totalLeaves) return;
+      animating = true;
+      const page = pages[current];
+      page.classList.add('flipped');
+      page.style.zIndex = totalLeaves + current + 1;
+      current++;
+      updateUI();
+      setTimeout(() => animating = false, 1300);
+    }
+
+    function prev() {
+      if (animating || current <= 0) return;
+      animating = true;
+      current--;
+      const page = pages[current];
+      page.style.zIndex = totalLeaves - current;
+      page.classList.remove('flipped');
+      updateUI();
+      setTimeout(() => animating = false, 1300);
+    }
+
+    book.addEventListener('click', e => {
+      const rect = book.getBoundingClientRect();
+      if (e.clientX - rect.left > rect.width * 0.5) next();
+      else prev();
+    });
+
+    prevBtn.addEventListener('click', e => { e.stopPropagation(); prev(); });
+    nextBtn.addEventListener('click', e => { e.stopPropagation(); next(); });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+    });
+
+    updateUI();
+  </script>
+</body>
+</html>
