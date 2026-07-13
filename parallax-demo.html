@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200">
+  <title>Jordan & Angelica — November 27, 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Great+Vibes&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --dark-green: #2D4A3E;
+      --deep-green: #1E3329;
+      --beige: #F5F0E8;
+      --beige-mid: #EDE6D8;
+      --gold: #C9A96E;
+      --gold-light: #E8D5A3;
+      --gold-faint: rgba(201, 169, 110, 0.3);
+      --font-script: 'Great Vibes', cursive;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'Josefin Sans', sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: #050a08;
+      font-family: var(--font-serif);
+      color: var(--dark-green);
+      overflow-x: hidden;
+    }
+
+    /* ===== PARALLAX HERO SECTION ===== */
+    .hero {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .layer {
+      position: absolute;
+      inset: -80px;
+      transition: transform 0.12s ease-out;
+      will-change: transform;
+    }
+
+    /* Sky */
+    .sky {
+      background: radial-gradient(ellipse at 50% 25%, #122820 0%, #0a1810 50%, #050a08 100%);
+    }
+    .stars { position: absolute; inset: 0; }
+    .star {
+      position: absolute;
+      background: #fff;
+      border-radius: 50%;
+      animation: twinkle var(--dur) ease-in-out infinite var(--delay);
+    }
+    @keyframes twinkle { 0%,100% { opacity: 0.15; } 50% { opacity: 1; } }
+
+    .moon {
+      position: absolute;
+      top: 8%;
+      right: 18%;
+      width: 70px;
+      height: 70px;
+      background: radial-gradient(circle at 35% 35%, #F5F0E0, #E8D5A3 60%, rgba(200,180,140,0.2));
+      border-radius: 50%;
+      box-shadow: 0 0 40px rgba(232,213,163,0.15), 0 0 100px rgba(232,213,163,0.08);
+    }
+
+    /* Mountains */
+    .mountains { top: auto; height: 50%; }
+    .mountain { position: absolute; bottom: 0; }
+    .m1 { left: -5%; width: 45%; height: 100%; background: #0a1810; clip-path: polygon(0% 100%, 15% 40%, 35% 55%, 55% 20%, 80% 50%, 100% 100%); }
+    .m2 { right: -5%; width: 50%; height: 85%; background: #0c1e14; clip-path: polygon(0% 100%, 20% 50%, 40% 25%, 60% 10%, 80% 35%, 100% 100%); }
+
+    /* Trees */
+    .trees { top: auto; height: 38%; }
+    .tree-line {
+      position: absolute; bottom: 0; width: 100%; height: 100%;
+      background: #0d1f15;
+      clip-path: polygon(0% 100%,0% 60%,3% 38%,6% 52%,9% 28%,12% 48%,15% 18%,18% 42%,21% 22%,24% 38%,27% 15%,30% 35%,33% 20%,36% 40%,39% 12%,42% 32%,45% 18%,48% 38%,51% 10%,54% 30%,57% 22%,60% 42%,63% 15%,66% 35%,69% 25%,72% 45%,75% 18%,78% 38%,81% 28%,84% 48%,87% 20%,90% 35%,93% 25%,96% 45%,100% 30%,100% 100%);
+    }
+
+    /* Ground */
+    .ground { top: auto; height: 18%; background: linear-gradient(180deg, #0F2218, #0a1810); }
+
+    /* Fireflies */
+    .firefly {
+      position: absolute;
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      box-shadow: 0 0 8px var(--gold), 0 0 20px rgba(201,169,110,0.3);
+      animation: ffFloat var(--dur) ease-in-out infinite var(--delay);
+    }
+    @keyframes ffFloat {
+      0%,100% { transform: translate(0,0); opacity: 0.2; }
+      25% { transform: translate(15px,-25px); opacity: 1; }
+      50% { transform: translate(-12px,-40px); opacity: 0.5; }
+      75% { transform: translate(18px,-18px); opacity: 0.8; }
+    }
+
+    /* Petals */
+    .petal {
+      position: absolute;
+      width: 8px; height: 12px;
+      background: rgba(220,180,160,0.35);
+      border-radius: 50% 50% 50% 0;
+      animation: petalFall var(--dur) linear infinite var(--delay);
+    }
+    @keyframes petalFall {
+      0% { transform: translate(0,-10vh) rotate(0); opacity: 0; }
+      10% { opacity: 0.6; }
+      100% { transform: translate(var(--drift),110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Vignette */
+    .vignette {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 50%, transparent 35%, rgba(0,0,0,0.6) 100%);
+      pointer-events: none; z-index: 10;
+    }
+
+    /* --- Hero invitation content --- */
+    .hero-content {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 5;
+      text-align: center;
+      color: var(--beige);
+    }
+    .hero-pre {
+      font-family: var(--font-serif);
+      font-weight: 300; font-style: italic;
+      font-size: 1rem; opacity: 0.6;
+    }
+    .hero-names {
+      font-family: var(--font-script);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      color: var(--gold-light);
+      margin: 10px 0;
+      text-shadow: 0 2px 20px rgba(201,169,110,0.2);
+    }
+    .hero-names .amp {
+      font-family: var(--font-serif);
+      font-style: italic; font-weight: 300;
+      font-size: 0.55em; margin: 0 6px;
+    }
+    .hero-date {
+      font-family: var(--font-sans);
+      font-weight: 200; font-size: 0.85rem;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: var(--gold); opacity: 0.7;
+    }
+    .hero-divider {
+      width: 80px; height: 1px; margin: 14px 0;
+      background: linear-gradient(90deg, transparent, var(--gold-faint), transparent);
+    }
+    .scroll-hint {
+      font-family: var(--font-sans);
+      font-weight: 200; font-size: 0.6rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--gold); opacity: 0.5;
+      margin-top: 40px;
+      animation: scrollPulse 2.5s ease-in-out infinite;
+    }
+    .scroll-arrow {
+      display: block; margin-top: 8px;
+      font-size: 1.2rem; opacity: 0.4;
+    }
+    @keyframes scrollPulse { 0%,100% { opacity: 0.3; transform: translateY(0); } 50% { opacity: 0.8; transform: translateY(5px); } }
+
+    /* ===== SCROLL SECTIONS ===== */
+    .section {
+      position: relative;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 60px 20px;
+    }
+
+    /* Section: Our Story */
+    .section-story {
+      background: var(--beige);
+    }
+    .story-card {
+      max-width: 700px;
+      text-align: center;
+      padding: 50px 40px;
+    }
+    .section-label {
+      font-family: var(--font-sans);
+      font-weight: 300; font-size: 0.75rem;
+      letter-spacing: 4px; text-transform: uppercase;
+      color: #8B6F3A; margin-bottom: 10px;
+    }
+    .story-heading {
+      font-family: var(--font-script);
+      font-size: 2.2rem; color: var(--dark-green);
+      margin: 14px 0;
+    }
+    .story-text {
+      font-weight: 300; font-size: 1.05rem;
+      line-height: 1.9; color: var(--dark-green); opacity: 0.8;
+    }
+    .story-quote {
+      font-style: italic; font-weight: 300;
+      font-size: 0.95rem; color: var(--dark-green);
+      opacity: 0.65; margin-top: 20px;
+    }
+    .s-divider {
+      display: flex; align-items: center; gap: 10px;
+      width: 50%; margin: 16px auto; color: #8B6F3A; font-size: 0.55rem;
+    }
+    .s-divider::before, .s-divider::after {
+      content: ''; flex: 1; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-faint), transparent);
+    }
+
+    /* Section: Details */
+    .section-details {
+      background: var(--deep-green);
+      color: var(--beige);
+    }
+    .details-grid {
+      display: flex; gap: 60px;
+      max-width: 900px;
+    }
+    .detail-box {
+      flex: 1; text-align: center;
+      padding: 40px 30px;
+      border: 1px solid rgba(201,169,110,0.15);
+      border-radius: 8px;
+    }
+    .detail-icon {
+      font-size: 1.8rem; margin-bottom: 14px;
+      color: var(--gold);
+    }
+    .detail-title {
+      font-family: var(--font-sans);
+      font-weight: 300; font-size: 0.7rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 12px;
+    }
+    .detail-main {
+      font-weight: 500; font-size: 1.3rem;
+      color: var(--beige); margin-bottom: 6px;
+    }
+    .detail-sub {
+      font-weight: 300; font-size: 0.9rem;
+      color: var(--beige); opacity: 0.6;
+    }
+
+    /* Section: Gallery */
+    .section-gallery {
+      background: var(--beige);
+      flex-direction: column; gap: 30px;
+    }
+
+    /* Section: RSVP */
+    .section-rsvp {
+      background: var(--deep-green);
+      color: var(--beige);
+      flex-direction: column;
+    }
+    .rsvp-card {
+      text-align: center;
+      max-width: 400px;
+    }
+    .rsvp-heading {
+      font-family: var(--font-script);
+      font-size: 2.5rem; color: var(--gold-light);
+    }
+    .rsvp-text {
+      font-weight: 300; font-size: 0.95rem;
+      color: var(--beige); opacity: 0.7;
+      margin: 14px 0 24px;
+    }
+    .rsvp-btn {
+      display: inline-block; padding: 14px 40px;
+      font-family: var(--font-sans);
+      font-weight: 300; font-size: 0.7rem;
+      letter-spacing: 3px; text-transform: uppercase;
+      background: var(--gold); color: var(--beige);
+      border: none; border-radius: 4px;
+      cursor: pointer; text-decoration: none;
+      transition: background 0.3s;
+    }
+    .rsvp-btn:hover { background: var(--gold-light); color: var(--dark-green); }
+
+    /* Section: Footer */
+    .section-footer {
+      background: #050a08;
+      color: var(--gold);
+      min-height: 40vh;
+      flex-direction: column; gap: 10px;
+    }
+    .footer-names {
+      font-family: var(--font-script);
+      font-size: 2rem; color: var(--gold-light);
+    }
+    .footer-hashtag {
+      font-family: var(--font-sans);
+      font-weight: 200; font-size: 0.7rem;
+      letter-spacing: 2px; color: var(--gold); opacity: 0.5;
+    }
+    .footer-date {
+      font-family: var(--font-sans);
+      font-weight: 200; font-size: 0.6rem;
+      letter-spacing: 3px; color: var(--gold); opacity: 0.3;
+      margin-top: 10px;
+    }
+
+    /* Scroll reveal animation */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.8s, transform 0.8s;
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HERO: Parallax Night Scene ===== -->
+  <section class="hero" id="hero">
+    <div class="layer sky" data-depth="0.02">
+      <div class="stars" id="stars"></div>
+      <div class="moon"></div>
+    </div>
+    <div class="layer mountains" data-depth="0.04">
+      <div class="mountain m1"></div>
+      <div class="mountain m2"></div>
+    </div>
+    <div class="layer trees" data-depth="0.08">
+      <div class="tree-line"></div>
+    </div>
+    <div class="layer ground" data-depth="0.1"></div>
+    <div class="layer" data-depth="0.06" id="fireflies"></div>
+    <div class="layer" data-depth="0.15" id="petals"></div>
+    <div class="vignette"></div>
+
+    <div class="hero-content" data-depth="0.03">
+      <p class="hero-pre">Together with their families</p>
+      <div class="hero-divider"></div>
+      <h1 class="hero-names">Jordan <span class="amp">&</span> Angelica</h1>
+      <div class="hero-divider"></div>
+      <p class="hero-pre">request the pleasure of your company</p>
+      <p class="hero-date">November 27, 2026</p>
+      <div class="scroll-hint">
+        Scroll to explore
+        <span class="scroll-arrow">&#8964;</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== OUR STORY ===== -->
+  <section class="section section-story">
+    <div class="story-card reveal">
+      <p class="section-label">Our Love Story</p>
+      <div class="s-divider"><span>✦</span></div>
+      <h2 class="story-heading">Two souls, one heart</h2>
+      <p class="story-text">
+        From the moment we met, we knew our lives would never be the same.
+        What started as a beautiful friendship blossomed into a love story
+        we never want to end.
+      </p>
+      <div class="s-divider"><span>❦</span></div>
+      <p class="story-quote">"Whatever our souls are made of, yours and mine are the same."<br>— Emily Brontë</p>
+    </div>
+  </section>
+
+  <!-- ===== THE DETAILS ===== -->
+  <section class="section section-details">
+    <div class="details-grid reveal">
+      <div class="detail-box">
+        <div class="detail-icon">&#9829;</div>
+        <p class="detail-title">The Ceremony</p>
+        <p class="detail-main">November 27, 2026</p>
+        <p class="detail-sub">Four o'clock in the afternoon</p>
+        <p class="detail-sub" style="margin-top:12px">Venue Name</p>
+        <p class="detail-sub">123 Beautiful Street</p>
+      </div>
+      <div class="detail-box">
+        <div class="detail-icon">&#9733;</div>
+        <p class="detail-title">The Reception</p>
+        <p class="detail-main">Dinner & Dancing</p>
+        <p class="detail-sub">Cocktails at 5:00 PM</p>
+        <p class="detail-sub" style="margin-top:12px">Reception Venue</p>
+        <p class="detail-sub">456 Elegant Avenue</p>
+      </div>
+      <div class="detail-box">
+        <div class="detail-icon">&#10047;</div>
+        <p class="detail-title">Dress Code</p>
+        <p class="detail-main">Semi-Formal</p>
+        <p class="detail-sub">We can't wait to<br>celebrate with you!</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== GALLERY PREVIEW ===== -->
+  <section class="section section-gallery">
+    <p class="section-label reveal">Our Memories</p>
+    <div class="s-divider reveal"><span>✦</span></div>
+    <p class="story-text reveal" style="max-width:500px;text-align:center">Photos coming soon — our prenup adventures await!</p>
+  </section>
+
+  <!-- ===== RSVP ===== -->
+  <section class="section section-rsvp">
+    <div class="rsvp-card reveal">
+      <p class="section-label" style="color:var(--gold)">RSVP</p>
+      <div class="s-divider" style="width:40%"><span>✦</span></div>
+      <h2 class="rsvp-heading">Will you join us?</h2>
+      <p class="rsvp-text">Kindly respond by<br><strong>October 15, 2026</strong></p>
+      <a href="#" class="rsvp-btn">Respond Now</a>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <section class="section section-footer">
+    <p class="footer-names">Jordan & Angelica</p>
+    <p class="footer-hashtag">#exchANGEofvowsWithDAN</p>
+    <p class="footer-date">NOVEMBER 27, 2026</p>
+  </section>
+
+  <script>
+    // Stars
+    const starsEl = document.getElementById('stars');
+    for (let i = 0; i < 150; i++) {
+      const s = document.createElement('div');
+      s.className = 'star';
+      s.style.left = Math.random()*100+'%';
+      s.style.top = Math.random()*55+'%';
+      const sz = (Math.random()*2.5+0.5)+'px';
+      s.style.width = s.style.height = sz;
+      s.style.setProperty('--dur', (2+Math.random()*4)+'s');
+      s.style.setProperty('--delay', Math.random()*4+'s');
+      starsEl.appendChild(s);
+    }
+
+    // Fireflies
+    const ffEl = document.getElementById('fireflies');
+    for (let i = 0; i < 30; i++) {
+      const f = document.createElement('div');
+      f.className = 'firefly';
+      f.style.left = Math.random()*100+'%';
+      f.style.top = (35+Math.random()*55)+'%';
+      f.style.setProperty('--dur', (4+Math.random()*6)+'s');
+      f.style.setProperty('--delay', Math.random()*6+'s');
+      ffEl.appendChild(f);
+    }
+
+    // Petals
+    const pEl = document.getElementById('petals');
+    for (let i = 0; i < 18; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.style.left = Math.random()*100+'%';
+      p.style.setProperty('--dur', (6+Math.random()*6)+'s');
+      p.style.setProperty('--delay', Math.random()*8+'s');
+      p.style.setProperty('--drift', (Math.random()*100-50)+'px');
+      pEl.appendChild(p);
+    }
+
+    // Parallax mouse
+    const layers = document.querySelectorAll('.layer[data-depth]');
+    const heroContent = document.querySelector('.hero-content');
+    const cx = window.innerWidth/2, cy = window.innerHeight/2;
+
+    document.addEventListener('mousemove', e => {
+      const dx = (e.clientX-cx)/cx, dy = (e.clientY-cy)/cy;
+      layers.forEach(l => {
+        const d = parseFloat(l.dataset.depth);
+        l.style.transform = `translate(${dx*d*80}px, ${dy*d*60}px)`;
+      });
+      // Hero text subtle movement
+      heroContent.style.transform = `translate(${dx*12}px, ${dy*8}px)`;
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(r => observer.observe(r));
+  </script>
+</body>
+</html>
