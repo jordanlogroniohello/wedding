@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprite Test</title>
+  <style>
+    body {
+      background: #1a1a2e;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      font-family: sans-serif;
+      color: #fff;
+      gap: 20px;
+    }
+    h1 { font-size: 1.2rem; opacity: 0.6; }
+
+    .sprite-container {
+      display: flex;
+      gap: 40px;
+      align-items: flex-end;
+    }
+
+    .sprite-box {
+      text-align: center;
+    }
+    .sprite-label {
+      font-size: 0.7rem;
+      opacity: 0.5;
+      margin-top: 8px;
+    }
+
+    /* ===== SPRITE CONFIG ===== */
+    /* Change these values to test different sprites */
+    .sprite {
+      background-repeat: no-repeat;
+      border: 1px dashed rgba(255,255,255,0.2);
+    }
+
+    /* Angelica waving — horizontal strip */
+    .sprite-angelica {
+      width: 160px;
+      height: 275px;
+      background-image: url('assets/sprite-angelica-wave.png');
+      background-size: 5760px 275px;
+      animation: play-angelica 1.8s steps(36) infinite;
+    }
+    @keyframes play-angelica {
+      0%   { background-position: 0 0; }
+      100% { background-position: -5760px 0; }
+    }
+
+    /* ChatGPT 3x2 grid — 6 frames, 512x512 each, display at 200x200 */
+    .sprite-chatgpt {
+      width: 200px;
+      height: 200px;
+      background-image: url('assets/sprite-angelica-chatgpt.png');
+      background-size: 600px 400px;
+      animation: play-chatgpt 1.2s steps(1) infinite;
+    }
+    @keyframes play-chatgpt {
+      0%      { background-position: 0 0; }
+      16.66%  { background-position: -200px 0; }
+      33.33%  { background-position: -400px 0; }
+      50%     { background-position: 0 -200px; }
+      66.66%  { background-position: -200px -200px; }
+      83.33%  { background-position: -400px -200px; }
+    }
+
+    /* Angelica v2 — Ludo 36 frames, horizontal strip */
+    .sprite-angelica-v2 {
+      width: 160px;
+      height: 218px;
+      background-image: url('assets/sprite-angelica-v2.png');
+      background-size: 5760px 218px;
+      animation: play-angelica-v2 1.8s steps(36) infinite;
+    }
+    @keyframes play-angelica-v2 {
+      0%   { background-position: 0 0; }
+      100% { background-position: -5760px 0; }
+    }
+
+    /* Meta AI — horizontal strip, 6 frames x 320px = 1920px */
+    .sprite-meta {
+      width: 200px;
+      height: 280px;
+      background-image: url('assets/sprite-angelica-meta.png');
+      background-size: 1200px 280px;
+      animation: play-meta 1.2s steps(6) infinite;
+    }
+    @keyframes play-meta {
+      0%   { background-position: 0 0; }
+      100% { background-position: -1200px 0; }
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    button {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.7rem;
+    }
+    button:hover { background: rgba(255,255,255,0.2); }
+
+    .info {
+      font-size: 0.65rem;
+      opacity: 0.4;
+      max-width: 500px;
+      text-align: center;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <h1>Sprite Animation Test</h1>
+
+  <div class="sprite-container">
+    <div class="sprite-box">
+      <div class="sprite sprite-angelica"></div>
+      <p class="sprite-label">Angelica — 36 frames, 1.8s</p>
+    </div>
+
+    <div class="sprite-box">
+      <div class="sprite sprite-chatgpt"></div>
+      <p class="sprite-label">ChatGPT 3x2 — 6 frames</p>
+    </div>
+
+    <div class="sprite-box">
+      <div class="sprite sprite-angelica-v2"></div>
+      <p class="sprite-label">Angelica v2 — Ludo 36f</p>
+    </div>
+
+    <div class="sprite-box">
+      <div class="sprite sprite-meta"></div>
+      <p class="sprite-label">Meta AI — 6 frames</p>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button onclick="document.querySelectorAll('.sprite').forEach(s => s.style.animationDuration = '0.8s')">Fast</button>
+    <button onclick="document.querySelectorAll('.sprite').forEach(s => s.style.animationDuration = '1.8s')">Normal</button>
+    <button onclick="document.querySelectorAll('.sprite').forEach(s => s.style.animationDuration = '3s')">Slow</button>
+    <button onclick="document.querySelectorAll('.sprite').forEach(s => s.style.animationPlayState = s.style.animationPlayState === 'paused' ? 'running' : 'paused')">Pause/Play</button>
+  </div>
+
+  <p class="info">
+    To add a new sprite: convert grid to horizontal strip, update the CSS class with width, height, background-size, steps count, and total animation width.
+  </p>
+</body>
+</html>

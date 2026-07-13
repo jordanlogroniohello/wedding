@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1200">
+  <title>Jordan & Angelica — Three.js 3D Book</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Josefin+Sans:wght@200;300&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { overflow: hidden; background: #050a08; font-family: sans-serif; }
+    canvas { display: block; }
+
+    /* Overlay UI */
+    .overlay {
+      position: fixed; inset: 0; pointer-events: none; z-index: 10;
+    }
+
+    .title {
+      position: absolute; top: 5%; left: 50%; transform: translateX(-50%);
+      text-align: center; color: #E8D5A3;
+    }
+    .title h1 {
+      font-family: 'Great Vibes', cursive; font-size: 2.5rem;
+      text-shadow: 0 2px 20px rgba(201,169,110,0.2);
+    }
+    .title p {
+      font-family: 'Josefin Sans', sans-serif; font-weight: 200;
+      font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase;
+      color: #C9A96E; opacity: 0.6; margin-top: 6px;
+    }
+
+    .nav {
+      position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 20px; pointer-events: all;
+    }
+    .nav-btn {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1px solid rgba(201,169,110,0.4);
+      background: rgba(30,51,41,0.7); color: #E8D5A3;
+      font-size: 1.3rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(8px); transition: all 0.3s;
+    }
+    .nav-btn:hover { background: rgba(201,169,110,0.3); }
+    .nav-btn:disabled { opacity: 0.2; cursor: default; }
+    .pg-num {
+      font-family: 'Josefin Sans', sans-serif; font-weight: 200;
+      font-size: 0.7rem; letter-spacing: 2px; color: #E8D5A3;
+      min-width: 60px; text-align: center;
+    }
+
+    .hint {
+      position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%);
+      font-family: 'Josefin Sans', sans-serif; font-weight: 200;
+      font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase;
+      color: #C9A96E; opacity: 0.4;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay">
+    <div class="title">
+      <h1>Jordan & Angelica</h1>
+      <p>November 27, 2026</p>
+    </div>
+    <p class="hint">Drag to rotate — Click arrows to flip pages</p>
+    <div class="nav">
+      <button class="nav-btn" id="prev">‹</button>
+      <div class="pg-num" id="pg-num">1 / 5</div>
+      <button class="nav-btn" id="next">›</button>
+    </div>
+  </div>
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.164.1/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.164.1/examples/jsm/"
+    }
+  }
+  </script>
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+    // ===== Scene setup =====
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x050a08);
+    scene.fog = new THREE.FogExp2(0x050a08, 0.015);
+
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 3, 7);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.6;
+    document.body.appendChild(renderer.domElement);
+
+    // Controls
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.minDistance = 4;
+    controls.maxDistance = 12;
+    controls.maxPolarAngle = Math.PI / 2 + 0.2;
+    controls.target.set(0, 1, 0);
+
+    // ===== Lighting =====
+    const ambient = new THREE.AmbientLight(0xffffff, 1.5);
+    scene.add(ambient);
+
+    const moonLight = new THREE.DirectionalLight(0xF5E6C8, 1.2);
+    moonLight.position.set(5, 8, 3);
+    moonLight.castShadow = true;
+    moonLight.shadow.mapSize.set(1024, 1024);
+    scene.add(moonLight);
+
+    const fill = new THREE.PointLight(0xCCDDDD, 1.0, 20);
+    fill.position.set(-3, 4, 5);
+    scene.add(fill);
+
+    const bookSpot = new THREE.SpotLight(0xFFFFFF, 3.0, 15, Math.PI / 4, 0.3);
+    bookSpot.position.set(0, 6, 3);
+    bookSpot.target.position.set(0, 1, 0);
+    bookSpot.castShadow = true;
+    scene.add(bookSpot);
+    scene.add(bookSpot.target);
+
+    const backLight = new THREE.PointLight(0xE8D5A3, 0.8, 15);
+    backLight.position.set(0, 3, -3);
+    scene.add(backLight);
+
+    // ===== Ground =====
+    const groundGeo = new THREE.PlaneGeometry(50, 50);
+    const groundMat = new THREE.MeshStandardMaterial({ color: 0x0a1810, roughness: 0.9 });
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+
+    // ===== Starfield =====
+    const starGeo = new THREE.BufferGeometry();
+    const starCount = 500;
+    const starPos = new Float32Array(starCount * 3);
+    for (let i = 0; i < starCount * 3; i += 3) {
+      starPos[i] = (Math.random() - 0.5) * 60;
+      starPos[i + 1] = Math.random() * 25 + 3;
+      starPos[i + 2] = (Math.random() - 0.5) * 60 - 10;
+    }
+    starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.06, transparent: true, opacity: 0.7 });
+    scene.add(new THREE.Points(starGeo, starMat));
+
+    // ===== Fireflies =====
+    const ffCount = 40;
+    const ffGeo = new THREE.BufferGeometry();
+    const ffPositions = new Float32Array(ffCount * 3);
+    const ffOriginal = [];
+    for (let i = 0; i < ffCount; i++) {
+      const x = (Math.random() - 0.5) * 12;
+      const y = Math.random() * 3 + 0.5;
+      const z = (Math.random() - 0.5) * 8;
+      ffPositions[i * 3] = x;
+      ffPositions[i * 3 + 1] = y;
+      ffPositions[i * 3 + 2] = z;
+      ffOriginal.push({ x, y, z, speed: 0.3 + Math.random() * 0.5, offset: Math.random() * Math.PI * 2 });
+    }
+    ffGeo.setAttribute('position', new THREE.BufferAttribute(ffPositions, 3));
+    const ffMat = new THREE.PointsMaterial({ color: 0xC9A96E, size: 0.12, transparent: true, opacity: 0.8 });
+    const fireflies = new THREE.Points(ffGeo, ffMat);
+    scene.add(fireflies);
+
+    // ===== Page content as canvas textures =====
+    function createPageTexture(drawFn) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 700;
+      const ctx = canvas.getContext('2d');
+      // Parchment background
+      ctx.fillStyle = '#F5F0E8';
+      ctx.fillRect(0, 0, 512, 700);
+      // Subtle border
+      ctx.strokeStyle = 'rgba(201,169,110,0.3)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(16, 16, 480, 668);
+      // Content
+      drawFn(ctx);
+      const tex = new THREE.CanvasTexture(canvas);
+      tex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+      return tex;
+    }
+
+    function createDarkTexture(drawFn) {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 700;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#1E3329';
+      ctx.fillRect(0, 0, 512, 700);
+      // Dot pattern
+      ctx.fillStyle = 'rgba(201,169,110,0.04)';
+      for (let x = 0; x < 512; x += 20) for (let y = 0; y < 700; y += 20) {
+        ctx.beginPath(); ctx.arc(x, y, 1, 0, Math.PI * 2); ctx.fill();
+      }
+      drawFn(ctx);
+      return new THREE.CanvasTexture(canvas);
+    }
+
+    // Helper text functions
+    function drawCentered(ctx, text, y, font, color) {
+      ctx.font = font;
+      ctx.fillStyle = color;
+      ctx.textAlign = 'center';
+      ctx.fillText(text, 256, y);
+    }
+    function drawDivider(ctx, y) {
+      ctx.strokeStyle = 'rgba(201,169,110,0.35)';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath(); ctx.moveTo(150, y); ctx.lineTo(362, y); ctx.stroke();
+      drawCentered(ctx, '✦', y + 4, '10px serif', '#8B6F3A');
+    }
+
+    // Page textures
+    const texLeftBase = createDarkTexture(ctx => {
+      drawCentered(ctx, 'J & A', 320, '80px "Great Vibes", cursive', '#C9A96E');
+      drawCentered(ctx, '27 · 11 · 2026', 400, '200 14px "Josefin Sans", sans-serif', '#E8D5A3');
+    });
+
+    const texCover = createPageTexture(ctx => {
+      drawCentered(ctx, 'Together with their families', 200, 'italic 300 18px "Cormorant Garamond", serif', 'rgba(45,74,62,0.75)');
+      drawDivider(ctx, 235);
+      drawCentered(ctx, 'Jordan & Angelica', 330, '52px "Great Vibes", cursive', '#2D4A3E');
+      drawCentered(ctx, 'request the pleasure of your company', 390, 'italic 300 16px "Cormorant Garamond", serif', 'rgba(45,74,62,0.75)');
+      drawCentered(ctx, 'at their wedding celebration', 415, 'italic 300 16px "Cormorant Garamond", serif', 'rgba(45,74,62,0.75)');
+      drawDivider(ctx, 450);
+      drawCentered(ctx, 'NOVEMBER 27, 2026', 500, '200 14px "Josefin Sans", sans-serif', '#2D4A3E');
+    });
+
+    const texStory = createPageTexture(ctx => {
+      drawCentered(ctx, 'OUR LOVE STORY', 180, '300 12px "Josefin Sans", sans-serif', '#8B6F3A');
+      drawDivider(ctx, 210);
+      drawCentered(ctx, 'Two souls, one heart', 280, '36px "Great Vibes", cursive', '#2D4A3E');
+      ctx.font = '300 15px "Cormorant Garamond", serif';
+      ctx.fillStyle = 'rgba(45,74,62,0.8)';
+      ctx.textAlign = 'center';
+      const lines = ['From the moment we met, we knew', 'our lives would never be the same.', 'What started as a beautiful friendship', 'blossomed into a love story', 'we never want to end.'];
+      lines.forEach((l, i) => ctx.fillText(l, 256, 340 + i * 24));
+    });
+
+    const texCeremony = createPageTexture(ctx => {
+      drawCentered(ctx, 'THE CEREMONY', 180, '300 12px "Josefin Sans", sans-serif', '#8B6F3A');
+      drawDivider(ctx, 210);
+      drawCentered(ctx, 'Saturday', 270, '300 13px "Josefin Sans", sans-serif', 'rgba(45,74,62,0.6)');
+      drawCentered(ctx, 'November Twenty-Seventh', 310, '500 22px "Cormorant Garamond", serif', '#2D4A3E');
+      drawCentered(ctx, 'Two Thousand and Twenty-Six', 340, '300 13px "Josefin Sans", sans-serif', 'rgba(45,74,62,0.6)');
+      drawCentered(ctx, 'at four o\'clock in the afternoon', 385, 'italic 300 17px "Cormorant Garamond", serif', 'rgba(45,74,62,0.7)');
+      drawCentered(ctx, 'Venue Name', 450, '600 18px "Cormorant Garamond", serif', '#2D4A3E');
+      drawCentered(ctx, '123 Beautiful Street', 480, '300 14px "Cormorant Garamond", serif', 'rgba(45,74,62,0.6)');
+    });
+
+    const texReception = createPageTexture(ctx => {
+      drawCentered(ctx, 'THE RECEPTION', 180, '300 12px "Josefin Sans", sans-serif', '#8B6F3A');
+      drawDivider(ctx, 210);
+      drawCentered(ctx, 'Dinner & Dancing to Follow', 280, '300 18px "Cormorant Garamond", serif', 'rgba(45,74,62,0.8)');
+      drawCentered(ctx, 'Cocktails — 5:00 PM', 340, '300 16px "Cormorant Garamond", serif', 'rgba(45,74,62,0.7)');
+      drawCentered(ctx, 'Dinner — 6:00 PM', 368, '300 16px "Cormorant Garamond", serif', 'rgba(45,74,62,0.7)');
+      drawCentered(ctx, 'Dancing — 7:00 PM', 396, '300 16px "Cormorant Garamond", serif', 'rgba(45,74,62,0.7)');
+      drawCentered(ctx, 'Attire: Semi-Formal', 460, '300 12px "Josefin Sans", sans-serif', 'rgba(45,74,62,0.6)');
+    });
+
+    const texThankYou = createPageTexture(ctx => {
+      drawCentered(ctx, 'THANK YOU', 200, '300 12px "Josefin Sans", sans-serif', '#8B6F3A');
+      drawDivider(ctx, 230);
+      drawCentered(ctx, 'We can\'t wait to', 320, '36px "Great Vibes", cursive', '#2D4A3E');
+      drawCentered(ctx, 'celebrate with you!', 370, '36px "Great Vibes", cursive', '#2D4A3E');
+    });
+
+    const texClosing = createPageTexture(ctx => {
+      drawCentered(ctx, 'With love,', 280, 'italic 300 20px "Cormorant Garamond", serif', 'rgba(45,74,62,0.6)');
+      drawCentered(ctx, 'Jordan & Angelica', 350, '44px "Great Vibes", cursive', '#2D4A3E');
+      drawDivider(ctx, 400);
+      drawCentered(ctx, '27 · 11 · 2026', 445, '200 14px "Josefin Sans", sans-serif', '#2D4A3E');
+    });
+
+    const texRightBase = createDarkTexture(ctx => {
+      drawCentered(ctx, '#exchANGEofvowsWithDAN', 340, '200 13px "Josefin Sans", sans-serif', '#C9A96E');
+      drawCentered(ctx, 'NOVEMBER 27, 2026', 390, '200 12px "Josefin Sans", sans-serif', '#E8D5A3');
+    });
+
+    // Cover texture (dark leather)
+    const texCoverOut = (() => {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 700;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#1a2e24';
+      ctx.fillRect(0, 0, 512, 700);
+      ctx.strokeStyle = 'rgba(201,169,110,0.2)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(30, 30, 452, 640);
+      return new THREE.CanvasTexture(c);
+    })();
+
+    // ===== Book geometry =====
+    const bookGroup = new THREE.Group();
+    bookGroup.position.set(0, 1.2, 0);
+    scene.add(bookGroup);
+
+    const pageW = 2.2, pageH = 3.0, pageD = 0.01;
+
+    // Spine
+    const spineGeo = new THREE.BoxGeometry(0.1, pageH, 0.12);
+    const spineMat = new THREE.MeshStandardMaterial({ color: 0x1E3329, roughness: 0.7 });
+    const spine = new THREE.Mesh(spineGeo, spineMat);
+    spine.castShadow = true;
+    bookGroup.add(spine);
+
+    // Left static page (always visible behind flipped pages)
+    const leftGeo = new THREE.PlaneGeometry(pageW, pageH);
+    const leftMat = new THREE.MeshStandardMaterial({ map: texLeftBase, side: THREE.FrontSide, roughness: 0.85 });
+    const leftPage = new THREE.Mesh(leftGeo, leftMat);
+    leftPage.position.set(-pageW / 2 - 0.05, 0, 0);
+    bookGroup.add(leftPage);
+
+    // Right static page (visible when all pages flipped)
+    const rightMat = new THREE.MeshStandardMaterial({ map: texRightBase, side: THREE.FrontSide, roughness: 0.85 });
+    const rightPage = new THREE.Mesh(leftGeo, rightMat);
+    rightPage.position.set(pageW / 2 + 0.05, 0, -0.01);
+    bookGroup.add(rightPage);
+
+    // Flippable pages — using two-sided planes
+    const pageTextures = [
+      { front: texCover, back: texStory },
+      { front: texCeremony, back: texReception },
+      { front: texThankYou, back: texClosing },
+    ];
+
+    const leaves = [];
+    pageTextures.forEach((tex, i) => {
+      const group = new THREE.Group();
+      group.position.set(0.05, 0, 0);
+
+      // Front face (right side when unflipped)
+      const frontGeo = new THREE.PlaneGeometry(pageW, pageH);
+      const frontMat = new THREE.MeshStandardMaterial({ map: tex.front, side: THREE.FrontSide, roughness: 0.85 });
+      const frontMesh = new THREE.Mesh(frontGeo, frontMat);
+      frontMesh.position.set(pageW / 2, 0, 0.002);
+
+      // Back face (left side when flipped) — rotated 180 so text reads correctly
+      const backGeo = new THREE.PlaneGeometry(pageW, pageH);
+      const backMat = new THREE.MeshStandardMaterial({ map: tex.back, side: THREE.FrontSide, roughness: 0.85 });
+      const backMesh = new THREE.Mesh(backGeo, backMat);
+      backMesh.rotation.y = Math.PI;
+      backMesh.position.set(pageW / 2, 0, -0.002);
+
+      group.add(frontMesh);
+      group.add(backMesh);
+      bookGroup.add(group);
+
+      // Stack: first page on top (highest z offset)
+      const zOff = (pageTextures.length - i) * 0.005;
+      group.position.z = zOff;
+
+      leaves.push({ group, targetAngle: 0, currentAngle: 0, zOff });
+    });
+
+    // ===== Page flip logic =====
+    let currentSpread = 0;
+    const totalSpreads = leaves.length + 1;
+    let isAnimating = false;
+
+    function reorderZ() {
+      // Unflipped pages: first unflipped on top (positive z)
+      // Flipped pages: last flipped on top (positive z)
+      let unflippedZ = 0.02;
+      let flippedZ = 0.02;
+
+      // Right side (unflipped) — stack from current forward
+      for (let i = currentSpread; i < leaves.length; i++) {
+        leaves[i].group.position.z = unflippedZ;
+        unflippedZ -= 0.005;
+      }
+      // Left side (flipped) — stack from current-1 backward
+      for (let i = currentSpread - 1; i >= 0; i--) {
+        leaves[i].group.position.z = flippedZ;
+        flippedZ -= 0.005;
+      }
+    }
+
+    function flipNext() {
+      if (isAnimating || currentSpread >= leaves.length) return;
+      isAnimating = true;
+      leaves[currentSpread].targetAngle = -Math.PI;
+      currentSpread++;
+      reorderZ();
+      updateNav();
+      setTimeout(() => isAnimating = false, 1200);
+    }
+
+    function flipPrev() {
+      if (isAnimating || currentSpread <= 0) return;
+      isAnimating = true;
+      currentSpread--;
+      leaves[currentSpread].targetAngle = 0;
+      reorderZ();
+      updateNav();
+      setTimeout(() => isAnimating = false, 1200);
+    }
+
+    function updateNav() {
+      document.getElementById('pg-num').textContent = `${currentSpread + 1} / ${totalSpreads}`;
+      document.getElementById('prev').disabled = currentSpread === 0;
+      document.getElementById('next').disabled = currentSpread === leaves.length;
+    }
+
+    document.getElementById('next').addEventListener('click', flipNext);
+    document.getElementById('prev').addEventListener('click', flipPrev);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') flipNext();
+      if (e.key === 'ArrowLeft') flipPrev();
+    });
+    updateNav();
+
+    // ===== Animation loop =====
+    const clock = new THREE.Clock();
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = clock.getElapsedTime();
+
+      // Smooth page flip
+      leaves.forEach(l => {
+        l.currentAngle += (l.targetAngle - l.currentAngle) * 0.06;
+        l.group.rotation.y = l.currentAngle;
+      });
+
+      // Book gentle float
+      bookGroup.position.y = 1.2 + Math.sin(t * 0.8) * 0.05;
+      bookGroup.rotation.y = Math.sin(t * 0.3) * 0.02;
+
+      // Firefly animation
+      const ffPos = fireflies.geometry.attributes.position.array;
+      for (let i = 0; i < ffCount; i++) {
+        const o = ffOriginal[i];
+        ffPos[i * 3] = o.x + Math.sin(t * o.speed + o.offset) * 0.5;
+        ffPos[i * 3 + 1] = o.y + Math.sin(t * o.speed * 0.7 + o.offset) * 0.3;
+        ffPos[i * 3 + 2] = o.z + Math.cos(t * o.speed + o.offset) * 0.4;
+      }
+      fireflies.geometry.attributes.position.needsUpdate = true;
+      ffMat.opacity = 0.5 + Math.sin(t * 2) * 0.3;
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Resize
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
