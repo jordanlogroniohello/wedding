@@ -424,7 +424,7 @@
     .sticker-bomb {
       position: fixed;
       inset: 0;
-      z-index: 9000;
+      z-index: 9002;
       pointer-events: none;
       display: none;
     }
@@ -432,20 +432,16 @@
       display: block;
       pointer-events: all;
     }
+    .sticker-bomb.active {
+      background: none;
+    }
     .sticker {
       position: absolute;
-      width: 200px;
-      height: 200px;
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      filter: drop-shadow(3px 4px 8px rgba(0,0,0,0.35));
+      filter: drop-shadow(2px 3px 6px rgba(0,0,0,0.3));
       will-change: transform;
-      opacity: 0;
-    }
-
-    @media (min-width: 768px) {
-      .sticker { width: 300px; height: 300px; }
     }
 
     /* ---- Photo explosion overlay (legacy — keep for gallery) ---- */
@@ -1184,6 +1180,7 @@
       'assets/sticker-jordan.png',
       'assets/sticker-angelica.png',
     ];
+    const coupleSticker = 'assets/chibi-couple.png';
 
     document.getElementById('sbtn').addEventListener('click', () => {
       const bomb = document.getElementById('sticker-bomb');
@@ -1191,98 +1188,137 @@
       bomb.classList.add('active');
       document.body.style.overflow = 'hidden';
 
+      // Prepare gallery but keep it HIDDEN for now
+      const galleryGrid = document.getElementById('gallery-grid');
+      galleryGrid.innerHTML = '';
+      const prenupPhotos = [
+        'https://picsum.photos/seed/p1/400/550',
+        'https://picsum.photos/seed/p2/400/550',
+        'https://picsum.photos/seed/p3/400/550',
+        'https://picsum.photos/seed/p4/400/550',
+        'https://picsum.photos/seed/p5/400/550',
+        'https://picsum.photos/seed/p6/400/550',
+        'https://picsum.photos/seed/p7/400/550',
+        'https://picsum.photos/seed/p8/400/550',
+        'https://picsum.photos/seed/p9/400/550',
+        'https://picsum.photos/seed/p10/400/550',
+        'https://picsum.photos/seed/p11/400/550',
+        'https://picsum.photos/seed/p12/400/550',
+      ];
+      prenupPhotos.forEach(src => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item';
+        item.style.backgroundImage = `url(${src})`;
+        galleryGrid.appendChild(item);
+      });
+
       const sw = window.innerWidth;
       const sh = window.innerHeight;
-      const stickerCount = 20;
-      const stickerSize = sw < 768 ? 200 : 300;
 
-      // Create 20 stickers — each flies in from a random edge
-      for (let i = 0; i < stickerCount; i++) {
+      // CASINO DEALER STYLE — all stacked at center, dealt outward
+      const size = Math.max(sw, sh) * 0.45;
+      const centerX = sw / 2 - size / 2;
+      const centerY = sh / 2 - size / 2;
+
+      // FIFA: Stickers fly from edges → land at positions, edges first → center last
+      // CALCULATED COVERAGE — auto-adapts to any screen
+      const overlap = 0.3; // 70% overlap — no gaps possible with round faces
+      const step = size * overlap;
+      const cols = Math.ceil(sw / step) + 2;
+      const rows = Math.ceil(sh / step) + 2;
+      const startOffX = -size * 0.3;
+      const startOffY = -size * 0.3;
+
+      // Generate grid positions
+      const allSpots = [];
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = startOffX + c * step + (r % 2 === 1 ? step * 0.5 : 0);
+          const y = startOffY + r * step;
+          const cx = x + size / 2;
+          const cy = y + size / 2;
+          const dist = Math.sqrt(Math.pow(cx - sw/2, 2) + Math.pow(cy - sh/2, 2));
+          allSpots.push({ x, y, dist });
+        }
+      }
+
+      // Sort: farthest from center first (edges animate first, center last)
+      allSpots.sort((a, b) => b.dist - a.dist);
+
+      allSpots.forEach((spot, i) => {
         const sticker = document.createElement('div');
         sticker.className = 'sticker';
         sticker.style.backgroundImage = `url(${stickerSrcs[i % 2]})`;
+        sticker.style.width = size + 'px';
+        sticker.style.height = size + 'px';
 
-        // Start position — far outside a random edge
-        const edge = Math.floor(Math.random() * 4); // 0=top, 1=right, 2=bottom, 3=left
-        let startX, startY;
-        switch (edge) {
-          case 0: startX = Math.random() * sw; startY = -stickerSize * 2; break;
-          case 1: startX = sw + stickerSize * 2; startY = Math.random() * sh; break;
-          case 2: startX = Math.random() * sw; startY = sh + stickerSize * 2; break;
-          case 3: startX = -stickerSize * 2; startY = Math.random() * sh; break;
-        }
+        const endX = spot.x;
+        const endY = spot.y;
+        const rot = (Math.random() - 0.5) * 35;
 
-        // Final position — random spot covering the screen
-        const endX = Math.random() * sw * 1.1 - sw * 0.05;
-        const endY = Math.random() * sh * 1.1 - sh * 0.05;
-        const rot = (Math.random() - 0.5) * 50;
-        const sc = 1 + Math.random() * 0.6;
+        // Start from OUTSIDE nearest edge
+        const cx = endX + size / 2;
+        const cy = endY + size / 2;
+        let startX = endX, startY = endY;
+        if (cx <= sw / 2) startX = -size * 1.5;
+        else startX = sw + size * 0.5;
+        if (cy <= sh / 2) startY = -size * 1.5;
+        else startY = sh + size * 0.5;
 
         sticker.style.left = startX + 'px';
         sticker.style.top = startY + 'px';
-        sticker.style.zIndex = Math.floor(Math.random() * 20);
-
+        sticker.style.transform = `rotate(${rot}deg)`;
+        sticker.style.zIndex = Math.floor(Math.random() * 50);
         bomb.appendChild(sticker);
 
-        // Fly IN from edge — fast, staggered, with bounce
+        // Fly inward from edge — edges first, center last
         gsap.to(sticker, {
           left: endX,
           top: endY,
-          rotation: rot,
-          scale: sc,
-          opacity: 1,
-          duration: 0.6,
-          delay: i * 0.05,
+          duration: 0.35,
+          delay: i * 0.02,
           ease: 'power2.out',
         });
-      }
+      });
 
-      // Hold for 2.5 seconds, then transition to gallery
+      // After stickers fully cover screen, sneak the gallery behind them
+      const totalFlyIn = allSpots.length * 20 + 500;
       setTimeout(() => {
-        // Zoom all stickers toward camera and fade
-        document.querySelectorAll('.sticker').forEach((s, i) => {
+        document.getElementById('photo-gallery').classList.add('active');
+        document.getElementById('gallery-close').classList.add('active');
+      }, totalFlyIn);
+
+      // Hold for 2 seconds after stickers land, then fly OUT
+      setTimeout(() => {
+
+        const allStickers = [...document.querySelectorAll('.sticker')];
+        // Reverse order: center leaves first, edges last
+        allStickers.reverse().forEach((s, i) => {
+          const curLeft = parseFloat(s.style.left);
+          const curTop = parseFloat(s.style.top);
+          // Fly back to nearest edge
+          let exitX = curLeft, exitY = curTop;
+          if (curLeft < sw / 2) exitX = -size * 1.5;
+          else exitX = sw + size * 0.5;
+          if (curTop < sh / 2) exitY = -size * 1.5;
+          else exitY = sh + size * 0.5;
+
           gsap.to(s, {
-            scale: '+=2',
-            opacity: 0,
-            duration: 0.5,
-            delay: i * 0.02,
+            left: exitX,
+            top: exitY,
+            duration: 0.35,
+            delay: i * 0.03,
             ease: 'power2.in',
           });
         });
 
+        // Clean up after all stickers exit
         setTimeout(() => {
           bomb.classList.remove('active');
           bomb.innerHTML = '';
+        }, allStickers.length * 30 + 500);
 
-          // Show gallery
-          const galleryGrid = document.getElementById('gallery-grid');
-          galleryGrid.innerHTML = '';
-          const prenupPhotos = [
-            'https://picsum.photos/seed/p1/400/550',
-            'https://picsum.photos/seed/p2/400/550',
-            'https://picsum.photos/seed/p3/400/550',
-            'https://picsum.photos/seed/p4/400/550',
-            'https://picsum.photos/seed/p5/400/550',
-            'https://picsum.photos/seed/p6/400/550',
-            'https://picsum.photos/seed/p7/400/550',
-            'https://picsum.photos/seed/p8/400/550',
-            'https://picsum.photos/seed/p9/400/550',
-            'https://picsum.photos/seed/p10/400/550',
-            'https://picsum.photos/seed/p11/400/550',
-            'https://picsum.photos/seed/p12/400/550',
-          ];
-          prenupPhotos.forEach(src => {
-            const item = document.createElement('div');
-            item.className = 'gallery-item';
-            item.style.backgroundImage = `url(${src})`;
-            galleryGrid.appendChild(item);
-          });
-
-          document.getElementById('photo-gallery').classList.add('active');
-          document.getElementById('gallery-close').classList.add('active');
-        }, 700);
-
-      }, 2500);
+      }, totalFlyIn + 2000);
     });
 
     // Close gallery
