@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jordan & Angelica — November 27, 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+  <style>
+    :root {
+      --dark-green: #2D4A3E;
+      --deep-green: #1E3329;
+      --beige: #F5F0E8;
+      --gold: #C9A96E;
+      --gold-light: #E8D5A3;
+      --gold-faint: rgba(201,169,110,0.3);
+      --font-script: 'Great Vibes', cursive;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'Josefin Sans', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050a08; font-family: var(--font-serif); overflow-x: hidden; }
+
+    /* Progress */
+    .progress { position: fixed; top: 0; left: 0; height: 2px; z-index: 999; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; }
+
+    /* ============================================
+       ACT 1 — HERO
+       ============================================ */
+    .act-hero {
+      height: 100vh; position: relative;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .stars-bg { position: absolute; inset: 0; }
+    .star {
+      position: absolute; background: #fff; border-radius: 50%; opacity: 0;
+      animation: twinkle var(--dur) ease-in-out infinite var(--delay);
+    }
+    @keyframes twinkle { 0%,100% { opacity: 0.15; } 50% { opacity: 1; } }
+    .moon {
+      position: absolute; top: 10%; right: 15%; width: 60px; height: 60px;
+      background: radial-gradient(circle at 35% 35%, #F5F0E0, #E8D5A3 60%, rgba(200,180,140,0.2));
+      border-radius: 50%; box-shadow: 0 0 40px rgba(232,213,163,0.15);
+      opacity: 0; transform: translateY(30px);
+    }
+    .hero-content {
+      text-align: center; z-index: 2;
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      padding: 0 20px;
+    }
+    .hero-pre {
+      font-family: var(--font-serif); font-weight: 300; font-style: italic;
+      font-size: 0.9rem; color: rgba(245,240,232,0.5);
+      opacity: 0; transform: translateY(20px);
+    }
+    .hero-names {
+      font-family: var(--font-script); font-size: 3.2rem;
+      color: var(--gold-light); text-shadow: 0 2px 30px rgba(201,169,110,0.15);
+      opacity: 0; transform: translateY(30px);
+    }
+    .hero-names .amp { font-family: var(--font-serif); font-style: italic; font-weight: 300; font-size: 0.5em; margin: 0 6px; }
+    .hero-divider {
+      width: 70px; height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0; transform: scaleX(0);
+    }
+    .hero-date {
+      font-family: var(--font-sans); font-weight: 200; font-size: 0.95rem;
+      letter-spacing: 4px; text-transform: uppercase; color: var(--gold);
+      opacity: 0; transform: translateY(20px);
+    }
+    .hero-hashtag {
+      font-family: var(--font-sans); font-weight: 200; font-size: 1.05rem;
+      letter-spacing: 2px; color: var(--gold); opacity: 0;
+      transform: translateY(20px);
+      margin: 16px 0 8px;
+    }
+    .hero-countdown {
+      display: flex; gap: 18px; margin-top: 10px; opacity: 0;
+      transform: translateY(20px);
+    }
+    .hcd-unit { text-align: center; }
+    .hcd-num {
+      font-family: var(--font-sans); font-weight: 300;
+      font-size: 1.8rem; letter-spacing: 2px; color: var(--gold-light);
+      display: block;
+    }
+    .hcd-label {
+      font-family: var(--font-sans); font-weight: 200;
+      font-size: 0.45rem; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--gold); opacity: 0.5;
+    }
+    .scroll-cue {
+      font-family: var(--font-sans); font-weight: 200; font-size: 0.55rem;
+      letter-spacing: 4px; text-transform: uppercase; color: var(--gold);
+      margin-top: 40px; opacity: 0;
+    }
+    .scroll-cue .arrow { display: block; margin-top: 6px; font-size: 1.2rem; animation: bounce 2s ease-in-out infinite; }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(8px); } }
+    .firefly {
+      position: absolute; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold-light); box-shadow: 0 0 8px var(--gold), 0 0 20px rgba(201,169,110,0.3);
+      animation: ffFloat var(--dur) ease-in-out infinite var(--delay); opacity: 0;
+    }
+    @keyframes ffFloat { 0%,100% { transform: translate(0,0); } 25% { transform: translate(15px,-25px); } 50% { transform: translate(-12px,-40px); } 75% { transform: translate(18px,-18px); } }
+
+    /* ============================================
+       ACT 2 — HORIZONTAL GIANT TEXT SCROLL
+       ============================================ */
+    .act-hscroll {
+      position: relative;
+      overflow: hidden;
+      background: #050a08;
+    }
+    .hscroll-pin {
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .hscroll-track {
+      display: flex;
+      align-items: center;
+      white-space: nowrap;
+      will-change: transform;
+      padding-left: 100vw;
+      gap: 15px;
+    }
+    /* Plain words — mobile first */
+    .hw {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 3.5rem;
+      color: rgba(245,240,232,0.08);
+      flex-shrink: 0;
+      transition: color 0.4s;
+    }
+    .hw.lit { color: var(--beige); }
+    .hw-lg { font-size: 4.2rem; font-weight: 400; }
+    .hw-script {
+      font-family: var(--font-script);
+      font-size: 4rem;
+      font-weight: 400;
+    }
+    .hw-script.lit { color: var(--gold-light); }
+    .hw-pill {
+      font-family: var(--font-sans);
+      font-weight: 400;
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      padding: 8px 22px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      color: rgba(0,0,0,0.08);
+      background: rgba(255,255,255,0.03);
+      transition: all 0.4s;
+    }
+    .hw-pill.lit {
+      color: #1a1a1a;
+    }
+    .hw-pill.pill-gold.lit { background: var(--gold-light); }
+    .hw-pill.pill-green.lit { background: #8BBF7A; }
+    .hw-pill.pill-rose.lit { background: #E8A0B0; }
+    /* Vertical offset words */
+    .hw-up { transform: translateY(-25px); }
+    .hw-down { transform: translateY(25px); }
+    /* Decorative inline elements */
+    .hw-deco {
+      flex-shrink: 0;
+      opacity: 0.15;
+      transition: opacity 0.4s;
+    }
+    .hw-deco.lit { opacity: 0.7; }
+    .hw-heart { font-size: 2rem; color: #D4736A; }
+    .hw-ring {
+      width: 35px; height: 35px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hw-ring::after { content: ''; width: 5px; height: 5px; background: var(--gold); border-radius: 50%; }
+    .hw-sparkle { font-size: 1.8rem; color: var(--gold-light); }
+
+    /* Floating decorative elements */
+    .hscroll-deco {
+      position: absolute;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .deco-heart {
+      font-size: 1.5rem;
+      color: rgba(212,115,106,0.6);
+      animation: decoFloat 4s ease-in-out infinite;
+    }
+    .deco-ring {
+      width: 25px; height: 25px;
+      border: 2px solid var(--gold);
+      border-radius: 50%;
+      opacity: 0.3;
+      animation: decoSpin 8s linear infinite;
+    }
+    .deco-star {
+      font-size: 1.2rem;
+      color: var(--gold);
+      opacity: 0.4;
+      animation: decoFloat 5s ease-in-out infinite reverse;
+    }
+    .deco-diamond {
+      width: 16px; height: 16px;
+      background: var(--gold);
+      opacity: 0.15;
+      transform: rotate(45deg);
+      animation: decoFloat 6s ease-in-out infinite;
+    }
+    .deco-script {
+      font-family: var(--font-script);
+      font-size: 1.2rem;
+      color: var(--gold);
+      opacity: 0.2;
+      animation: decoFloat 5s ease-in-out infinite;
+    }
+    @keyframes decoFloat { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-20px) rotate(5deg); } }
+    @keyframes decoSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* ============================================
+       ACT 3+ — remaining sections from gsap-v2
+       ============================================ */
+    /* ---- TRANSITION: Big text + bg fade ---- */
+    .act-transition {
+      position: relative;
+      height: 400vh;
+      background: #050a08;
+      overflow: hidden;
+    }
+    .transition-pin {
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+    .transition-bg {
+      position: absolute;
+      inset: 0;
+      background: var(--beige);
+      opacity: 0;
+    }
+    .transition-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 3;
+      text-align: center;
+      padding: 0 20px;
+    }
+    .trans-line {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: 3rem;
+      color: var(--beige);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      line-height: 1.3;
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    .trans-line-script {
+      font-family: var(--font-script);
+      font-weight: 400;
+      font-size: 1.8rem;
+      color: var(--gold);
+      text-transform: none;
+      letter-spacing: 0;
+      margin-top: 16px;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    /* Text color transitions when bg becomes beige */
+    .trans-line.dark-text { color: var(--dark-green); }
+
+    @media (min-width: 768px) {
+      .trans-line { font-size: 5.5rem; letter-spacing: 5px; }
+      .trans-line-script { font-size: 2.5rem; }
+    }
+
+    /* ---- ACT 3: Our Story ---- */
+    .act-story {
+      min-height: 100vh;
+      background: var(--beige);
+      color: var(--dark-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .story-wrapper {
+      max-width: 700px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+    }
+    .story-label {
+      font-family: var(--font-sans);
+      font-weight: 300;
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: #8B6F3A;
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .story-heading {
+      font-family: var(--font-script);
+      font-size: 2.2rem;
+      color: var(--dark-green);
+      margin-bottom: 20px;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.8s, transform 0.8s;
+    }
+    .story-line {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 1.05rem;
+      line-height: 1.9;
+      color: var(--dark-green);
+      opacity: 0;
+      margin-bottom: 8px;
+      transform: translateY(15px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .story-highlight {
+      color: var(--gold);
+      font-weight: 500;
+      font-style: italic;
+    }
+    .story-pickup {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 1.5rem;
+      color: var(--dark-green);
+      margin: 24px 0;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.7s, transform 0.7s;
+      text-shadow: 0 0 30px rgba(201,169,110,0.15);
+    }
+    .story-ending {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-style: italic;
+      font-size: 1rem;
+      color: rgba(45,74,62,0.6);
+      margin-top: 16px;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .story-year {
+      font-family: var(--font-sans);
+      font-weight: 200;
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+      opacity: 0;
+      margin-top: 24px;
+      transform: translateY(15px);
+      transition: opacity 0.6s, transform 0.6s;
+    }
+    .story-divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      margin: 20px auto;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    .story-btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 14px 36px;
+      font-family: var(--font-sans);
+      font-weight: 300;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--dark-green);
+      background: transparent;
+      border: 1px solid rgba(45,74,62,0.3);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    .story-btn:hover {
+      background: var(--gold);
+      color: #1a1a1a;
+      border-color: var(--gold);
+    }
+    /* Floating quote marks */
+    .story-quote-mark {
+      position: absolute;
+      font-family: var(--font-serif);
+      font-size: 6rem;
+      color: rgba(45,74,62,0.06);
+      line-height: 1;
+      pointer-events: none;
+    }
+    .story-quote-open { top: -20px; left: -40px; }
+    .story-quote-close { bottom: -60px; right: -40px; }
+
+    /* ---- Sticker bomb overlay ---- */
+    .sticker-bomb {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      pointer-events: none;
+      display: none;
+    }
+    .sticker-bomb.active {
+      display: block;
+      pointer-events: all;
+    }
+    .sticker {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      filter: drop-shadow(3px 4px 8px rgba(0,0,0,0.35));
+      will-change: transform;
+      opacity: 0;
+    }
+
+    @media (min-width: 768px) {
+      .sticker { width: 300px; height: 300px; }
+    }
+
+    /* ---- Photo explosion overlay (legacy — keep for gallery) ---- */
+    .photo-explosion {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(0,0,0,0);
+      pointer-events: none;
+      display: none;
+    }
+    .photo-explosion.active {
+      display: block;
+      pointer-events: all;
+    }
+    .explosion-photo {
+      position: absolute;
+      width: 160px;
+      height: 210px;
+      border-radius: 6px;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      border: 4px solid white;
+      opacity: 0;
+      will-change: transform;
+    }
+    /* Gallery view after settle */
+    .photo-gallery-view {
+      position: fixed;
+      inset: 0;
+      z-index: 9001;
+      background: var(--beige);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      overflow-y: auto;
+      padding: 40px 20px;
+    }
+    .photo-gallery-view.active { display: flex; }
+    .gallery-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .gallery-header h2 {
+      font-family: var(--font-script);
+      font-size: 2.2rem;
+      color: var(--dark-green);
+    }
+    .gallery-header p {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 0.9rem;
+      color: var(--dark-green);
+      opacity: 0.5;
+      margin-top: 6px;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 800px;
+      width: 100%;
+    }
+    .gallery-item {
+      aspect-ratio: 3/4;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .gallery-item:hover { transform: scale(1.03); }
+    .gallery-close-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: none;
+      background: var(--dark-green);
+      color: var(--beige);
+      font-size: 1.3rem;
+      cursor: pointer;
+      z-index: 9002;
+      display: none;
+    }
+    .gallery-close-btn.active { display: flex; align-items: center; justify-content: center; }
+
+    @media (min-width: 768px) {
+      .explosion-photo { width: 200px; height: 280px; }
+      .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    }
+
+    /* ---- ACT 4: PatchAI-style stacking cards ---- */
+    .act-details {
+      position: relative;
+      background: var(--deep-green);
+    }
+    .details-pin {
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+      overflow: hidden;
+    }
+    .detail-panel {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      will-change: transform;
+      box-shadow: -10px 0 40px rgba(0,0,0,0.3);
+    }
+    .detail-panel:nth-child(1) { background: #172a20; }
+    .detail-panel:nth-child(2) { background: #1a2e24; }
+    .detail-panel:nth-child(3) { background: #1e3329; }
+    .detail-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      max-width: 1000px;
+      width: 100%;
+    }
+    .detail-left {
+      flex: 1;
+      text-align: center;
+    }
+    .detail-num {
+      font-family: var(--font-sans);
+      font-weight: 200;
+      font-size: 4rem;
+      color: rgba(201,169,110,0.1);
+      line-height: 1;
+      margin-bottom: -10px;
+    }
+    .detail-label {
+      font-family: var(--font-sans);
+      font-weight: 300;
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+    .detail-headline {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 1.6rem;
+      color: var(--beige);
+      line-height: 1.3;
+      margin-bottom: 16px;
+    }
+    .detail-text {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 1rem;
+      color: var(--beige);
+      opacity: 0.6;
+      line-height: 1.8;
+    }
+    .detail-list {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 30px;
+    }
+    .detail-list-item {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 0.9rem;
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .detail-list-item::before {
+      content: '✦';
+      font-size: 0.5rem;
+      color: var(--gold);
+    }
+    .detail-right {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .detail-visual {
+      width: 250px;
+      height: 280px;
+      background: rgba(201,169,110,0.06);
+      border: 1px solid rgba(201,169,110,0.12);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      text-align: center;
+      padding: 30px;
+    }
+    .visual-icon {
+      font-size: 2.5rem;
+      color: var(--gold);
+    }
+    .visual-main {
+      font-family: var(--font-serif);
+      font-weight: 500;
+      font-size: 1.4rem;
+      color: var(--beige);
+    }
+    .visual-sub {
+      font-family: var(--font-serif);
+      font-weight: 300;
+      font-size: 0.85rem;
+      color: var(--beige);
+      opacity: 0.5;
+      line-height: 1.6;
+    }
+    .s-divider { display: flex; align-items: center; gap: 8px; width: 40%; margin: 12px auto; color: #8B6F3A; font-size: 0.45rem; }
+    .s-divider::before, .s-divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-faint), transparent); }
+
+    .act-nuptials { min-height: 100vh; background: var(--deep-green); display: flex; align-items: center; justify-content: center; padding: 60px 20px; }
+    .nuptials-wrapper { max-width: 900px; width: 100%; text-align: center; }
+    .nuptials-title { font-family: var(--font-script); font-size: 1.8rem; color: var(--gold-light); margin-bottom: 10px; opacity: 0; transform: translateY(20px); }
+    .nuptials-grid { display: grid; grid-template-columns: 1fr; gap: 30px; margin-top: 30px; }
+    .nuptials-group { opacity: 0; transform: translateY(30px); }
+    .nuptials-group-title { font-family: var(--font-sans); font-weight: 300; font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 16px; }
+    .nuptials-name { font-family: var(--font-serif); font-weight: 400; font-size: 1rem; color: var(--beige); opacity: 0.8; padding: 6px 0; border-bottom: 1px solid rgba(201,169,110,0.1); }
+
+    .act-gift { min-height: 60vh; background: var(--beige); display: flex; align-items: center; justify-content: center; padding: 80px 40px; }
+    .gift-card { max-width: 600px; text-align: center; opacity: 0; transform: translateY(30px); }
+    .gift-icon { font-size: 2rem; color: var(--gold); margin-bottom: 16px; }
+    .gift-title { font-family: var(--font-script); font-size: 2rem; color: var(--dark-green); margin-bottom: 14px; }
+    .gift-text { font-family: var(--font-serif); font-weight: 300; font-size: 1rem; color: var(--dark-green); opacity: 0.7; line-height: 1.8; }
+    .gift-details { margin-top: 20px; padding: 20px; border: 1px solid var(--gold-faint); border-radius: 8px; background: rgba(255,255,255,0.5); }
+    .gift-detail-label { font-family: var(--font-sans); font-weight: 300; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: #8B6F3A; }
+    .gift-detail-value { font-family: var(--font-serif); font-weight: 500; font-size: 1rem; color: var(--dark-green); margin-top: 4px; }
+
+    .act-gallery { min-height: 60vh; background: var(--deep-green); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 40px; gap: 20px; }
+    .gallery-title { font-family: var(--font-script); font-size: 2rem; color: var(--gold-light); opacity: 0; transform: translateY(20px); }
+    .gallery-sub { font-family: var(--font-serif); font-weight: 300; font-size: 0.95rem; color: var(--beige); opacity: 0.5; }
+
+    .act-rsvp { min-height: 80vh; background: var(--beige); display: flex; align-items: center; justify-content: center; padding: 80px 40px; }
+    .rsvp-card { max-width: 420px; text-align: center; opacity: 0; transform: translateY(30px); }
+    .rsvp-title { font-family: var(--font-script); font-size: 2.5rem; color: var(--dark-green); margin-bottom: 8px; }
+    .rsvp-sub { font-family: var(--font-serif); font-weight: 300; font-style: italic; font-size: 0.95rem; color: var(--dark-green); opacity: 0.6; margin-bottom: 24px; }
+    .rsvp-btn { display: inline-block; padding: 14px 44px; font-family: var(--font-sans); font-weight: 300; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; background: var(--dark-green); color: var(--beige); border: none; border-radius: 4px; cursor: pointer; transition: all 0.3s; }
+    .rsvp-btn:hover { background: var(--gold); }
+
+    .act-close { min-height: 60vh; background: #050a08; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 40px; gap: 14px; position: relative; overflow: hidden; }
+    .close-stars { position: absolute; inset: 0; }
+    .close-names { font-family: var(--font-script); font-size: 2.5rem; color: var(--gold-light); z-index: 2; opacity: 0; transform: translateY(20px); }
+    .close-hashtag { font-family: var(--font-sans); font-weight: 200; font-size: 0.7rem; letter-spacing: 2px; color: var(--gold); opacity: 0.5; z-index: 2; }
+    .close-countdown { display: flex; gap: 20px; margin-top: 20px; z-index: 2; }
+    .cd-unit { text-align: center; }
+    .cd-num { font-family: var(--font-sans); font-weight: 300; font-size: 1.8rem; letter-spacing: 2px; color: var(--gold-light); }
+    .cd-label { font-family: var(--font-sans); font-weight: 200; font-size: 0.45rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); opacity: 0.5; }
+    .close-love { font-family: var(--font-serif); font-weight: 300; font-style: italic; font-size: 0.9rem; color: var(--beige); opacity: 0.4; margin-top: 20px; z-index: 2; }
+
+
+    /* ============================================
+       DESKTOP — min-width: 768px
+       ============================================ */
+    @media (min-width: 768px) {
+      .hero-names { font-size: clamp(3rem, 7vw, 5.5rem); }
+      .hero-date { font-size: 0.9rem; letter-spacing: 5px; }
+      .hero-hashtag { font-size: 1.1rem; letter-spacing: 3px; margin: 16px 0 8px; }
+      .hero-divider { width: 100px; }
+      .hcd-num { font-size: 1.6rem; }
+      .hero-countdown { gap: 20px; }
+
+      .hscroll-track { gap: 30px; }
+      .hw { font-size: 5.5rem; }
+      .hw-lg { font-size: 7rem; }
+      .hw-script { font-size: 6.5rem; }
+      .hw-pill { font-size: 4rem; padding: 8px 30px; border-radius: 14px; }
+      .hw-up { transform: translateY(-50px); }
+      .hw-down { transform: translateY(50px); }
+      .hw-heart { font-size: 4rem; }
+      .hw-ring { width: 60px; height: 60px; border-width: 3px; }
+      .hw-sparkle { font-size: 3rem; }
+
+      .act-story { padding: 80px 40px; }
+      .story-heading { font-size: 2.5rem; margin-bottom: 30px; }
+      .story-line { font-size: 1.1rem; line-height: 2; }
+      .story-pickup { font-size: 1.6rem; }
+      .story-quote-mark { font-size: 12rem; }
+
+      .detail-panel { padding: 60px 80px; }
+      .detail-inner { flex-direction: row; gap: 60px; }
+      .detail-left { text-align: left; }
+      .detail-num { font-size: 8rem; }
+      .detail-headline { font-size: 2.5rem; }
+      .detail-visual { width: 300px; height: 400px; }
+
+      .act-nuptials { padding: 80px 40px; }
+      .nuptials-title { font-size: 2.5rem; }
+      .nuptials-grid { grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress" id="progress"></div>
+
+
+  <!-- Photo explosion overlay -->
+  <div class="photo-explosion" id="photo-explosion"></div>
+
+  <!-- Gallery view (after explosion settles) -->
+  <button class="gallery-close-btn" id="gallery-close">&#10005;</button>
+  <div class="photo-gallery-view" id="photo-gallery">
+    <div class="gallery-header">
+      <h2>Our Prenup Photos</h2>
+      <p>A preview of our adventure together</p>
+    </div>
+    <div class="gallery-grid" id="gallery-grid"></div>
+  </div>
+
+  <!-- ===== ACT 1: HERO ===== -->
+  <section class="act-hero" id="act-hero">
+    <div class="stars-bg" id="stars-hero"></div>
+    <div id="fireflies-hero"></div>
+    <div class="hero-content">
+      <p class="hero-date" id="hero-date">November 27, 2026</p>
+      <div class="hero-divider" id="hero-div1"></div>
+      <h1 class="hero-names" id="hero-names">Jordan <span class="amp">&</span> Angelica</h1>
+      <div class="hero-divider" id="hero-div2"></div>
+      <p class="hero-hashtag" id="hero-hashtag">#exchANGEofvowswithDAN</p>
+      <div class="hero-countdown" id="hero-countdown">
+        <div class="hcd-unit"><span class="hcd-num" id="hcd-d">000</span><span class="hcd-label">Days</span></div>
+        <div class="hcd-unit"><span class="hcd-num" id="hcd-h">00</span><span class="hcd-label">Hours</span></div>
+        <div class="hcd-unit"><span class="hcd-num" id="hcd-m">00</span><span class="hcd-label">Min</span></div>
+        <div class="hcd-unit"><span class="hcd-num" id="hcd-s">00</span><span class="hcd-label">Sec</span></div>
+      </div>
+      <div class="scroll-cue" id="scroll-cue">Scroll to continue<span class="arrow">&#8964;</span></div>
+    </div>
+  </section>
+
+  <!-- ===== ACT 2: HORIZONTAL GIANT TEXT ===== -->
+  <section class="act-hscroll" id="act-hscroll">
+    <div class="hscroll-pin" id="hscroll-pin">
+      <!-- Floating decorations -->
+      <div class="hscroll-deco deco-heart" style="top:15%;left:8%">&#10084;</div>
+      <div class="hscroll-deco deco-ring" style="top:25%;right:12%"></div>
+      <div class="hscroll-deco deco-star" style="bottom:20%;left:15%">&#10022;</div>
+      <div class="hscroll-deco deco-diamond" style="top:60%;left:40%"></div>
+      <div class="hscroll-deco deco-script" style="top:12%;left:55%">forever</div>
+      <div class="hscroll-deco deco-heart" style="bottom:15%;right:20%;font-size:2rem">&#10084;</div>
+      <div class="hscroll-deco deco-ring" style="bottom:30%;left:70%;width:35px;height:35px"></div>
+      <div class="hscroll-deco deco-star" style="top:35%;right:5%">&#9830;</div>
+      <div class="hscroll-deco deco-script" style="bottom:10%;left:30%">love</div>
+      <div class="hscroll-deco deco-diamond" style="top:18%;right:35%;width:20px;height:20px"></div>
+
+      <!-- Mixed layout sliding text -->
+      <div class="hscroll-track" id="hscroll-track">
+        <span class="hw hw-lg">We're</span>
+        <span class="hw-deco hw-heart">&#10084;</span>
+        <span class="hw hw-lg">getting</span>
+        <span class="hw-pill pill-gold hw-up">married!</span>
+        <span class="hw-deco hw-sparkle hw-down">&#10022;</span>
+        <span class="hw hw-script">and</span>
+        <span class="hw-deco hw-ring hw-up"></span>
+        <span class="hw hw-lg">you're</span>
+        <span class="hw-deco hw-heart hw-down" style="font-size:3rem">&#10084;</span>
+        <span class="hw-pill pill-rose hw-up">invited!</span>
+        <span class="hw-deco hw-sparkle">&#10022;</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TRANSITION: Big text reveal + bg fade ===== -->
+  <section class="act-transition" id="act-transition">
+    <div class="transition-pin" id="transition-pin">
+      <div class="transition-bg" id="transition-bg"></div>
+      <div class="transition-text">
+        <div class="trans-line" id="tl1">Our</div>
+        <div class="trans-line" id="tl2">Story</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ACT 3: OUR STORY ===== -->
+  <section class="act-story" id="act-story">
+    <div class="story-wrapper">
+      <span class="story-quote-mark story-quote-open">"</span>
+      <span class="story-quote-mark story-quote-close">"</span>
+
+      <p class="story-label" id="sl">Our Story</p>
+      <h2 class="story-heading" id="sh">How it all started</h2>
+
+      <p class="story-line" id="s1">Nagsimula lahat nung <span class="story-highlight">college days</span> — two students na nag-overnight for thesis with multiple groups. Hindi naman kami magka-group, pero fate had other plans.</p>
+
+      <p class="story-line" id="s2">I still vividly remember that morning. Tapos na ang overnight, pagod na lahat, at hinahanap na ng kanya-kanyang magulang. Si Angelica, <span class="story-highlight">mataray talaga</span> — she said "Una na ko, uuwi na ko."</p>
+
+      <p class="story-line" id="s3">So sabi ko...</p>
+
+      <p class="story-pickup" id="s4">"WAIT, may nakalimutan ka."</p>
+
+      <p class="story-line" id="s5">Naka-taas ang kilay niya. <span class="story-highlight">"Ano yon?"</span></p>
+
+      <p class="story-pickup" id="s6">"Naiwan mo ko."</p>
+
+      <p class="story-line" id="s7">She smiled. She tried to hide it — pero kita ko. Tumawa siya, ngumiti, at that moment... <span class="story-highlight">I just knew.</span></p>
+
+      <div class="story-divider" id="sd"></div>
+
+      <p class="story-ending" id="s8">That was 2016. Ten years, countless adventures, and one big question later — here we are. The rest is history.</p>
+
+      <p class="story-year" id="sy">Since November 6, 2016</p>
+
+      <button class="story-btn" id="sbtn" type="button">See our prenup photos</button>
+    </div>
+  </section>
+
+  <!-- ===== STICKER BOMB (button triggered) ===== -->
+  <div class="sticker-bomb" id="sticker-bomb"></div>
+
+  <!-- ===== ACT 4: DETAILS (horizontal scroll panels) ===== -->
+  <section class="act-details" id="act-details">
+    <div class="details-pin" id="details-pin">
+
+        <!-- Panel 01: Ceremony -->
+        <div class="detail-panel">
+          <div class="detail-inner">
+            <div class="detail-left">
+              <div class="detail-num">01</div>
+              <p class="detail-label">The Ceremony</p>
+              <h2 class="detail-headline">Join us as we<br>say "I do"</h2>
+              <p class="detail-text">We invite you to witness the beginning of our forever as we exchange vows and promise a lifetime together.</p>
+              <div class="detail-list">
+                <span class="detail-list-item">Saturday</span>
+                <span class="detail-list-item">November 27, 2026</span>
+                <span class="detail-list-item">4:00 PM</span>
+              </div>
+            </div>
+            <div class="detail-right">
+              <div class="detail-visual">
+                <div class="visual-icon">&#9829;</div>
+                <p class="visual-main">Venue Name</p>
+                <p class="visual-sub">123 Beautiful Street<br>City, State 12345</p>
+                <p class="visual-sub" style="margin-top:10px;opacity:0.3;font-size:0.75rem">Map link coming soon</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 02: Reception -->
+        <div class="detail-panel">
+          <div class="detail-inner">
+            <div class="detail-left">
+              <div class="detail-num">02</div>
+              <p class="detail-label">The Reception</p>
+              <h2 class="detail-headline">Dinner, drinks<br>& dancing</h2>
+              <p class="detail-text">After the ceremony, join us for an evening of celebration, great food, and unforgettable memories.</p>
+              <div class="detail-list">
+                <span class="detail-list-item">Cocktails — 5:00 PM</span>
+                <span class="detail-list-item">Dinner — 6:00 PM</span>
+                <span class="detail-list-item">Dancing — 7:00 PM</span>
+              </div>
+            </div>
+            <div class="detail-right">
+              <div class="detail-visual">
+                <div class="visual-icon">&#9733;</div>
+                <p class="visual-main">Reception Venue</p>
+                <p class="visual-sub">456 Elegant Avenue<br>City, State 12345</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Panel 03: Dress Code -->
+        <div class="detail-panel">
+          <div class="detail-inner">
+            <div class="detail-left">
+              <div class="detail-num">03</div>
+              <p class="detail-label">Dress Code</p>
+              <h2 class="detail-headline">Come looking<br>your best</h2>
+              <p class="detail-text">We kindly ask our guests to dress in semi-formal attire. Think elegant but comfortable — it's going to be a celebration!</p>
+              <div class="detail-list">
+                <span class="detail-list-item">Semi-Formal Attire</span>
+                <span class="detail-list-item">Elegant & Comfortable</span>
+              </div>
+            </div>
+            <div class="detail-right">
+              <div class="detail-visual">
+                <div class="visual-icon">&#10047;</div>
+                <p class="visual-main">Semi-Formal</p>
+                <p class="visual-sub">Suits, dresses,<br>or barong tagalog<br>are all welcome</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+  </section>
+
+  <!-- ===== ACT 4: NUPTIALS ===== -->
+  <section class="act-nuptials" id="act-nuptials">
+    <div class="nuptials-wrapper">
+      <h2 class="nuptials-title" id="nup-title">The Entourage</h2>
+      <div class="s-divider" style="width:20%;margin:0 auto"><span style="color:var(--gold)">&#10022;</span></div>
+      <div class="nuptials-grid">
+        <div class="nuptials-group" id="ng1"><p class="nuptials-group-title">Principal Sponsors</p><p class="nuptials-name">Mr. & Mrs. Sponsor Name</p><p class="nuptials-name">Mr. & Mrs. Sponsor Name</p><p class="nuptials-name">Mr. & Mrs. Sponsor Name</p><p class="nuptials-name">Mr. & Mrs. Sponsor Name</p></div>
+        <div class="nuptials-group" id="ng2"><p class="nuptials-group-title">Parents of the Couple</p><p class="nuptials-name">Mr. & Mrs. Logronio</p><p class="nuptials-name">Mr. & Mrs. [Bride's Parents]</p></div>
+        <div class="nuptials-group" id="ng3"><p class="nuptials-group-title">Best Man & Maid of Honor</p><p class="nuptials-name">Best Man Name</p><p class="nuptials-name">Maid of Honor Name</p></div>
+        <div class="nuptials-group" id="ng4"><p class="nuptials-group-title">Groomsmen & Bridesmaids</p><p class="nuptials-name">Groomsman 1</p><p class="nuptials-name">Groomsman 2</p><p class="nuptials-name">Bridesmaid 1</p><p class="nuptials-name">Bridesmaid 2</p></div>
+        <div class="nuptials-group" id="ng5"><p class="nuptials-group-title">Secondary Sponsors</p><p class="nuptials-name">Cord — Name & Name</p><p class="nuptials-name">Veil — Name & Name</p><p class="nuptials-name">Candle — Name & Name</p></div>
+        <div class="nuptials-group" id="ng6"><p class="nuptials-group-title">Bearers & Flower Girls</p><p class="nuptials-name">Ring Bearer Name</p><p class="nuptials-name">Coin Bearer Name</p><p class="nuptials-name">Bible Bearer Name</p><p class="nuptials-name">Flower Girl Name</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ACT 5: GIFT NOTE ===== -->
+  <section class="act-gift" id="act-gift">
+    <div class="gift-card" id="gift-card">
+      <div class="gift-icon">&#127873;</div>
+      <h2 class="gift-title">A Note on Gifts</h2>
+      <p class="gift-text">Your presence at our wedding is the greatest gift of all. However, should you wish to honor us with a gift, a monetary blessing would be greatly appreciated as we begin our new journey together.</p>
+      <div class="gift-details">
+        <p class="gift-detail-label">GCash / Bank Details</p>
+        <p class="gift-detail-value">0917-XXX-XXXX</p>
+        <p class="gift-detail-value" style="font-size:0.8rem;opacity:0.5;margin-top:4px">Jordan Logronio</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ACT 6: GALLERY ===== -->
+  <section class="act-gallery" id="act-gallery">
+    <h2 class="gallery-title" id="gallery-title">Our Moments</h2>
+    <div class="s-divider" style="width:15%"><span style="color:var(--gold)">&#10022;</span></div>
+    <p class="gallery-sub">Prenup photos coming soon</p>
+  </section>
+
+  <!-- ===== ACT 7: RSVP ===== -->
+  <section class="act-rsvp" id="act-rsvp">
+    <div class="rsvp-card" id="rsvp-card">
+      <h2 class="rsvp-title">Will you be there?</h2>
+      <p class="rsvp-sub">Kindly respond by October 15, 2026</p>
+      <a href="#" class="rsvp-btn" onclick="return false">Respond Now</a>
+    </div>
+  </section>
+
+  <!-- ===== ACT 8: CLOSING ===== -->
+  <section class="act-close" id="act-close">
+    <div class="close-stars" id="close-stars"></div>
+    <h2 class="close-names" id="close-names">Jordan & Angelica</h2>
+    <p class="close-hashtag">#exchANGEofvowswithDAN</p>
+    <div class="close-countdown">
+      <div class="cd-unit"><span class="cd-num" id="cd-d">000</span><span class="cd-label">Days</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-h">00</span><span class="cd-label">Hours</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-m">00</span><span class="cd-label">Minutes</span></div>
+      <div class="cd-unit"><span class="cd-num" id="cd-s">00</span><span class="cd-label">Seconds</span></div>
+    </div>
+    <p class="close-love">We can't wait to celebrate with you</p>
+  </section>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ===== Stars & fireflies =====
+    function makeStars(id, count) {
+      const el = document.getElementById(id);
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        s.style.left = Math.random()*100+'%';
+        s.style.top = Math.random()*100+'%';
+        const sz = (Math.random()*2.5+0.5)+'px';
+        s.style.width = s.style.height = sz;
+        s.style.setProperty('--dur', (2+Math.random()*4)+'s');
+        s.style.setProperty('--delay', Math.random()*4+'s');
+        el.appendChild(s);
+      }
+    }
+    makeStars('stars-hero', 120);
+    makeStars('close-stars', 80);
+
+    const ffEl = document.getElementById('fireflies-hero');
+    for (let i = 0; i < 20; i++) {
+      const f = document.createElement('div');
+      f.className = 'firefly';
+      f.style.left = Math.random()*100+'%';
+      f.style.top = (20+Math.random()*70)+'%';
+      f.style.setProperty('--dur', (4+Math.random()*6)+'s');
+      f.style.setProperty('--delay', Math.random()*6+'s');
+      ffEl.appendChild(f);
+    }
+
+    // ===== Progress bar =====
+    gsap.to('#progress', {
+      width: '100%', ease: 'none',
+      scrollTrigger: { trigger: 'body', start: 'top top', end: 'bottom bottom', scrub: true }
+    });
+
+    // ===== ACT 1: Hero entrance =====
+    const heroTL = gsap.timeline({ delay: 0.3 });
+    heroTL.to('.star', { opacity: 1, duration: 0.5, stagger: 0.01 });
+    heroTL.to('#hero-date', { opacity: 1, y: 0, duration: 0.8 }, 0.5);
+    heroTL.to('#hero-div1', { opacity: 1, scaleX: 1, duration: 0.6 }, 0.8);
+    heroTL.to('#hero-names', { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, 0.9);
+    heroTL.to('#hero-div2', { opacity: 1, scaleX: 1, duration: 0.6 }, 1.3);
+    heroTL.to('#hero-hashtag', { opacity: 1, y: 0, duration: 0.8 }, 1.4);
+    heroTL.to('#hero-countdown', { opacity: 1, y: 0, duration: 0.8 }, 1.6);
+    heroTL.to('.firefly', { opacity: 1, duration: 0.5, stagger: 0.05 }, 1.2);
+    heroTL.to('#scroll-cue', { opacity: 1, duration: 0.5 }, 2.2);
+
+    // ===== ACT 2: Sliding text + light up on pass =====
+    const track = document.getElementById('hscroll-track');
+    const hItems = document.querySelectorAll('.hw, .hw-pill, .hw-deco');
+    const totalScrollDist = track.scrollWidth;
+
+    gsap.to('#hscroll-track', {
+      x: () => -(totalScrollDist),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#act-hscroll',
+        start: 'top top',
+        end: () => `+=${totalScrollDist * 1.2}`,
+        pin: '#hscroll-pin',
+        scrub: 1,
+        anticipatePin: 1,
+        onUpdate: () => {
+          const center = window.innerWidth * 0.55;
+          const trackX = gsap.getProperty('#hscroll-track', 'x') || 0;
+
+          hItems.forEach(item => {
+            const pos = item.offsetLeft + trackX + item.offsetWidth / 2;
+            if (pos < center) {
+              item.classList.add('lit');
+            } else {
+              item.classList.remove('lit');
+            }
+          });
+        }
+      }
+    });
+
+    // ===== TRANSITION: Big text reveal + background fade =====
+    const transTextItems = ['#tl1', '#tl2'];
+    const transBg = document.getElementById('transition-bg');
+
+    ScrollTrigger.create({
+      trigger: '#act-transition',
+      start: 'top top',
+      end: 'bottom top',
+      pin: '#transition-pin',
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress;
+
+        // Phase 1 (0-60%): Text lines reveal one by one with generous spacing
+        transTextItems.forEach((id, i) => {
+          const lineStart = 0.05 + i * 0.15;
+          const el = document.querySelector(id);
+          if (p > lineStart) {
+            const lineP = Math.min((p - lineStart) / 0.12, 1);
+            el.style.opacity = lineP;
+            el.style.transform = `translateY(${50 * (1 - lineP)}px)`;
+          } else {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(50px)';
+          }
+        });
+
+        // Phase 2 (65-85%): Hold — all text visible, enjoy the moment
+        // (nothing changes, just holding)
+
+        // Phase 3 (85-100%): Background fades to beige, text color transitions
+        if (p > 0.85) {
+          const bgP = (p - 0.85) / 0.15;
+          transBg.style.opacity = bgP;
+          // Transition text color from beige to dark green
+          transTextItems.forEach(id => {
+            const el = document.querySelector(id);
+            el.style.color = bgP > 0.5 ? 'var(--dark-green)' : 'var(--beige)';
+          });
+        } else {
+          transBg.style.opacity = 0;
+          transTextItems.forEach(id => {
+            const el = document.querySelector(id);
+            el.style.color = '';
+          });
+        }
+      }
+    });
+
+    // ===== ACT 3: Scroll-driven story reveal + scroll lock =====
+    const storyElements = ['#sl', '#sh', '#s1', '#s2', '#s3', '#s4', '#s5', '#s6', '#s7', '#sd', '#s8', '#sy', '#sbtn'];
+    const totalStoryItems = storyElements.length;
+    let storyComplete = false;
+
+    ScrollTrigger.create({
+      trigger: '#act-story',
+      start: 'top top',
+      end: () => `+=${totalStoryItems * 200 + 300}`,
+      pin: true,
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress;
+        const revealProgress = Math.min(p / 0.85, 1);
+        const revealCount = Math.floor(revealProgress * totalStoryItems);
+
+        storyElements.forEach((id, i) => {
+          const el = document.querySelector(id);
+          if (i < revealCount) {
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+          }
+        });
+
+        // Pulse button when fully revealed
+        if (revealCount >= totalStoryItems && !storyComplete) {
+          storyComplete = true;
+          gsap.to('#sbtn', {
+            boxShadow: '0 0 20px rgba(45,74,62,0.4)',
+            scale: 1.05,
+            duration: 0.6,
+            repeat: -1,
+            yoyo: true,
+          });
+        }
+      }
+    });
+
+    // ===== BUTTON-TRIGGERED STICKER BOMB =====
+    const stickerSrcs = [
+      'assets/sticker-jordan.png',
+      'assets/sticker-angelica.png',
+    ];
+
+    document.getElementById('sbtn').addEventListener('click', () => {
+      const bomb = document.getElementById('sticker-bomb');
+      bomb.innerHTML = '';
+      bomb.classList.add('active');
+      document.body.style.overflow = 'hidden';
+
+      const sw = window.innerWidth;
+      const sh = window.innerHeight;
+      const stickerCount = 20;
+      const stickerSize = sw < 768 ? 200 : 300;
+
+      // Create 20 stickers — each flies in from a random edge
+      for (let i = 0; i < stickerCount; i++) {
+        const sticker = document.createElement('div');
+        sticker.className = 'sticker';
+        sticker.style.backgroundImage = `url(${stickerSrcs[i % 2]})`;
+
+        // Start position — far outside a random edge
+        const edge = Math.floor(Math.random() * 4); // 0=top, 1=right, 2=bottom, 3=left
+        let startX, startY;
+        switch (edge) {
+          case 0: startX = Math.random() * sw; startY = -stickerSize * 2; break;
+          case 1: startX = sw + stickerSize * 2; startY = Math.random() * sh; break;
+          case 2: startX = Math.random() * sw; startY = sh + stickerSize * 2; break;
+          case 3: startX = -stickerSize * 2; startY = Math.random() * sh; break;
+        }
+
+        // Final position — random spot covering the screen
+        const endX = Math.random() * sw * 1.1 - sw * 0.05;
+        const endY = Math.random() * sh * 1.1 - sh * 0.05;
+        const rot = (Math.random() - 0.5) * 50;
+        const sc = 1 + Math.random() * 0.6;
+
+        sticker.style.left = startX + 'px';
+        sticker.style.top = startY + 'px';
+        sticker.style.zIndex = Math.floor(Math.random() * 20);
+
+        bomb.appendChild(sticker);
+
+        // Fly IN from edge — fast, staggered, with bounce
+        gsap.to(sticker, {
+          left: endX,
+          top: endY,
+          rotation: rot,
+          scale: sc,
+          opacity: 1,
+          duration: 0.6,
+          delay: i * 0.05,
+          ease: 'power2.out',
+        });
+      }
+
+      // Hold for 2.5 seconds, then transition to gallery
+      setTimeout(() => {
+        // Zoom all stickers toward camera and fade
+        document.querySelectorAll('.sticker').forEach((s, i) => {
+          gsap.to(s, {
+            scale: '+=2',
+            opacity: 0,
+            duration: 0.5,
+            delay: i * 0.02,
+            ease: 'power2.in',
+          });
+        });
+
+        setTimeout(() => {
+          bomb.classList.remove('active');
+          bomb.innerHTML = '';
+
+          // Show gallery
+          const galleryGrid = document.getElementById('gallery-grid');
+          galleryGrid.innerHTML = '';
+          const prenupPhotos = [
+            'https://picsum.photos/seed/p1/400/550',
+            'https://picsum.photos/seed/p2/400/550',
+            'https://picsum.photos/seed/p3/400/550',
+            'https://picsum.photos/seed/p4/400/550',
+            'https://picsum.photos/seed/p5/400/550',
+            'https://picsum.photos/seed/p6/400/550',
+            'https://picsum.photos/seed/p7/400/550',
+            'https://picsum.photos/seed/p8/400/550',
+            'https://picsum.photos/seed/p9/400/550',
+            'https://picsum.photos/seed/p10/400/550',
+            'https://picsum.photos/seed/p11/400/550',
+            'https://picsum.photos/seed/p12/400/550',
+          ];
+          prenupPhotos.forEach(src => {
+            const item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.style.backgroundImage = `url(${src})`;
+            galleryGrid.appendChild(item);
+          });
+
+          document.getElementById('photo-gallery').classList.add('active');
+          document.getElementById('gallery-close').classList.add('active');
+        }, 700);
+
+      }, 2500);
+    });
+
+    // Close gallery
+    document.getElementById('gallery-close').addEventListener('click', () => {
+      document.getElementById('photo-gallery').classList.remove('active');
+      document.getElementById('gallery-close').classList.remove('active');
+      document.body.style.overflow = '';
+    });
+
+    // ===== ACT 4: PatchAI-style — new panel slides IN on top =====
+    const panels = [...document.querySelectorAll('.detail-panel')];
+    const numPanels = panels.length;
+
+    // Z-stack: LAST panel on top (it slides in last, covers everything)
+    // Panel 1 = z:1 (bottom), Panel 2 = z:2, Panel 3 = z:3 (top)
+    panels.forEach((p, i) => {
+      p.style.zIndex = i + 1;
+      // Panel 1 starts visible, all others start off-screen right
+      if (i > 0) p.style.transform = 'translateX(100%)';
+    });
+
+    // Pin and animate
+    ScrollTrigger.create({
+      trigger: '#act-details',
+      start: 'top top',
+      end: `+=${numPanels * 100}%`,
+      pin: '#details-pin',
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const p = self.progress * (numPanels - 1);
+
+        panels.forEach((panel, i) => {
+          if (i === 0) {
+            // First panel always sits there
+            panel.style.transform = 'translateX(0%)';
+          } else if (i <= Math.floor(p) + 1) {
+            // This panel is sliding in or already in
+            const slideProgress = Math.min(Math.max(p - (i - 1), 0), 1);
+            const x = (1 - slideProgress) * 100;
+            panel.style.transform = `translateX(${x}%)`;
+          } else {
+            // Not yet — still off screen right
+            panel.style.transform = 'translateX(100%)';
+          }
+        });
+      }
+    });
+
+    // ===== ACT 5: Nuptials =====
+    gsap.to('#nup-title', { opacity: 1, y: 0, duration: 0.8, scrollTrigger: { trigger: '#nup-title', start: 'top 80%' } });
+    ['#ng1','#ng2','#ng3','#ng4','#ng5','#ng6'].forEach((id, i) => {
+      gsap.to(id, { opacity: 1, y: 0, duration: 0.7, delay: i * 0.1, scrollTrigger: { trigger: id, start: 'top 85%' } });
+    });
+
+    // ===== ACT 5: Gift =====
+    gsap.to('#gift-card', { opacity: 1, y: 0, duration: 0.8, scrollTrigger: { trigger: '#gift-card', start: 'top 75%' } });
+
+    // ===== ACT 6: Gallery =====
+    gsap.to('#gallery-title', { opacity: 1, y: 0, duration: 0.8, scrollTrigger: { trigger: '#gallery-title', start: 'top 80%' } });
+
+    // ===== ACT 7: RSVP =====
+    gsap.to('#rsvp-card', { opacity: 1, y: 0, duration: 0.8, scrollTrigger: { trigger: '#rsvp-card', start: 'top 75%' } });
+
+    // ===== ACT 8: Closing =====
+    gsap.to('#close-names', { opacity: 1, y: 0, duration: 1, scrollTrigger: { trigger: '#close-names', start: 'top 80%' } });
+
+    // ===== Countdown (both hero and closing) =====
+    function updateCD() {
+      const w = new Date('2026-11-27T16:00:00').getTime();
+      const d = Math.max(0, w - Date.now());
+      const days = String(Math.floor(d/86400000)).padStart(3,'0');
+      const hrs = String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+      const mins = String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+      const secs = String(Math.floor((d%60000)/1000)).padStart(2,'0');
+      // Hero countdown
+      document.getElementById('hcd-d').textContent = days;
+      document.getElementById('hcd-h').textContent = hrs;
+      document.getElementById('hcd-m').textContent = mins;
+      document.getElementById('hcd-s').textContent = secs;
+      // Closing countdown
+      document.getElementById('cd-d').textContent = days;
+      document.getElementById('cd-h').textContent = hrs;
+      document.getElementById('cd-m').textContent = mins;
+      document.getElementById('cd-s').textContent = secs;
+    }
+    updateCD(); setInterval(updateCD, 1000);
+
+  </script>
+</body>
+</html>

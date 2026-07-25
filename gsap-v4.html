@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jordan & Angelica — November 27, 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <style>
+    :root {
+      --dark-green: #2D4A3E;
+      --deep-green: #1E3329;
+      --beige: #F5F0E8;
+      --gold: #C9A96E;
+      --gold-light: #E8D5A3;
+      --gold-faint: rgba(201,169,110,0.3);
+      --font-script: 'Great Vibes', cursive;
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'Josefin Sans', sans-serif;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #050a08; font-family: var(--font-serif); overflow: hidden; height: 100vh; cursor: pointer; user-select: none; }
+
+    /* ===== All acts stacked ===== */
+    .act {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .act.active { opacity: 1; pointer-events: all; z-index: 5; }
+
+    /* ===== Progress dots ===== */
+    .progress-dots {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: rgba(201,169,110,0.2);
+      transition: all 0.4s;
+    }
+    .dot.active {
+      background: var(--gold);
+      width: 24px;
+      border-radius: 4px;
+    }
+
+    /* Tap hint */
+    .tap-hint {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-sans);
+      font-weight: 200;
+      font-size: 0.55rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.5;
+      z-index: 100;
+      animation: tapPulse 2s ease-in-out infinite;
+    }
+    @keyframes tapPulse { 0%,100% { opacity: 0.3; } 50% { opacity: 0.7; } }
+
+    /* Tap zones */
+    .tap-zone {
+      position: fixed;
+      top: 0;
+      width: 35%;
+      height: 100%;
+      z-index: 90;
+      cursor: pointer;
+    }
+    .tap-prev { left: 0; }
+    .tap-next { right: 0; width: 65%; }
+
+    /* ===== Stars background (shared) ===== */
+    .stars-layer { position: absolute; inset: 0; }
+    .star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle var(--dur) ease-in-out infinite var(--delay); }
+    @keyframes twinkle { 0%,100% { opacity: 0.15; } 50% { opacity: 1; } }
+    .firefly {
+      position: absolute; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold-light); box-shadow: 0 0 8px var(--gold), 0 0 20px rgba(201,169,110,0.3);
+      animation: ffFloat var(--dur) ease-in-out infinite var(--delay);
+    }
+    @keyframes ffFloat { 0%,100% { transform: translate(0,0); } 25% { transform: translate(15px,-25px); } 50% { transform: translate(-12px,-40px); } 75% { transform: translate(18px,-18px); } }
+
+    /* ===== ACT 1: Hero ===== */
+    .act-hero { background: #050a08; flex-direction: column; gap: 6px; padding: 20px; text-align: center; }
+    .hero-date { font-family: var(--font-sans); font-weight: 200; font-size: 0.95rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); }
+    .hero-divider { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); margin: 6px 0; }
+    .hero-names { font-family: var(--font-script); font-size: 3.2rem; color: var(--gold-light); text-shadow: 0 2px 30px rgba(201,169,110,0.15); }
+    .hero-names .amp { font-family: var(--font-serif); font-style: italic; font-weight: 300; font-size: 0.5em; margin: 0 6px; }
+    .hero-hashtag { font-family: var(--font-sans); font-weight: 200; font-size: 1.05rem; letter-spacing: 2px; color: var(--gold); margin: 14px 0 8px; }
+    .hero-countdown { display: flex; gap: 18px; margin-top: 10px; }
+    .hcd-unit { text-align: center; }
+    .hcd-num { font-family: var(--font-sans); font-weight: 300; font-size: 1.8rem; letter-spacing: 2px; color: var(--gold-light); display: block; }
+    .hcd-label { font-family: var(--font-sans); font-weight: 200; font-size: 0.45rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); opacity: 0.5; }
+
+    /* ===== ACT 2: Horizontal text ===== */
+    .act-htext { background: #050a08; overflow: hidden; }
+    .htext-track {
+      display: flex; align-items: center; white-space: nowrap; gap: 20px;
+      position: absolute; top: 50%; transform: translateY(-50%);
+    }
+    .hw { font-family: var(--font-serif); font-weight: 300; font-size: 3.5rem; color: rgba(245,240,232,0.08); flex-shrink: 0; transition: color 0.4s; }
+    .hw.lit { color: var(--beige); }
+    .hw-lg { font-size: 4.2rem; font-weight: 400; }
+    .hw-script { font-family: var(--font-script); font-size: 4rem; font-weight: 400; }
+    .hw-script.lit { color: var(--gold-light); }
+    .hw-pill { font-family: var(--font-sans); font-weight: 400; font-size: 2.5rem; letter-spacing: 1px; padding: 8px 22px; border-radius: 12px; flex-shrink: 0; color: rgba(0,0,0,0.08); background: rgba(255,255,255,0.03); transition: all 0.4s; }
+    .hw-pill.lit { color: #1a1a1a; }
+    .hw-pill.pill-gold.lit { background: var(--gold-light); }
+    .hw-pill.pill-rose.lit { background: #E8A0B0; }
+    .hw-up { transform: translateY(-25px); }
+    .hw-down { transform: translateY(25px); }
+    .hw-deco { flex-shrink: 0; opacity: 0.15; transition: opacity 0.4s; }
+    .hw-deco.lit { opacity: 0.7; }
+    .hw-heart { font-size: 2rem; color: #D4736A; }
+    .hw-ring { width: 35px; height: 35px; border: 2px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .hw-ring::after { content: ''; width: 5px; height: 5px; background: var(--gold); border-radius: 50%; }
+    .hw-sparkle { font-size: 1.8rem; color: var(--gold-light); }
+
+    @media (min-width: 768px) {
+      .hero-names { font-size: clamp(3rem,7vw,5.5rem); }
+      .hw { font-size: 5.5rem; }
+      .hw-lg { font-size: 7rem; }
+      .hw-script { font-size: 6.5rem; }
+      .hw-pill { font-size: 4rem; padding: 8px 30px; }
+      .hw-up { transform: translateY(-50px); }
+      .hw-down { transform: translateY(50px); }
+      .hw-heart { font-size: 4rem; }
+      .hw-ring { width: 60px; height: 60px; }
+      .hw-sparkle { font-size: 3rem; }
+    }
+
+    /* ===== ACT 3: Our Story title ===== */
+    .act-story-title { background: #050a08; flex-direction: column; gap: 10px; }
+    .st-line { font-family: var(--font-serif); font-weight: 600; font-size: 3.5rem; color: var(--beige); text-transform: uppercase; letter-spacing: 3px; line-height: 1.2; text-align: center; }
+    @media (min-width: 768px) { .st-line { font-size: 6rem; } }
+
+    /* ===== ACT 4: Story text ===== */
+    .act-story { background: var(--beige); flex-direction: column; padding: 40px 24px; overflow-y: auto; }
+    .story-wrapper { max-width: 600px; text-align: center; display: flex; flex-direction: column; gap: 10px; align-items: center; }
+    .story-label { font-family: var(--font-sans); font-weight: 300; font-size: 0.65rem; letter-spacing: 4px; text-transform: uppercase; color: #8B6F3A; }
+    .story-line { font-family: var(--font-serif); font-weight: 300; font-size: 1.05rem; line-height: 1.9; color: var(--dark-green); }
+    .story-highlight { color: var(--gold); font-weight: 500; font-style: italic; }
+    .story-pickup { font-family: var(--font-serif); font-weight: 500; font-size: 1.5rem; color: var(--dark-green); margin: 10px 0; }
+    .story-ending { font-family: var(--font-serif); font-weight: 300; font-style: italic; font-size: 1rem; color: rgba(45,74,62,0.6); margin-top: 10px; }
+    .s-divider { display: flex; align-items: center; gap: 8px; width: 40%; color: #8B6F3A; font-size: 0.45rem; }
+    .s-divider::before, .s-divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold-faint), transparent); }
+
+    /* ===== ACT 5: Sticker bomb ===== */
+    .act-stickers { background: #050a08; }
+    .sticker {
+      position: absolute; width: 200px; height: 200px;
+      background-size: contain; background-repeat: no-repeat; background-position: center;
+      filter: drop-shadow(3px 4px 8px rgba(0,0,0,0.35));
+    }
+    @media (min-width: 768px) { .sticker { width: 300px; height: 300px; } }
+
+    /* ===== ACT 6: Details ===== */
+    .act-detail { background: var(--deep-green); flex-direction: column; gap: 20px; padding: 40px 24px; text-align: center; }
+    .detail-num { font-family: var(--font-sans); font-weight: 200; font-size: 4rem; color: rgba(201,169,110,0.1); }
+    .detail-label { font-family: var(--font-sans); font-weight: 300; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); }
+    .detail-headline { font-family: var(--font-serif); font-weight: 500; font-size: 1.8rem; color: var(--beige); line-height: 1.3; }
+    .detail-text { font-family: var(--font-serif); font-weight: 300; font-size: 1rem; color: var(--beige); opacity: 0.6; line-height: 1.8; max-width: 500px; }
+    .detail-list { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: center; margin-top: 10px; }
+    .detail-list-item { font-family: var(--font-serif); font-weight: 300; font-size: 0.9rem; color: var(--gold-light); }
+    .detail-list-item::before { content: '✦ '; font-size: 0.5rem; color: var(--gold); }
+    @media (min-width: 768px) { .detail-num { font-size: 8rem; } .detail-headline { font-size: 2.5rem; } }
+
+    /* ===== ACT 9+: Nuptials, Gift, RSVP, Close ===== */
+    .act-nuptials { background: var(--beige); flex-direction: column; padding: 40px 24px; overflow-y: auto; }
+    .nup-wrapper { max-width: 700px; text-align: center; width: 100%; }
+    .nup-title { font-family: var(--font-script); font-size: 2rem; color: var(--dark-green); margin-bottom: 20px; }
+    .nup-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+    .nup-group-title { font-family: var(--font-sans); font-weight: 300; font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: #8B6F3A; margin-bottom: 8px; }
+    .nup-name { font-family: var(--font-serif); font-weight: 400; font-size: 0.95rem; color: var(--dark-green); opacity: 0.8; padding: 4px 0; border-bottom: 1px solid rgba(201,169,110,0.15); }
+    @media (min-width: 768px) { .nup-grid { grid-template-columns: 1fr 1fr; } .nup-title { font-size: 2.5rem; } }
+
+    .act-gift { background: var(--deep-green); flex-direction: column; padding: 40px 24px; text-align: center; }
+    .gift-title { font-family: var(--font-script); font-size: 2rem; color: var(--gold-light); margin-bottom: 14px; }
+    .gift-text { font-family: var(--font-serif); font-weight: 300; font-size: 1rem; color: var(--beige); opacity: 0.7; line-height: 1.8; max-width: 500px; }
+    .gift-box { margin-top: 20px; padding: 16px 24px; border: 1px solid rgba(201,169,110,0.2); border-radius: 8px; }
+    .gift-box-label { font-family: var(--font-sans); font-weight: 300; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
+    .gift-box-value { font-family: var(--font-serif); font-weight: 500; font-size: 1rem; color: var(--beige); margin-top: 4px; }
+
+    .act-rsvp { background: var(--beige); flex-direction: column; padding: 40px 24px; text-align: center; }
+    .rsvp-title { font-family: var(--font-script); font-size: 2.5rem; color: var(--dark-green); }
+    .rsvp-sub { font-family: var(--font-serif); font-weight: 300; font-style: italic; font-size: 0.95rem; color: var(--dark-green); opacity: 0.6; margin: 10px 0 20px; }
+    .rsvp-btn { padding: 14px 44px; font-family: var(--font-sans); font-weight: 300; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; background: var(--dark-green); color: var(--beige); border: none; border-radius: 4px; cursor: pointer; }
+
+    .act-close { background: #050a08; flex-direction: column; gap: 14px; text-align: center; }
+    .close-names { font-family: var(--font-script); font-size: 2.5rem; color: var(--gold-light); z-index: 2; }
+    .close-hashtag { font-family: var(--font-sans); font-weight: 200; font-size: 0.7rem; letter-spacing: 2px; color: var(--gold); opacity: 0.5; z-index: 2; }
+    .close-countdown { display: flex; gap: 20px; z-index: 2; }
+    .close-love { font-family: var(--font-serif); font-weight: 300; font-style: italic; font-size: 0.9rem; color: var(--beige); opacity: 0.4; margin-top: 14px; z-index: 2; }
+  </style>
+</head>
+<body>
+
+  <!-- Progress dots -->
+  <div class="progress-dots" id="dots"></div>
+
+  <!-- Tap zones -->
+  <div class="tap-zone tap-prev" id="tap-prev"></div>
+  <div class="tap-zone tap-next" id="tap-next"></div>
+
+  <!-- Tap hint -->
+  <div class="tap-hint">Tap to continue</div>
+
+  <!-- ===== ACT 0: Hero ===== -->
+  <div class="act act-hero" id="act-0">
+    <div class="stars-layer" id="stars-0"></div>
+    <div id="ff-0"></div>
+    <p class="hero-date">November 27, 2026</p>
+    <div class="hero-divider"></div>
+    <h1 class="hero-names">Jordan <span class="amp">&</span> Angelica</h1>
+    <div class="hero-divider"></div>
+    <p class="hero-hashtag">#exchANGEofvowswithDAN</p>
+    <div class="hero-countdown">
+      <div class="hcd-unit"><span class="hcd-num" id="cd-d">000</span><span class="hcd-label">Days</span></div>
+      <div class="hcd-unit"><span class="hcd-num" id="cd-h">00</span><span class="hcd-label">Hours</span></div>
+      <div class="hcd-unit"><span class="hcd-num" id="cd-m">00</span><span class="hcd-label">Min</span></div>
+      <div class="hcd-unit"><span class="hcd-num" id="cd-s">00</span><span class="hcd-label">Sec</span></div>
+    </div>
+  </div>
+
+  <!-- ===== ACT 1: Horizontal text ===== -->
+  <div class="act act-htext" id="act-1">
+    <div class="htext-track" id="htext-track">
+      <span class="hw hw-lg">We're</span>
+      <span class="hw-deco hw-heart">&#10084;</span>
+      <span class="hw hw-lg">getting</span>
+      <span class="hw-pill pill-gold hw-up">married!</span>
+      <span class="hw-deco hw-sparkle hw-down">&#10022;</span>
+      <span class="hw hw-script">and</span>
+      <span class="hw-deco hw-ring hw-up"></span>
+      <span class="hw hw-lg">you're</span>
+      <span class="hw-deco hw-heart hw-down" style="font-size:1.5rem">&#10084;</span>
+      <span class="hw-pill pill-rose hw-up">invited!</span>
+      <span class="hw-deco hw-sparkle">&#10022;</span>
+    </div>
+  </div>
+
+  <!-- ===== ACT 2: Our Story title ===== -->
+  <div class="act act-story-title" id="act-2">
+    <div class="st-line" id="st1">Our</div>
+    <div class="st-line" id="st2">Story</div>
+  </div>
+
+  <!-- ===== ACT 3: Story text ===== -->
+  <div class="act act-story" id="act-3">
+    <div class="story-wrapper">
+      <p class="story-label">Our Story</p>
+      <div class="s-divider"><span>&#10022;</span></div>
+      <p class="story-line">Nagsimula lahat nung <span class="story-highlight">college days</span> — two students na nag-overnight for thesis with multiple groups. Hindi naman kami magka-group, pero fate had other plans.</p>
+      <p class="story-line">I still vividly remember that morning. Tapos na ang overnight, pagod na lahat, at hinahanap na ng kanya-kanyang magulang. Si Angelica, <span class="story-highlight">mataray talaga</span> — she said "Una na ko, uuwi na ko."</p>
+      <p class="story-line">So sabi ko...</p>
+      <p class="story-pickup">"WAIT, may nakalimutan ka."</p>
+      <p class="story-line">Naka-taas ang kilay niya. <span class="story-highlight">"Ano yon?"</span></p>
+      <p class="story-pickup">"Naiwan mo ko."</p>
+      <p class="story-line">She smiled. She tried to hide it — pero kita ko. Tumawa siya, ngumiti, at that moment... <span class="story-highlight">I just knew.</span></p>
+      <div class="s-divider"><span>&#10084;</span></div>
+      <p class="story-ending">That was 2016. Ten years, countless adventures, and one big question later — here we are. The rest is history.</p>
+    </div>
+  </div>
+
+  <!-- ===== ACT 4: Sticker bomb ===== -->
+  <div class="act act-stickers" id="act-4"></div>
+
+  <!-- ===== ACT 5: Ceremony ===== -->
+  <div class="act act-detail" id="act-5">
+    <div class="detail-num">01</div>
+    <p class="detail-label">The Ceremony</p>
+    <h2 class="detail-headline">Join us as we say "I do"</h2>
+    <p class="detail-text">We invite you to witness the beginning of our forever as we exchange vows and promise a lifetime together.</p>
+    <div class="detail-list">
+      <span class="detail-list-item">Saturday</span>
+      <span class="detail-list-item">November 27, 2026</span>
+      <span class="detail-list-item">4:00 PM</span>
+    </div>
+    <p class="detail-text" style="margin-top:16px;font-weight:500;opacity:0.8">Venue Name</p>
+    <p class="detail-text" style="opacity:0.5">123 Beautiful Street, City</p>
+  </div>
+
+  <!-- ===== ACT 6: Reception ===== -->
+  <div class="act act-detail" id="act-6">
+    <div class="detail-num">02</div>
+    <p class="detail-label">The Reception</p>
+    <h2 class="detail-headline">Dinner, drinks & dancing</h2>
+    <p class="detail-text">After the ceremony, join us for an evening of celebration, great food, and unforgettable memories.</p>
+    <div class="detail-list">
+      <span class="detail-list-item">Cocktails — 5:00 PM</span>
+      <span class="detail-list-item">Dinner — 6:00 PM</span>
+      <span class="detail-list-item">Dancing — 7:00 PM</span>
+    </div>
+  </div>
+
+  <!-- ===== ACT 7: Dress Code ===== -->
+  <div class="act act-detail" id="act-7">
+    <div class="detail-num">03</div>
+    <p class="detail-label">Dress Code</p>
+    <h2 class="detail-headline">Come looking your best</h2>
+    <p class="detail-text">Semi-formal attire. Suits, dresses, or barong tagalog are all welcome.</p>
+  </div>
+
+  <!-- ===== ACT 8: Entourage ===== -->
+  <div class="act act-nuptials" id="act-8">
+    <div class="nup-wrapper">
+      <h2 class="nup-title">The Entourage</h2>
+      <div class="nup-grid">
+        <div><p class="nup-group-title">Principal Sponsors</p><p class="nup-name">Mr. & Mrs. Sponsor Name</p><p class="nup-name">Mr. & Mrs. Sponsor Name</p></div>
+        <div><p class="nup-group-title">Parents of the Couple</p><p class="nup-name">Mr. & Mrs. Logronio</p><p class="nup-name">Mr. & Mrs. [Bride's Parents]</p></div>
+        <div><p class="nup-group-title">Best Man & Maid of Honor</p><p class="nup-name">Best Man Name</p><p class="nup-name">Maid of Honor Name</p></div>
+        <div><p class="nup-group-title">Groomsmen & Bridesmaids</p><p class="nup-name">Groomsman 1</p><p class="nup-name">Bridesmaid 1</p></div>
+        <div><p class="nup-group-title">Secondary Sponsors</p><p class="nup-name">Cord — Name & Name</p><p class="nup-name">Veil — Name & Name</p></div>
+        <div><p class="nup-group-title">Bearers & Flower Girls</p><p class="nup-name">Ring Bearer Name</p><p class="nup-name">Flower Girl Name</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== ACT 9: Gift Note ===== -->
+  <div class="act act-gift" id="act-9">
+    <h2 class="gift-title">A Note on Gifts</h2>
+    <p class="gift-text">Your presence at our wedding is the greatest gift of all. However, should you wish to honor us with a gift, a monetary blessing would be greatly appreciated.</p>
+    <div class="gift-box">
+      <p class="gift-box-label">GCash / Bank Details</p>
+      <p class="gift-box-value">0917-XXX-XXXX</p>
+      <p class="gift-box-value" style="font-size:0.8rem;opacity:0.5">Jordan Logronio</p>
+    </div>
+  </div>
+
+  <!-- ===== ACT 10: RSVP ===== -->
+  <div class="act act-rsvp" id="act-10">
+    <h2 class="rsvp-title">Will you be there?</h2>
+    <p class="rsvp-sub">Kindly respond by October 15, 2026</p>
+    <button class="rsvp-btn" onclick="return false">Respond Now</button>
+  </div>
+
+  <!-- ===== ACT 11: Close ===== -->
+  <div class="act act-close" id="act-11">
+    <div class="stars-layer" id="stars-11"></div>
+    <h2 class="close-names">Jordan & Angelica</h2>
+    <p class="close-hashtag">#exchANGEofvowswithDAN</p>
+    <div class="close-countdown">
+      <div class="hcd-unit"><span class="hcd-num" id="cd2-d">000</span><span class="hcd-label">Days</span></div>
+      <div class="hcd-unit"><span class="hcd-num" id="cd2-h">00</span><span class="hcd-label">Hours</span></div>
+      <div class="hcd-unit"><span class="hcd-num" id="cd2-m">00</span><span class="hcd-label">Min</span></div>
+      <div class="hcd-unit"><span class="hcd-num" id="cd2-s">00</span><span class="hcd-label">Sec</span></div>
+    </div>
+    <p class="close-love">We can't wait to celebrate with you</p>
+  </div>
+
+  <script>
+    const TOTAL_ACTS = 12;
+    let currentAct = 0;
+    let animating = false;
+
+    // ===== Generate stars =====
+    function makeStars(id, count) {
+      const el = document.getElementById(id);
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        s.style.left = Math.random()*100+'%';
+        s.style.top = Math.random()*100+'%';
+        s.style.width = s.style.height = (Math.random()*2.5+0.5)+'px';
+        s.style.setProperty('--dur', (2+Math.random()*4)+'s');
+        s.style.setProperty('--delay', Math.random()*4+'s');
+        el.appendChild(s);
+      }
+    }
+    makeStars('stars-0', 100);
+    makeStars('stars-11', 80);
+
+    // Fireflies
+    const ffEl = document.getElementById('ff-0');
+    for (let i = 0; i < 15; i++) {
+      const f = document.createElement('div');
+      f.className = 'firefly';
+      f.style.left = Math.random()*100+'%';
+      f.style.top = (20+Math.random()*70)+'%';
+      f.style.setProperty('--dur', (4+Math.random()*6)+'s');
+      f.style.setProperty('--delay', Math.random()*6+'s');
+      ffEl.appendChild(f);
+    }
+
+    // ===== Progress dots =====
+    const dotsEl = document.getElementById('dots');
+    for (let i = 0; i < TOTAL_ACTS; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      dotsEl.appendChild(d);
+    }
+    function updateDots() {
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentAct));
+    }
+
+    // ===== Countdown =====
+    function updateCD() {
+      const w = new Date('2026-11-27T16:00:00').getTime();
+      const d = Math.max(0, w - Date.now());
+      const days = String(Math.floor(d/86400000)).padStart(3,'0');
+      const hrs = String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+      const mins = String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+      const secs = String(Math.floor((d%60000)/1000)).padStart(2,'0');
+      ['cd-d','cd2-d'].forEach(id => { const e = document.getElementById(id); if(e) e.textContent = days; });
+      ['cd-h','cd2-h'].forEach(id => { const e = document.getElementById(id); if(e) e.textContent = hrs; });
+      ['cd-m','cd2-m'].forEach(id => { const e = document.getElementById(id); if(e) e.textContent = mins; });
+      ['cd-s','cd2-s'].forEach(id => { const e = document.getElementById(id); if(e) e.textContent = secs; });
+    }
+    updateCD(); setInterval(updateCD, 1000);
+
+    // ===== Act animations =====
+    const actAnimations = {
+      // ACT 0: Hero — fade in elements
+      0: (dir) => {
+        const el = document.getElementById('act-0');
+        const tl = gsap.timeline();
+        const children = el.querySelectorAll('.hero-date, .hero-divider, .hero-names, .hero-hashtag, .hero-countdown');
+        gsap.set(children, { opacity: 0, y: 20 });
+        children.forEach((c, i) => tl.to(c, { opacity: 1, y: 0, duration: 0.5, delay: i * 0.12 }));
+        return tl;
+      },
+
+      // ACT 1: Horizontal text auto-scroll
+      1: () => {
+        const track = document.getElementById('htext-track');
+        const items = track.querySelectorAll('.hw, .hw-pill, .hw-deco');
+        const tl = gsap.timeline();
+        gsap.set(track, { x: window.innerWidth });
+        gsap.set(items, { opacity: 1 });
+        items.forEach(i => i.classList.remove('lit'));
+
+        // Auto-scroll the track
+        const dist = track.scrollWidth + window.innerWidth;
+        tl.to(track, { x: -track.scrollWidth, duration: 4, ease: 'none' });
+
+        // Light up items as they pass center
+        const lightUp = setInterval(() => {
+          const trackX = gsap.getProperty(track, 'x') || 0;
+          const center = window.innerWidth * 0.55;
+          items.forEach(item => {
+            const pos = item.offsetLeft + trackX + item.offsetWidth / 2;
+            if (pos < center) item.classList.add('lit');
+          });
+        }, 50);
+
+        tl.call(() => clearInterval(lightUp));
+        return tl;
+      },
+
+      // ACT 2: Our Story title
+      2: () => {
+        const tl = gsap.timeline();
+        gsap.set(['#st1','#st2'], { opacity: 0, y: 50 });
+        tl.to('#st1', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' });
+        tl.to('#st2', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.4');
+        return tl;
+      },
+
+      // ACT 3: Story — stagger text in
+      3: () => {
+        const el = document.getElementById('act-3');
+        const items = el.querySelectorAll('.story-label, .s-divider, .story-line, .story-pickup, .story-ending');
+        const tl = gsap.timeline();
+        gsap.set(items, { opacity: 0, y: 15 });
+        items.forEach((item, i) => tl.to(item, { opacity: 1, y: 0, duration: 0.4 }, i * 0.2));
+        return tl;
+      },
+
+      // ACT 4: Sticker bomb
+      4: () => {
+        const el = document.getElementById('act-4');
+        el.innerHTML = '';
+        const sw = window.innerWidth;
+        const sh = window.innerHeight;
+        const srcs = ['assets/sticker-jordan.png', 'assets/sticker-angelica.png'];
+        const tl = gsap.timeline();
+
+        for (let i = 0; i < 20; i++) {
+          const s = document.createElement('div');
+          s.className = 'sticker';
+          s.style.backgroundImage = `url(${srcs[i % 2]})`;
+
+          // Start from random edge
+          const edge = Math.floor(Math.random() * 4);
+          const sz = sw < 768 ? 200 : 300;
+          let sx, sy;
+          switch(edge) {
+            case 0: sx = Math.random() * sw; sy = -sz * 2; break;
+            case 1: sx = sw + sz * 2; sy = Math.random() * sh; break;
+            case 2: sx = Math.random() * sw; sy = sh + sz * 2; break;
+            case 3: sx = -sz * 2; sy = Math.random() * sh; break;
+          }
+
+          const ex = Math.random() * sw * 1.1 - sw * 0.05;
+          const ey = Math.random() * sh * 1.1 - sh * 0.05;
+
+          s.style.left = sx + 'px';
+          s.style.top = sy + 'px';
+          s.style.zIndex = Math.floor(Math.random() * 20);
+          el.appendChild(s);
+
+          tl.to(s, {
+            left: ex, top: ey,
+            rotation: (Math.random()-0.5) * 50,
+            scale: 1 + Math.random() * 0.6,
+            duration: 0.5,
+            ease: 'power2.out',
+          }, i * 0.04);
+        }
+
+        return tl;
+      },
+
+      // ACT 5-7: Details — slide in
+      5: () => fadeInChildren('act-5'),
+      6: () => fadeInChildren('act-6'),
+      7: () => fadeInChildren('act-7'),
+      8: () => fadeInChildren('act-8'),
+      9: () => fadeInChildren('act-9'),
+      10: () => fadeInChildren('act-10'),
+      11: () => {
+        const tl = fadeInChildren('act-11');
+        return tl;
+      },
+    };
+
+    function fadeInChildren(actId) {
+      const el = document.getElementById(actId);
+      const children = el.querySelectorAll(':scope > *:not(.stars-layer)');
+      const tl = gsap.timeline();
+      gsap.set(children, { opacity: 0, y: 25 });
+      children.forEach((c, i) => tl.to(c, { opacity: 1, y: 0, duration: 0.5 }, i * 0.1));
+      return tl;
+    }
+
+    // ===== Navigation =====
+    function goToAct(index) {
+      if (animating || index < 0 || index >= TOTAL_ACTS || index === currentAct) return;
+      animating = true;
+
+      const oldAct = document.getElementById(`act-${currentAct}`);
+      const newAct = document.getElementById(`act-${index}`);
+      const goingForward = index > currentAct;
+
+      // Fade out old act
+      gsap.to(oldAct, {
+        opacity: 0,
+        duration: 0.4,
+        onComplete: () => {
+          oldAct.classList.remove('active');
+          currentAct = index;
+          updateDots();
+
+          // Show new act
+          newAct.classList.add('active');
+          gsap.set(newAct, { opacity: 1 });
+
+          // Play entrance animation
+          const anim = actAnimations[index];
+          if (anim) {
+            const tl = anim(goingForward ? 1 : -1);
+            tl.call(() => { animating = false; });
+          } else {
+            animating = false;
+          }
+        }
+      });
+    }
+
+    // ===== Tap handlers =====
+    document.getElementById('tap-next').addEventListener('click', () => goToAct(currentAct + 1));
+    document.getElementById('tap-prev').addEventListener('click', () => goToAct(currentAct - 1));
+
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goToAct(currentAct + 1);
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goToAct(currentAct - 1);
+    });
+
+    // ===== Init: Show first act =====
+    document.getElementById('act-0').classList.add('active');
+    actAnimations[0]().call(() => { animating = false; });
+  </script>
+</body>
+</html>
