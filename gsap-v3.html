@@ -1343,7 +1343,7 @@
 
       // FIFA: Stickers fly from edges → land at positions, edges first → center last
       // CALCULATED COVERAGE — auto-adapts to any screen
-      const overlap = sw < 768 ? 0.4 : 0.3; // mobile: 60% overlap, desktop: 70%
+      const overlap = sw < 768 ? 0.32 : 0.3; // mobile: 68% overlap, desktop: 70%
       const step = size * overlap;
       const cols = Math.ceil(sw / step) + 2;
       const rows = Math.ceil(sh / step) + 2;
