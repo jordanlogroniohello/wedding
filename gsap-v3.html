@@ -1336,13 +1336,14 @@
       const sh = window.innerHeight;
 
       // CASINO DEALER STYLE — all stacked at center, dealt outward
-      const size = Math.max(sw, sh) * 0.45;
+      // Mobile: bigger stickers (fewer needed), Desktop: smaller
+      const size = sw < 768 ? Math.max(sw, sh) * 0.6 : Math.max(sw, sh) * 0.4;
       const centerX = sw / 2 - size / 2;
       const centerY = sh / 2 - size / 2;
 
       // FIFA: Stickers fly from edges → land at positions, edges first → center last
       // CALCULATED COVERAGE — auto-adapts to any screen
-      const overlap = 0.3; // 70% overlap — no gaps possible with round faces
+      const overlap = sw < 768 ? 0.4 : 0.3; // mobile: 60% overlap, desktop: 70%
       const step = size * overlap;
       const cols = Math.ceil(sw / step) + 2;
       const rows = Math.ceil(sh / step) + 2;
