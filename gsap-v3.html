@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jordan & Angelica — November 27, 2026</title>
+  <title>Angelica & Jordan — November 27, 2026</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Josefin+Sans:wght@200;300;400&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -21,7 +21,7 @@
       --font-sans: 'Josefin Sans', sans-serif;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #050a08; font-family: var(--font-serif); overflow-x: hidden; }
+    body { background: #0C1E17; font-family: var(--font-serif); overflow-x: hidden; }
     body.loading { overflow: hidden; }
 
     /* ---- Preloader ---- */
@@ -29,7 +29,7 @@
       position: fixed;
       inset: 0;
       z-index: 99999;
-      background: #050a08;
+      background: #0C1E17;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -72,6 +72,23 @@
 
     /* Progress */
     .progress { position: fixed; top: 0; left: 0; height: 2px; z-index: 999; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; }
+
+    /* Monogram */
+    .monogram {
+      font-family: var(--font-script);
+      font-size: 2.5rem;
+      color: var(--gold);
+      opacity: 0;
+      transform: translateY(20px);
+      margin-bottom: 10px;
+    }
+    .mono-amp {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 300;
+      font-size: 0.5em;
+      margin: 0 4px;
+    }
 
     /* ============================================
        ACT 1 — HERO
@@ -160,7 +177,7 @@
     .act-hscroll {
       position: relative;
       overflow: hidden;
-      background: #050a08;
+      background: #0C1E17;
     }
     .hscroll-pin {
       height: 100vh;
@@ -280,7 +297,7 @@
     .act-transition {
       position: relative;
       height: 400vh;
-      background: #050a08;
+      background: #0C1E17;
       overflow: hidden;
     }
     .transition-pin {
@@ -746,7 +763,7 @@
     .rsvp-btn { display: inline-block; padding: 14px 44px; font-family: var(--font-sans); font-weight: 300; font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; text-decoration: none; background: var(--dark-green); color: var(--beige); border: none; border-radius: 4px; cursor: pointer; transition: all 0.3s; }
     .rsvp-btn:hover { background: var(--gold); }
 
-    .act-close { min-height: 60vh; background: #050a08; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 40px; gap: 14px; position: relative; overflow: hidden; }
+    .act-close { min-height: 60vh; background: #0C1E17; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 40px; gap: 14px; position: relative; overflow: hidden; }
     .close-stars { position: absolute; inset: 0; }
     .close-names { font-family: var(--font-script); font-size: 2.5rem; color: var(--gold-light); z-index: 2; opacity: 0; transform: translateY(20px); }
     .close-hashtag { font-family: var(--font-sans); font-weight: 200; font-size: 0.7rem; letter-spacing: 2px; color: var(--gold); opacity: 0.5; z-index: 2; }
@@ -761,6 +778,7 @@
        DESKTOP — min-width: 768px
        ============================================ */
     @media (min-width: 768px) {
+      .monogram { font-size: 3.5rem; }
       .hero-names { font-size: clamp(3rem, 7vw, 5.5rem); }
       .hero-date { font-size: 0.9rem; letter-spacing: 5px; }
       .hero-hashtag { font-size: 1.1rem; letter-spacing: 3px; margin: 16px 0 8px; }
@@ -830,9 +848,10 @@
     <div class="stars-bg" id="stars-hero"></div>
     <div id="fireflies-hero"></div>
     <div class="hero-content">
+      <div class="monogram" id="hero-mono">A <span class="mono-amp">&</span> J</div>
       <p class="hero-date" id="hero-date">November 27, 2026</p>
       <div class="hero-divider" id="hero-div1"></div>
-      <h1 class="hero-names" id="hero-names">Jordan <span class="amp">&</span> Angelica</h1>
+      <h1 class="hero-names" id="hero-names">Angelica <span class="amp">&</span> Jordan</h1>
       <div class="hero-divider" id="hero-div2"></div>
       <p class="hero-hashtag" id="hero-hashtag">#exchANGEofvowswithDAN</p>
       <div class="hero-countdown" id="hero-countdown">
@@ -1052,7 +1071,7 @@
   <!-- ===== ACT 8: CLOSING ===== -->
   <section class="act-close" id="act-close">
     <div class="close-stars" id="close-stars"></div>
-    <h2 class="close-names" id="close-names">Jordan & Angelica</h2>
+    <h2 class="close-names" id="close-names">Angelica & Jordan</h2>
     <p class="close-hashtag">#exchANGEofvowswithDAN</p>
     <div class="close-countdown">
       <div class="cd-unit"><span class="cd-num" id="cd-d">000</span><span class="cd-label">Days</span></div>
@@ -1168,7 +1187,8 @@
     // ===== ACT 1: Hero entrance =====
     const heroTL = gsap.timeline({ delay: 0.3 });
     heroTL.to('.star', { opacity: 1, duration: 0.5, stagger: 0.01 });
-    heroTL.to('#hero-date', { opacity: 1, y: 0, duration: 0.8 }, 0.5);
+    heroTL.to('#hero-mono', { opacity: 1, y: 0, duration: 0.8 }, 0.3);
+    heroTL.to('#hero-date', { opacity: 1, y: 0, duration: 0.8 }, 0.6);
     heroTL.to('#hero-div1', { opacity: 1, scaleX: 1, duration: 0.6 }, 0.8);
     heroTL.to('#hero-names', { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }, 0.9);
     heroTL.to('#hero-div2', { opacity: 1, scaleX: 1, duration: 0.6 }, 1.3);
