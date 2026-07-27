@@ -22,6 +22,53 @@
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { background: #050a08; font-family: var(--font-serif); overflow-x: hidden; }
+    body.loading { overflow: hidden; }
+
+    /* ---- Preloader ---- */
+    .preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #050a08;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: opacity 0.6s;
+    }
+    .preloader.done {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .preloader-names {
+      font-family: var(--font-script);
+      font-size: 2rem;
+      color: var(--gold-light);
+      opacity: 0.6;
+    }
+    .preloader-bar-wrap {
+      width: 200px;
+      height: 2px;
+      background: rgba(201,169,110,0.15);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .preloader-bar {
+      width: 0%;
+      height: 100%;
+      background: var(--gold);
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    .preloader-pct {
+      font-family: var(--font-sans);
+      font-weight: 200;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      color: var(--gold);
+      opacity: 0.5;
+    }
 
     /* Progress */
     .progress { position: fixed; top: 0; left: 0; height: 2px; z-index: 999; background: linear-gradient(90deg, var(--gold), var(--gold-light)); width: 0%; }
@@ -751,7 +798,16 @@
     }
   </style>
 </head>
-<body>
+<body class="loading">
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader">
+    <p class="preloader-names">J & A</p>
+    <div class="preloader-bar-wrap">
+      <div class="preloader-bar" id="preloader-bar"></div>
+    </div>
+    <p class="preloader-pct" id="preloader-pct">0%</p>
+  </div>
 
   <div class="progress" id="progress"></div>
 
@@ -1009,6 +1065,70 @@
 
   <script>
     gsap.registerPlugin(ScrollTrigger);
+
+    // ===== PRELOADER =====
+    (function preload() {
+      const bar = document.getElementById('preloader-bar');
+      const pct = document.getElementById('preloader-pct');
+      const preloader = document.getElementById('preloader');
+
+      // Collect all assets to preload
+      const assets = [
+        'assets/sticker-jordan.png',
+        'assets/sticker-angelica.png',
+        // Prenup placeholder photos
+        ...Array.from({length: 12}, (_, i) => `https://picsum.photos/seed/p${i+1}/400/550`),
+      ];
+
+      // Also wait for fonts
+      let fontsLoaded = false;
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => { fontsLoaded = true; });
+      } else {
+        fontsLoaded = true;
+      }
+
+      let loaded = 0;
+      const total = assets.length + 1; // +1 for fonts
+
+      function updateProgress() {
+        const progress = Math.round((loaded / total) * 100);
+        bar.style.width = progress + '%';
+        pct.textContent = progress + '%';
+
+        if (loaded >= total) {
+          // All done — hide preloader
+          setTimeout(() => {
+            preloader.classList.add('done');
+            document.body.classList.remove('loading');
+            // Remove from DOM after fade
+            setTimeout(() => preloader.remove(), 600);
+          }, 300);
+        }
+      }
+
+      // Preload images
+      assets.forEach(src => {
+        const img = new Image();
+        img.onload = img.onerror = () => { loaded++; updateProgress(); };
+        img.src = src;
+      });
+
+      // Check fonts
+      const fontCheck = setInterval(() => {
+        if (fontsLoaded) {
+          clearInterval(fontCheck);
+          loaded++;
+          updateProgress();
+        }
+      }, 100);
+
+      // Safety timeout — don't wait forever
+      setTimeout(() => {
+        loaded = total;
+        updateProgress();
+      }, 8000);
+    })();
 
     // ===== Stars & fireflies =====
     function makeStars(id, count) {
