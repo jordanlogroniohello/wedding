@@ -82,15 +82,20 @@ const projectData = {
         },
         {
             id: 'scene-110',
-            name: 'Backhug with Bouquet',
+            name: 'Intimate Moments with Bouquet',
             startTime: 70,
             endTime: 80,
             musicCue: 'Chorus 1 \u2014 breath / transition',
-            visualIdea: 'Jordan backhugs Angelica from behind while she holds a bouquet of flowers. Warm, natural light filtering through the trees.',
+            visualIdea: 'A series of sweet, intimate moments between Angelica and Jordan:\n\u2022 Backhug \u2014 Jordan hugs Angelica from behind while she holds a bouquet\n\u2022 Holding the bouquet together \u2014 foreheads touching\n\u2022 Jordan putting a flower sa tenga ni Angelica',
             notes: 'We imagine this in slow motion.',
+            referenceImages: [
+                { src: 'assets/timeline/images/reference-110-backhug.png', caption: 'Backhug with bouquet' },
+                { src: 'assets/timeline/images/reference-110-bouquet-together.jpeg', caption: 'Both holding the bouquet together' },
+                { src: 'assets/timeline/images/reference-110-flower-ear.png', caption: 'Jordan putting flower sa tenga ni Angelica' },
+            ],
             referenceImage: 'assets/timeline/images/reference-110-backhug.png',
             referenceVideo: null,
-            whatWeLike: 'The gentle intimacy of the backhug. The bouquet as a foreground element. Warm, soft, natural feeling.',
+            whatWeLike: 'The gentle intimacy of each moment. Warm, soft, natural feeling.',
             priority: 'must-have',
             thumbnail: 'assets/timeline/images/reference-110-backhug.png'
         },
@@ -116,5 +121,16 @@ const projectData = {
     // ─── REFERENCES ───────────────────────────────────────────────────
     // Reference media for the References moodboard view.
     // category: 'photo' | 'video' | 'edit'
-    references: []
+    references: [
+        {
+            id: 'ref-main',
+            sceneId: null,
+            category: 'video',
+            title: 'Main Reference \u2014 Overall Feel & Direction',
+            thumbnail: null,
+            src: 'assets/timeline/videos/main-reference.mp4',
+            type: 'video',
+            whatWeLike: 'This is the overall reference for the feel, pacing, and visual direction we love for the entire prenup video.'
+        }
+    ]
 };

@@ -752,6 +752,13 @@
         display: block;
         border-radius: 6px;
     }
+    .scene-reference-media + .scene-reference-caption {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        margin-top: 4px;
+        margin-bottom: 14px;
+        font-style: italic;
+    }
     .scene-what-we-like {
         background: rgba(200,169,110,0.06);
         border: 1px solid rgba(200,169,110,0.15);
@@ -910,6 +917,38 @@
         font-style: italic;
         line-height: 1.5;
     }
+    /* Featured reference */
+    .ref-featured {
+        background: var(--bg-surface);
+        border: 1px solid var(--gold-dim);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 24px;
+    }
+    .ref-featured-video {
+        width: 100%;
+        max-height: 400px;
+        background: var(--bg-elevated);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+    }
+    .ref-featured-video video,
+    .ref-featured-video img {
+        width: 100%;
+        display: block;
+    }
+    .ref-featured-body {
+        padding: 18px 22px;
+    }
+    .ref-featured-title {
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        color: var(--text-primary);
+        margin: 8px 0;
+    }
+
     .references-empty {
         text-align: center;
         padding: 60px 20px;
@@ -1486,7 +1525,12 @@
             const overlay = document.getElementById('sceneOverlay');
 
             let refMediaHTML = '';
-            if (scene.referenceImage) {
+            if (scene.referenceImages && scene.referenceImages.length > 0) {
+                refMediaHTML = scene.referenceImages.map(img =>
+                    `<div class="scene-reference-media"><img src="${img.src}" alt="${img.caption || 'Reference'}"></div>` +
+                    (img.caption ? `<div class="scene-reference-caption">${img.caption}</div>` : '')
+                ).join('');
+            } else if (scene.referenceImage) {
                 refMediaHTML = `<div class="scene-reference-media"><img src="${scene.referenceImage}" alt="Reference"></div>`;
             } else if (scene.referenceVideo) {
                 refMediaHTML = `<div class="scene-reference-media"><video src="${scene.referenceVideo}" controls></video></div>`;
@@ -1583,19 +1627,20 @@
                 }
             });
 
-            // From explicit references
+            // From explicit references — add at the BEGINNING
             d.references.forEach(ref => {
-                // Avoid duplicates from scenes
                 if (!refs.find(r => r.sceneId === ref.sceneId && r.title === ref.title)) {
                     const scene = d.scenes.find(s => s.id === ref.sceneId);
-                    refs.push({
+                    refs.unshift({
                         sceneId: ref.sceneId,
                         sceneName: scene ? scene.name : '',
                         category: ref.category,
                         title: ref.title,
                         thumbnail: ref.thumbnail,
                         whatWeLike: ref.whatWeLike || '',
-                        src: ref.src
+                        src: ref.src,
+                        type: ref.type,
+                        featured: !ref.sceneId
                     });
                 }
             });
@@ -1612,23 +1657,51 @@
                         <div>References will appear here as they are added to scenes.</div>
                     </div>`;
             } else {
-                cardsHTML = '<div class="references-grid">';
-                refs.forEach(ref => {
-                    const thumbContent = ref.thumbnail
-                        ? `<img src="${ref.thumbnail}" alt="${ref.title}">`
-                        : 'No image';
+                // Featured / main reference first (full width)
+                const featured = refs.filter(r => r.featured);
+                const rest = refs.filter(r => !r.featured);
+
+                cardsHTML = '';
+                featured.forEach(ref => {
                     cardsHTML += `
-                        <div class="ref-card" data-scene="${ref.sceneId}">
-                            <div class="ref-card-thumb">${thumbContent}</div>
-                            <div class="ref-card-body">
-                                <div class="ref-card-scene">${ref.sceneName}</div>
-                                <div class="ref-card-title">${ref.title}</div>
+                        <div class="ref-featured" data-src="${ref.src || ''}">
+                            <div class="ref-featured-video">
+                                ${ref.src && ref.type === 'video'
+                                    ? `<video src="${ref.src}" controls></video>`
+                                    : (ref.thumbnail ? `<img src="${ref.thumbnail}" alt="${ref.title}">` : '')}
+                            </div>
+                            <div class="ref-featured-body">
                                 <span class="ref-card-category ${ref.category}">${ref.category}</span>
+                                <div class="ref-featured-title">${ref.title}</div>
                                 ${ref.whatWeLike ? `<div class="ref-card-wwl">\u201c${ref.whatWeLike}\u201d</div>` : ''}
                             </div>
                         </div>`;
                 });
-                cardsHTML += '</div>';
+
+                if (rest.length > 0) {
+                    cardsHTML += '<div class="references-grid">';
+                    rest.forEach(ref => {
+                        let thumbContent;
+                        if (ref.src && ref.type === 'video') {
+                            thumbContent = `<video src="${ref.src}" controls style="width:100%;height:100%;object-fit:cover;"></video>`;
+                        } else if (ref.thumbnail) {
+                            thumbContent = `<img src="${ref.thumbnail}" alt="${ref.title}">`;
+                        } else {
+                            thumbContent = 'No image';
+                        }
+                        cardsHTML += `
+                            <div class="ref-card" data-scene="${ref.sceneId || ''}">
+                                <div class="ref-card-thumb">${thumbContent}</div>
+                                <div class="ref-card-body">
+                                    <div class="ref-card-scene">${ref.sceneName}</div>
+                                    <div class="ref-card-title">${ref.title}</div>
+                                    <span class="ref-card-category ${ref.category}">${ref.category}</span>
+                                    ${ref.whatWeLike ? `<div class="ref-card-wwl">\u201c${ref.whatWeLike}\u201d</div>` : ''}
+                                </div>
+                            </div>`;
+                    });
+                    cardsHTML += '</div>';
+                }
             }
 
             el.innerHTML = `
@@ -1652,13 +1725,13 @@
                 btn.addEventListener('click', () => buildReferences(btn.dataset.filter));
             });
 
-            // Card click opens scene
+            // Card click opens scene (only if it has one)
             el.querySelectorAll('.ref-card').forEach(card => {
-                card.style.cursor = 'pointer';
-                card.addEventListener('click', () => {
-                    const sceneId = card.dataset.scene;
-                    if (sceneId) openScene(sceneId);
-                });
+                const sceneId = card.dataset.scene;
+                if (sceneId) {
+                    card.style.cursor = 'pointer';
+                    card.addEventListener('click', () => openScene(sceneId));
+                }
             });
         }
 
