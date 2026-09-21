@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prenup Timeline Studio &mdash; Angelica &amp; Jordan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+    /* ================================================================
+       RESET & CUSTOM PROPERTIES
+       ================================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+        /* Backgrounds */
+        --bg-body:      #08080c;
+        --bg-panel:     #0e0e14;
+        --bg-surface:   #141420;
+        --bg-elevated:  #1a1a28;
+        --bg-hover:     #20202e;
+
+        /* Borders */
+        --border-subtle:  #1c1c2a;
+        --border-medium:  #282840;
+        --border-strong:  #363650;
+
+        /* Text */
+        --text-primary:   #e4e4ec;
+        --text-secondary: #9898a8;
+        --text-muted:     #5c5c70;
+        --text-dim:       #3a3a4e;
+
+        /* Accent */
+        --gold:           #c8a96e;
+        --gold-soft:      #b89a5e;
+        --gold-dim:       rgba(200,169,110,0.15);
+        --rose:           #c47070;
+        --rose-dim:       rgba(196,112,112,0.15);
+        --teal:           #5aaa8a;
+
+        /* Playhead */
+        --playhead:       #e04050;
+        --playhead-glow:  rgba(224,64,80,0.3);
+
+        /* Track colors */
+        --track-music:    #4a6fa5;
+        --track-video:    #7b68ae;
+        --track-photo:    #c8a96e;
+        --track-cues:     #c47070;
+        --track-outfit:   #5aaa8a;
+
+        /* Fonts */
+        --font-body:    'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        --font-display: 'Cormorant Garamond', 'Georgia', serif;
+        --font-mono:    'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+        /* Layout */
+        --header-height: 100px;
+        --nav-height:    44px;
+        --player-height: 64px;
+        --track-label-width: 88px;
+        --track-height:  52px;
+        --pixels-per-second: 12;
+    }
+
+    html { font-size: 14px; }
+
+    body {
+        font-family: var(--font-body);
+        background: var(--bg-body);
+        color: var(--text-primary);
+        line-height: 1.5;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* ================================================================
+       SCROLLBAR
+       ================================================================ */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-panel); }
+    ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    /* ================================================================
+       HEADER
+       ================================================================ */
+    .header {
+        padding: 28px 32px 20px;
+        text-align: center;
+        border-bottom: 1px solid var(--border-subtle);
+        background: var(--bg-panel);
+    }
+    .header-couple {
+        font-family: var(--font-display);
+        font-size: 1.8rem;
+        font-weight: 300;
+        letter-spacing: 0.15em;
+        color: var(--text-primary);
+    }
+    .header-couple .plus {
+        color: var(--gold);
+        margin: 0 0.3em;
+    }
+    .header-subtitle {
+        font-size: 0.7rem;
+        font-weight: 500;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        margin-top: 4px;
+    }
+    .header-details {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 12px;
+        font-size: 0.78rem;
+        color: var(--text-secondary);
+    }
+    .header-details .sep {
+        color: var(--border-strong);
+    }
+    .header-hashtag {
+        color: var(--gold);
+        font-weight: 500;
+    }
+
+    /* ================================================================
+       NAVIGATION
+       ================================================================ */
+    .nav {
+        display: flex;
+        align-items: center;
+        gap: 0;
+        border-bottom: 1px solid var(--border-subtle);
+        background: var(--bg-panel);
+        padding: 0 32px;
+    }
+    .nav-tab {
+        padding: 12px 20px;
+        font-size: 0.72rem;
+        font-weight: 500;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        user-select: none;
+    }
+    .nav-tab:hover {
+        color: var(--text-secondary);
+    }
+    .nav-tab.active {
+        color: var(--gold);
+        border-bottom-color: var(--gold);
+    }
+
+    /* ================================================================
+       PLAYER
+       ================================================================ */
+    .player {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 32px;
+        background: var(--bg-surface);
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    .player-controls {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+    .player-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 4px;
+        background: var(--bg-elevated);
+        color: var(--text-secondary);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+        font-size: 14px;
+    }
+    .player-btn:hover {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+    }
+    .player-btn.play-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--gold-dim);
+        color: var(--gold);
+    }
+    .player-btn.play-btn:hover {
+        background: rgba(200,169,110,0.25);
+    }
+    .player-time {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        font-weight: 400;
+        color: var(--text-secondary);
+        min-width: 100px;
+        flex-shrink: 0;
+    }
+    .player-time .current {
+        color: var(--text-primary);
+    }
+    .player-progress-wrap {
+        flex: 1;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        position: relative;
+    }
+    .player-progress-track {
+        width: 100%;
+        height: 3px;
+        background: var(--border-medium);
+        border-radius: 2px;
+        position: relative;
+        overflow: hidden;
+    }
+    .player-progress-fill {
+        height: 100%;
+        background: var(--gold);
+        border-radius: 2px;
+        width: 0%;
+        transition: none;
+    }
+    .player-progress-wrap:hover .player-progress-track { height: 5px; }
+    .player-progress-thumb {
+        position: absolute;
+        top: 50%;
+        left: 0%;
+        transform: translate(-50%, -50%);
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--gold);
+        opacity: 0;
+        transition: opacity 0.15s;
+        pointer-events: none;
+    }
+    .player-progress-wrap:hover .player-progress-thumb { opacity: 1; }
+    .player-volume {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+    .player-volume svg { color: var(--text-muted); }
+    .volume-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 70px;
+        height: 3px;
+        background: var(--border-medium);
+        border-radius: 2px;
+        outline: none;
+        cursor: pointer;
+    }
+    .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--text-secondary);
+        cursor: pointer;
+    }
+    .player-song-info {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        flex-shrink: 0;
+        text-align: right;
+        max-width: 200px;
+    }
+    .player-song-info .song-title {
+        color: var(--text-secondary);
+        font-weight: 500;
+    }
+    .player-no-audio {
+        flex: 1;
+        text-align: center;
+        font-size: 0.75rem;
+        color: var(--text-dim);
+        font-style: italic;
+    }
+
+    /* ================================================================
+       NOW PLAYING BAR
+       ================================================================ */
+    .now-playing {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 8px 32px;
+        background: var(--bg-panel);
+        border-bottom: 1px solid var(--border-subtle);
+        min-height: 38px;
+        transition: all 0.3s;
+    }
+    .now-playing.has-scene {
+        background: rgba(200,169,110,0.04);
+    }
+    .now-playing-label {
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        flex-shrink: 0;
+    }
+    .now-playing-scene {
+        font-size: 0.82rem;
+        color: var(--text-primary);
+        font-weight: 500;
+    }
+    .now-playing-desc {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .now-playing-section {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        color: var(--track-music);
+        background: rgba(74,111,165,0.12);
+        padding: 2px 8px;
+        border-radius: 3px;
+        flex-shrink: 0;
+    }
+
+    /* ================================================================
+       VIEWS CONTAINER
+       ================================================================ */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* ================================================================
+       TIMELINE VIEW
+       ================================================================ */
+    .timeline-view { padding: 0; }
+
+    .timeline-wrapper {
+        display: flex;
+        position: relative;
+    }
+
+    /* Track Labels (fixed left column) */
+    .track-labels {
+        flex-shrink: 0;
+        width: var(--track-label-width);
+        background: var(--bg-panel);
+        border-right: 1px solid var(--border-subtle);
+        z-index: 10;
+    }
+    .track-labels .ruler-spacer {
+        height: 28px;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    .track-label {
+        height: var(--track-height);
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-subtle);
+        user-select: none;
+    }
+    .track-label.music  { color: var(--track-music); }
+    .track-label.video  { color: var(--track-video); }
+    .track-label.photo  { color: var(--track-photo); }
+    .track-label.cues   { color: var(--track-cues);  }
+    .track-label.outfit { color: var(--track-outfit); }
+
+    /* Timeline scroll area */
+    .timeline-scroll {
+        flex: 1;
+        overflow-x: auto;
+        overflow-y: hidden;
+        position: relative;
+    }
+    .timeline-content {
+        position: relative;
+        min-height: calc(28px + var(--track-height) * 2);
+    }
+
+    /* Time ruler */
+    .time-ruler {
+        height: 28px;
+        position: relative;
+        border-bottom: 1px solid var(--border-subtle);
+        background: var(--bg-panel);
+    }
+    .time-ruler-tick {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    .time-ruler-tick .tick-line {
+        width: 1px;
+        background: var(--border-medium);
+    }
+    .time-ruler-tick.major .tick-line { height: 10px; background: var(--border-strong); }
+    .time-ruler-tick.minor .tick-line { height: 6px; }
+    .time-ruler-tick .tick-label {
+        font-family: var(--font-mono);
+        font-size: 0.58rem;
+        color: var(--text-dim);
+        position: absolute;
+        top: 3px;
+        white-space: nowrap;
+    }
+    .time-ruler-tick.major .tick-label { color: var(--text-muted); }
+
+    /* Track rows */
+    .track-row {
+        height: var(--track-height);
+        position: relative;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    .track-row:hover { background: rgba(255,255,255,0.01); }
+
+    /* Scene blocks (shared) */
+    .block {
+        position: absolute;
+        top: 4px;
+        height: calc(100% - 8px);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        font-size: 0.68rem;
+        font-weight: 500;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        cursor: default;
+        transition: filter 0.15s, box-shadow 0.2s;
+        user-select: none;
+    }
+    .block:hover {
+        filter: brightness(1.15);
+    }
+    .block.active-block {
+        box-shadow: 0 0 0 1px var(--playhead), 0 0 8px var(--playhead-glow);
+        filter: brightness(1.2);
+        z-index: 5;
+    }
+
+    /* Music blocks */
+    .block.music {
+        background: rgba(74,111,165,0.2);
+        border: 1px solid rgba(74,111,165,0.35);
+        color: var(--track-music);
+        font-size: 0.62rem;
+        letter-spacing: 0.08em;
+    }
+
+    /* Video blocks */
+    .block.video {
+        background: linear-gradient(to bottom, rgba(123,104,174,0.25), rgba(123,104,174,0.15));
+        border: 1px solid rgba(123,104,174,0.35);
+        color: #b8a8e0;
+        cursor: pointer;
+    }
+    .block.video:hover {
+        border-color: rgba(123,104,174,0.6);
+    }
+    .block.video .block-star {
+        color: var(--gold);
+        margin-left: 4px;
+        font-size: 0.72rem;
+    }
+
+    /* Photo blocks */
+    .block.photo {
+        background: rgba(200,169,110,0.12);
+        border: 1px solid rgba(200,169,110,0.25);
+        color: var(--track-photo);
+        font-size: 0.64rem;
+    }
+
+    /* Cue markers */
+    .cue-marker {
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: default;
+        z-index: 2;
+    }
+    .cue-marker .cue-diamond {
+        display: none;
+    }
+    .cue-marker .cue-label {
+        font-size: 0.52rem;
+        font-weight: 600;
+        letter-spacing: 0.06em;
+        color: var(--track-cues);
+        white-space: nowrap;
+        margin-top: 2px;
+        opacity: 0.7;
+    }
+    .cue-marker:hover .cue-label { opacity: 1; }
+    .cue-marker .cue-icon {
+        font-size: 0.72rem;
+        line-height: 1;
+        flex-shrink: 0;
+    }
+    .cue-marker.type-instrumental .cue-label { color: #7a8aaa; }
+    .cue-marker.type-vocal .cue-label        { color: #8ac47a; }
+    .cue-marker.type-build .cue-label        { color: #d4a85a; }
+    .cue-marker.type-fast-vocal .cue-label   { color: #d4c45a; }
+    .cue-marker.type-chorus-hit .cue-label   { color: #d45a7a; }
+    .cue-marker.type-release .cue-label      { color: #7aaac4; }
+
+    /* Cue legend */
+    .cue-legend {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 8px 32px;
+        border-top: 1px solid var(--border-subtle);
+        background: var(--bg-panel);
+        flex-wrap: wrap;
+    }
+    .cue-legend-title {
+        font-size: 0.58rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+    }
+    .cue-legend-item {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 0.64rem;
+        color: var(--text-muted);
+    }
+    .cue-legend-item .legend-icon { font-size: 0.72rem; }
+
+    /* Playhead */
+    .playhead {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--playhead);
+        z-index: 20;
+        pointer-events: none;
+        left: 0;
+        transition: none;
+    }
+    .playhead::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -5px;
+        width: 11px;
+        height: 10px;
+        background: var(--playhead);
+        clip-path: polygon(0 0, 100% 0, 50% 100%);
+    }
+    .playhead-glow {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        left: -1px;
+        background: var(--playhead-glow);
+        filter: blur(3px);
+    }
+
+    /* Timeline disclaimer */
+    .timeline-disclaimer {
+        padding: 16px 32px;
+        text-align: center;
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        font-style: italic;
+        border-top: 1px solid var(--border-subtle);
+    }
+
+    /* ================================================================
+       SCENE DETAIL PANEL
+       ================================================================ */
+    .scene-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+    }
+    .scene-overlay.open { display: flex; }
+    .scene-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(4px);
+        cursor: pointer;
+    }
+    .scene-panel {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: min(520px, 90vw);
+        height: 100%;
+        background: var(--bg-panel);
+        border-left: 1px solid var(--border-medium);
+        overflow-y: auto;
+        animation: slideIn 0.25s ease-out;
+    }
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to   { transform: translateX(0);   opacity: 1; }
+    }
+    .scene-panel-header {
+        padding: 24px 28px 16px;
+        border-bottom: 1px solid var(--border-subtle);
+        position: sticky;
+        top: 0;
+        background: var(--bg-panel);
+        z-index: 2;
+    }
+    .scene-panel-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 4px;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.15s;
+    }
+    .scene-panel-close:hover { background: var(--bg-elevated); color: var(--text-primary); }
+    .scene-panel-name {
+        font-family: var(--font-display);
+        font-size: 1.6rem;
+        font-weight: 400;
+        color: var(--text-primary);
+        padding-right: 40px;
+    }
+    .scene-panel-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 8px;
+    }
+    .scene-panel-time {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: var(--text-muted);
+    }
+    .priority-badge {
+        font-size: 0.62rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 2px 10px;
+        border-radius: 3px;
+    }
+    .priority-badge.must-have {
+        background: var(--gold-dim);
+        color: var(--gold);
+    }
+    .priority-badge.would-love {
+        background: var(--rose-dim);
+        color: var(--rose);
+    }
+    .priority-badge.optional {
+        background: rgba(90,170,138,0.12);
+        color: var(--teal);
+    }
+
+    .scene-panel-body {
+        padding: 20px 28px 32px;
+    }
+    .scene-section {
+        margin-bottom: 20px;
+    }
+    .scene-section-label {
+        font-size: 0.6rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 6px;
+    }
+    .scene-section-content {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        white-space: pre-line;
+    }
+    .scene-section-content.highlight {
+        color: var(--text-primary);
+        background: var(--bg-surface);
+        padding: 12px 16px;
+        border-radius: 6px;
+        border-left: 3px solid var(--gold);
+    }
+    .scene-reference-media {
+        width: 100%;
+        border-radius: 6px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        min-height: 180px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-dim);
+        font-size: 0.75rem;
+        font-style: italic;
+        overflow: hidden;
+    }
+    .scene-reference-media img,
+    .scene-reference-media video {
+        width: 100%;
+        display: block;
+        border-radius: 6px;
+    }
+    .scene-what-we-like {
+        background: rgba(200,169,110,0.06);
+        border: 1px solid rgba(200,169,110,0.15);
+        border-radius: 6px;
+        padding: 14px 16px;
+        margin-top: 8px;
+    }
+    .scene-what-we-like .wwl-label {
+        font-size: 0.58rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold-soft);
+        margin-bottom: 4px;
+    }
+    .scene-what-we-like .wwl-text {
+        font-size: 0.82rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        font-style: italic;
+    }
+    .scene-notes-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+    .scene-note-card {
+        background: var(--bg-surface);
+        border-radius: 6px;
+        padding: 12px 14px;
+    }
+    .scene-note-card .note-for {
+        font-size: 0.58rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+    .scene-note-card.photo-note .note-for { color: var(--track-photo); }
+    .scene-note-card.video-note .note-for { color: var(--track-video); }
+    .scene-note-card .note-text {
+        font-size: 0.78rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+    }
+    .scene-panel-disclaimer {
+        margin-top: 28px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border-subtle);
+        font-size: 0.68rem;
+        color: var(--text-dim);
+        font-style: italic;
+        line-height: 1.5;
+    }
+
+    /* ================================================================
+       REFERENCES VIEW
+       ================================================================ */
+    .references-view {
+        padding: 28px 32px;
+    }
+    .references-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 24px;
+    }
+    .references-title {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        color: var(--text-primary);
+    }
+    .references-filter {
+        display: flex;
+        gap: 0;
+        background: var(--bg-surface);
+        border-radius: 6px;
+        overflow: hidden;
+        border: 1px solid var(--border-subtle);
+    }
+    .ref-filter-btn {
+        padding: 6px 14px;
+        font-size: 0.66rem;
+        font-weight: 500;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 0.15s;
+    }
+    .ref-filter-btn:hover { color: var(--text-secondary); background: var(--bg-elevated); }
+    .ref-filter-btn.active { color: var(--gold); background: var(--gold-dim); }
+
+    .references-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 16px;
+    }
+    .ref-card {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 8px;
+        overflow: hidden;
+        transition: border-color 0.2s;
+    }
+    .ref-card:hover { border-color: var(--border-strong); }
+    .ref-card-thumb {
+        width: 100%;
+        height: 160px;
+        background: var(--bg-elevated);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-dim);
+        font-size: 0.75rem;
+        font-style: italic;
+        overflow: hidden;
+    }
+    .ref-card-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .ref-card-body {
+        padding: 14px 16px;
+    }
+    .ref-card-scene {
+        font-size: 0.68rem;
+        color: var(--text-muted);
+        margin-bottom: 4px;
+    }
+    .ref-card-title {
+        font-size: 0.88rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 6px;
+    }
+    .ref-card-category {
+        display: inline-block;
+        font-size: 0.56rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 2px 8px;
+        border-radius: 3px;
+        margin-bottom: 8px;
+    }
+    .ref-card-category.photo { background: var(--gold-dim); color: var(--gold); }
+    .ref-card-category.video { background: rgba(123,104,174,0.15); color: #b8a8e0; }
+    .ref-card-category.edit  { background: var(--rose-dim); color: var(--rose); }
+    .ref-card-wwl {
+        font-size: 0.76rem;
+        color: var(--text-secondary);
+        font-style: italic;
+        line-height: 1.5;
+    }
+    .references-empty {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-dim);
+    }
+    .references-empty-title {
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+    }
+    .references-disclaimer {
+        margin-top: 32px;
+        text-align: center;
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        font-style: italic;
+    }
+
+    /* ================================================================
+       SHOT OVERVIEW VIEW
+       ================================================================ */
+    .shots-view {
+        padding: 28px 32px;
+        max-width: 960px;
+        margin: 0 auto;
+    }
+    .shots-title {
+        font-family: var(--font-display);
+        font-size: 1.4rem;
+        color: var(--text-primary);
+        margin-bottom: 24px;
+    }
+    .shots-group {
+        margin-bottom: 32px;
+    }
+    .shots-group-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border-subtle);
+    }
+    .shots-group-icon {
+        font-size: 1rem;
+    }
+    .shots-group-label {
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+    }
+    .shots-group.must-have .shots-group-label { color: var(--gold); }
+    .shots-group.would-love .shots-group-label { color: var(--rose); }
+    .shots-group.optional .shots-group-label { color: var(--teal); }
+
+    .shot-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 16px;
+        padding: 14px 18px;
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        border-radius: 6px;
+        margin-bottom: 8px;
+        cursor: pointer;
+        transition: border-color 0.15s;
+    }
+    .shot-card:hover { border-color: var(--border-strong); }
+    .shot-card-main { min-width: 0; }
+    .shot-card-name {
+        font-size: 0.88rem;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+    }
+    .shot-card-details {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        margin-bottom: 6px;
+    }
+    .shot-card-tag {
+        font-size: 0.6rem;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 1px 7px;
+        border-radius: 3px;
+        background: var(--bg-elevated);
+        color: var(--text-muted);
+    }
+    .shot-card-desc {
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+    }
+    .shot-card-time {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        color: var(--text-dim);
+        flex-shrink: 0;
+        align-self: center;
+    }
+    .shots-disclaimer {
+        margin-top: 24px;
+        text-align: center;
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        font-style: italic;
+    }
+
+    /* ================================================================
+       KEYBOARD HINT
+       ================================================================ */
+    .keyboard-hint {
+        position: fixed;
+        bottom: 16px;
+        right: 16px;
+        font-size: 0.62rem;
+        color: var(--text-dim);
+        background: var(--bg-surface);
+        border: 1px solid var(--border-subtle);
+        padding: 6px 12px;
+        border-radius: 6px;
+        z-index: 50;
+        display: flex;
+        gap: 12px;
+    }
+    .keyboard-hint kbd {
+        font-family: var(--font-mono);
+        background: var(--bg-elevated);
+        padding: 1px 5px;
+        border-radius: 3px;
+        font-size: 0.6rem;
+        color: var(--text-muted);
+    }
+
+    /* ================================================================
+       RESPONSIVE
+       ================================================================ */
+    @media (max-width: 768px) {
+        .header { padding: 20px 16px 14px; }
+        .header-couple { font-size: 1.4rem; }
+        .header-details { flex-wrap: wrap; gap: 8px; font-size: 0.7rem; }
+        .nav { padding: 0 16px; overflow-x: auto; }
+        .player { padding: 10px 16px; gap: 10px; flex-wrap: wrap; }
+        .player-song-info { display: none; }
+        .player-volume { display: none; }
+        .now-playing { padding: 8px 16px; }
+        .track-labels { width: 64px; }
+        .track-label { font-size: 0.52rem; padding: 0 6px; }
+        :root { --track-height: 44px; --pixels-per-second: 8; }
+        .scene-panel { width: 100vw; }
+        .scene-notes-grid { grid-template-columns: 1fr; }
+        .references-view { padding: 20px 16px; }
+        .shots-view { padding: 20px 16px; }
+        .keyboard-hint { display: none; }
+    }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+         HEADER
+         ============================================================ -->
+    <header class="header" id="header"></header>
+
+    <!-- ============================================================
+         NAVIGATION
+         ============================================================ -->
+    <nav class="nav" id="nav">
+        <div class="nav-tab active" data-view="timeline">Timeline</div>
+        <div class="nav-tab" data-view="references">References</div>
+        <div class="nav-tab" data-view="shots">Shot Overview</div>
+    </nav>
+
+    <!-- ============================================================
+         SONG PLAYER
+         ============================================================ -->
+    <div class="player" id="player"></div>
+
+    <!-- ============================================================
+         NOW PLAYING
+         ============================================================ -->
+    <div class="now-playing" id="nowPlaying">
+        <span class="now-playing-label">Now Playing</span>
+        <span class="now-playing-scene" id="npScene">&mdash;</span>
+        <span class="now-playing-desc" id="npDesc"></span>
+        <span class="now-playing-section" id="npSection" style="display:none;"></span>
+    </div>
+
+    <!-- ============================================================
+         TIMELINE VIEW
+         ============================================================ -->
+    <div class="view timeline-view active" id="viewTimeline">
+        <div class="timeline-wrapper">
+            <div class="track-labels" id="trackLabels"></div>
+            <div class="timeline-scroll" id="timelineScroll">
+                <div class="timeline-content" id="timelineContent">
+                    <div class="playhead" id="playhead">
+                        <div class="playhead-glow"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="timeline-disclaimer">
+            These references are intended to communicate the feeling and ideas we love. We&rsquo;re happy for the Photo &amp; Video team to interpret them creatively.
+        </div>
+    </div>
+
+    <!-- ============================================================
+         REFERENCES VIEW
+         ============================================================ -->
+    <div class="view references-view" id="viewReferences"></div>
+
+    <!-- ============================================================
+         SHOT OVERVIEW VIEW
+         ============================================================ -->
+    <div class="view shots-view" id="viewShots"></div>
+
+    <!-- ============================================================
+         SCENE DETAIL PANEL
+         ============================================================ -->
+    <div class="scene-overlay" id="sceneOverlay">
+        <div class="scene-backdrop" id="sceneBackdrop"></div>
+        <div class="scene-panel" id="scenePanel"></div>
+    </div>
+
+    <!-- ============================================================
+         KEYBOARD HINT
+         ============================================================ -->
+    <div class="keyboard-hint">
+        <span><kbd>Space</kbd> Play / Pause</span>
+        <span><kbd>&larr;</kbd><kbd>&rarr;</kbd> Seek</span>
+        <span><kbd>Esc</kbd> Close</span>
+    </div>
+
+
+    <!-- ============================================================
+         DATA (external)
+         ============================================================ -->
+    <script src="prenup-data.js"></script>
+
+    <!-- ============================================================
+         APPLICATION
+         ============================================================ -->
+    <script>
+    (function() {
+        'use strict';
+
+        // ─── CONSTANTS ────────────────────────────────────────────
+        const PPS = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--pixels-per-second')) || 12;
+        const d = projectData;
+        let songDuration = d.song.duration;
+        let timelineWidth = songDuration * PPS;
+        let audio = null;
+        let rafId = null;
+        let activeSceneId = null;
+
+        // ─── UTILITIES ────────────────────────────────────────────
+        function fmt(sec) {
+            const m = Math.floor(sec / 60);
+            const s = Math.floor(sec % 60);
+            return m + ':' + String(s).padStart(2, '0');
+        }
+
+        function pxAt(time) {
+            return time * PPS;
+        }
+
+        function timeAt(px) {
+            return px / PPS;
+        }
+
+        function getSceneAt(time) {
+            return d.scenes.find(s => time >= s.startTime && time < s.endTime);
+        }
+
+        function getMusicAt(time) {
+            return d.musicSections.find(s => time >= s.startTime && time < s.endTime);
+        }
+
+        function priorityLabel(p) {
+            if (p === 'must-have')  return '\u2605 MUST HAVE';
+            if (p === 'would-love') return '\u2661 WOULD LOVE';
+            return 'OPTIONAL';
+        }
+
+        // ─── SVG ICONS ───────────────────────────────────────────
+        const icons = {
+            play:    '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+            pause:   '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>',
+            restart: '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>',
+            volume:  '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>',
+            close:   '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>',
+        };
+
+        // ─── BUILD HEADER ─────────────────────────────────────────
+        function buildHeader() {
+            const el = document.getElementById('header');
+            el.innerHTML = `
+                <div class="header-couple">${d.couple.name1} <span class="plus">+</span> ${d.couple.name2}</div>
+                <div class="header-subtitle">Prenup Visual Plan</div>
+                <div class="header-details">
+                    <span>${d.couple.prenupDate}</span>
+                    <span class="sep">&middot;</span>
+                    <span>${d.couple.location}</span>
+                    <span class="sep">&middot;</span>
+                    <span>Wedding: ${d.couple.weddingDate}</span>
+                    <span class="sep">&middot;</span>
+                    <span class="header-hashtag">${d.couple.hashtag}</span>
+                </div>`;
+        }
+
+        // ─── BUILD PLAYER ─────────────────────────────────────────
+        function buildPlayer() {
+            const el = document.getElementById('player');
+            audio = new Audio();
+            audio.preload = 'metadata';
+            audio.src = d.song.audioSrc;
+
+            el.innerHTML = `
+                <div class="player-controls">
+                    <button class="player-btn" id="btnRestart" title="Restart">${icons.restart}</button>
+                    <button class="player-btn play-btn" id="btnPlay" title="Play / Pause">${icons.play}</button>
+                </div>
+                <div class="player-time">
+                    <span class="current" id="timeCurrent">0:00</span>
+                    <span> / </span>
+                    <span id="timeTotal">${fmt(songDuration)}</span>
+                </div>
+                <div class="player-progress-wrap" id="progressWrap">
+                    <div class="player-progress-track">
+                        <div class="player-progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="player-progress-thumb" id="progressThumb"></div>
+                </div>
+                <div class="player-volume">
+                    ${icons.volume}
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.05" value="1">
+                </div>
+                <div class="player-song-info">
+                    <div class="song-title">${d.song.title}</div>
+                    <div>${d.song.artist}</div>
+                </div>`;
+
+            // Audio events
+            audio.addEventListener('loadedmetadata', function() {
+                songDuration = audio.duration;
+                d.song.duration = songDuration;
+                timelineWidth = songDuration * PPS;
+                document.getElementById('timeTotal').textContent = fmt(songDuration);
+                rebuildTimeline();
+            });
+
+            audio.addEventListener('error', function() {
+                // Audio file not found — graceful fallback
+                const wrap = document.getElementById('progressWrap');
+                if (wrap) wrap.title = 'Audio file not loaded — place your MP3 at: ' + d.song.audioSrc;
+            });
+
+            // Controls
+            document.getElementById('btnPlay').addEventListener('click', togglePlay);
+            document.getElementById('btnRestart').addEventListener('click', function() {
+                audio.currentTime = 0;
+                updateProgress();
+            });
+
+            // Progress seek
+            const progressWrap = document.getElementById('progressWrap');
+            progressWrap.addEventListener('click', function(e) {
+                const rect = this.getBoundingClientRect();
+                const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                if (audio.duration) audio.currentTime = pct * audio.duration;
+                updateProgress();
+            });
+
+            // Volume
+            document.getElementById('volumeSlider').addEventListener('input', function() {
+                audio.volume = this.value;
+            });
+        }
+
+        function togglePlay() {
+            if (!audio.src || !audio.duration) return;
+            if (audio.paused) {
+                audio.play();
+                document.getElementById('btnPlay').innerHTML = icons.pause;
+                startAnimation();
+            } else {
+                audio.pause();
+                document.getElementById('btnPlay').innerHTML = icons.play;
+                cancelAnimationFrame(rafId);
+            }
+        }
+
+        function startAnimation() {
+            function loop() {
+                if (audio.paused) return;
+                updateProgress();
+                updatePlayhead();
+                updateActiveScene();
+                autoScrollTimeline();
+                rafId = requestAnimationFrame(loop);
+            }
+            rafId = requestAnimationFrame(loop);
+        }
+
+        function updateProgress() {
+            if (!audio.duration) return;
+            const pct = (audio.currentTime / audio.duration) * 100;
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressThumb').style.left = pct + '%';
+            document.getElementById('timeCurrent').textContent = fmt(audio.currentTime);
+        }
+
+        // ─── BUILD TIMELINE ───────────────────────────────────────
+        function buildTimeline() {
+            buildTrackLabels();
+            buildTimelineContent();
+        }
+
+        function rebuildTimeline() {
+            buildTimelineContent();
+        }
+
+        function buildTrackLabels() {
+            const el = document.getElementById('trackLabels');
+            el.innerHTML = `
+                <div class="ruler-spacer"></div>
+                <div class="track-label music">Music</div>
+                <div class="track-label video">Video</div>`;
+        }
+
+        function buildTimelineContent() {
+            const el = document.getElementById('timelineContent');
+            timelineWidth = songDuration * PPS;
+            el.style.width = timelineWidth + 'px';
+
+            // Preserve playhead
+            const playhead = document.getElementById('playhead');
+
+            el.innerHTML = '';
+            el.appendChild(playhead);
+
+            // Time ruler
+            const ruler = document.createElement('div');
+            ruler.className = 'time-ruler';
+            for (let t = 0; t <= songDuration; t += 5) {
+                const tick = document.createElement('div');
+                const isMajor = t % 10 === 0;
+                tick.className = 'time-ruler-tick ' + (isMajor ? 'major' : 'minor');
+                tick.style.left = pxAt(t) + 'px';
+
+                const line = document.createElement('div');
+                line.className = 'tick-line';
+                tick.appendChild(line);
+
+                if (isMajor) {
+                    const label = document.createElement('div');
+                    label.className = 'tick-label';
+                    label.textContent = fmt(t);
+                    tick.appendChild(label);
+                }
+                ruler.appendChild(tick);
+            }
+            el.appendChild(ruler);
+
+            // Track: Music
+            const musicRow = createTrackRow();
+            d.musicSections.forEach(sec => {
+                const blk = createBlock(sec.startTime, sec.endTime, sec.name, 'music');
+                musicRow.appendChild(blk);
+            });
+            el.appendChild(musicRow);
+
+            // Track: Video
+            const videoRow = createTrackRow();
+            d.scenes.forEach(scene => {
+                const blk = createBlock(scene.startTime, scene.endTime, scene.name, 'video');
+                blk.dataset.sceneId = scene.id;
+                if (scene.priority === 'must-have') {
+                    blk.innerHTML += '<span class="block-star">\u2605</span>';
+                }
+                blk.addEventListener('click', () => openScene(scene.id));
+                videoRow.appendChild(blk);
+            });
+            el.appendChild(videoRow);
+
+        }
+
+        function createTrackRow() {
+            const row = document.createElement('div');
+            row.className = 'track-row';
+            return row;
+        }
+
+        function createBlock(start, end, label, type) {
+            const blk = document.createElement('div');
+            blk.className = 'block ' + type;
+            blk.style.left = pxAt(start) + 'px';
+            blk.style.width = Math.max(pxAt(end - start) - 2, 20) + 'px';
+            blk.textContent = label;
+            blk.title = label + ' (' + fmt(start) + ' \u2013 ' + fmt(end) + ')';
+            return blk;
+        }
+
+        // ─── PLAYHEAD ─────────────────────────────────────────────
+        function updatePlayhead() {
+            const ph = document.getElementById('playhead');
+            if (audio.duration) {
+                ph.style.left = pxAt(audio.currentTime) + 'px';
+            }
+        }
+
+        function autoScrollTimeline() {
+            const scroll = document.getElementById('timelineScroll');
+            const pos = pxAt(audio.currentTime);
+            const viewW = scroll.clientWidth;
+            const left = scroll.scrollLeft;
+            // Keep playhead in the center third
+            if (pos < left + 80 || pos > left + viewW - 100) {
+                scroll.scrollTo({ left: pos - viewW * 0.33, behavior: 'smooth' });
+            }
+        }
+
+        // ─── ACTIVE SCENE ─────────────────────────────────────────
+        function updateActiveScene() {
+            const time = audio.currentTime;
+            const scene = getSceneAt(time);
+            const section = getMusicAt(time);
+            const npScene = document.getElementById('npScene');
+            const npDesc  = document.getElementById('npDesc');
+            const npSection = document.getElementById('npSection');
+            const npBar = document.getElementById('nowPlaying');
+
+            // Clear previous highlights
+            document.querySelectorAll('.block.active-block').forEach(b => b.classList.remove('active-block'));
+
+            if (scene) {
+                npScene.textContent = scene.name;
+                npDesc.textContent = scene.visualIdea ? scene.visualIdea.split('\n')[0] : '';
+                npBar.classList.add('has-scene');
+
+                // Highlight timeline block
+                const blk = document.querySelector(`.block.video[data-scene-id="${scene.id}"]`);
+                if (blk) blk.classList.add('active-block');
+
+                activeSceneId = scene.id;
+            } else {
+                npScene.textContent = '\u2014';
+                npDesc.textContent = '';
+                npBar.classList.remove('has-scene');
+                activeSceneId = null;
+            }
+
+            if (section) {
+                npSection.textContent = section.name;
+                npSection.style.display = '';
+            } else {
+                npSection.style.display = 'none';
+            }
+        }
+
+        // ─── SCENE DETAIL PANEL ───────────────────────────────────
+        function openScene(sceneId) {
+            const scene = d.scenes.find(s => s.id === sceneId);
+            if (!scene) return;
+
+            const panel = document.getElementById('scenePanel');
+            const overlay = document.getElementById('sceneOverlay');
+
+            let refMediaHTML = '';
+            if (scene.referenceImage) {
+                refMediaHTML = `<div class="scene-reference-media"><img src="${scene.referenceImage}" alt="Reference"></div>`;
+            } else if (scene.referenceVideo) {
+                refMediaHTML = `<div class="scene-reference-media"><video src="${scene.referenceVideo}" controls></video></div>`;
+            } else {
+                refMediaHTML = `<div class="scene-reference-media">No reference media added yet</div>`;
+            }
+
+            let whatWeLikeHTML = '';
+            if (scene.whatWeLike) {
+                whatWeLikeHTML = `
+                    <div class="scene-what-we-like">
+                        <div class="wwl-label">What We Like</div>
+                        <div class="wwl-text">${scene.whatWeLike}</div>
+                    </div>`;
+            }
+
+            const priorityClass = scene.priority || 'optional';
+
+            panel.innerHTML = `
+                <div class="scene-panel-header">
+                    <button class="scene-panel-close" id="scenePanelClose">${icons.close}</button>
+                    <div class="scene-panel-name">${scene.name}</div>
+                    <div class="scene-panel-meta">
+                        <span class="scene-panel-time">${fmt(scene.startTime)} \u2013 ${fmt(scene.endTime)}</span>
+                        <span class="priority-badge ${priorityClass}">${priorityLabel(scene.priority)}</span>
+                    </div>
+                </div>
+                <div class="scene-panel-body">
+                    ${section('Music Cue', scene.musicCue)}
+                    ${section('Visual Idea', scene.visualIdea, true)}
+                    <div class="scene-section">
+                        <div class="scene-section-label">Reference</div>
+                        ${refMediaHTML}
+                        ${whatWeLikeHTML}
+                    </div>
+                    ${section('Notes', scene.notes)}
+                    <div class="scene-panel-disclaimer">
+                        These references are intended to communicate the feeling and ideas we love.<br>
+                        We&rsquo;re happy for the Photo &amp; Video team to interpret them creatively.
+                    </div>
+                </div>`;
+
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+
+            document.getElementById('scenePanelClose').addEventListener('click', closeScene);
+        }
+
+        function section(label, content, highlight) {
+            if (!content) return '';
+            return `
+                <div class="scene-section">
+                    <div class="scene-section-label">${label}</div>
+                    <div class="scene-section-content${highlight ? ' highlight' : ''}">${content}</div>
+                </div>`;
+        }
+
+        function notesGrid(photo, video) {
+            if (!photo && !video) return '';
+            let html = '<div class="scene-section"><div class="scene-section-label">Notes for the Team</div><div class="scene-notes-grid">';
+            if (photo) html += `<div class="scene-note-card photo-note"><div class="note-for">Photo Team</div><div class="note-text">${photo}</div></div>`;
+            if (video) html += `<div class="scene-note-card video-note"><div class="note-for">Video Team</div><div class="note-text">${video}</div></div>`;
+            html += '</div></div>';
+            return html;
+        }
+
+        function closeScene() {
+            document.getElementById('sceneOverlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        document.getElementById('sceneBackdrop').addEventListener('click', closeScene);
+
+        // ─── REFERENCES VIEW ──────────────────────────────────────
+        function buildReferences(filter) {
+            filter = filter || 'all';
+            const el = document.getElementById('viewReferences');
+
+            // Gather all references from scenes + explicit references
+            let refs = [];
+
+            // From scenes
+            d.scenes.forEach(scene => {
+                if (scene.referenceImage || scene.referenceVideo || scene.whatWeLike) {
+                    refs.push({
+                        sceneId: scene.id,
+                        sceneName: scene.name,
+                        category: scene.referenceVideo ? 'video' : (scene.referenceImage ? 'photo' : 'edit'),
+                        title: scene.name,
+                        thumbnail: scene.referenceImage || scene.thumbnail,
+                        whatWeLike: scene.whatWeLike || '',
+                        src: scene.referenceImage || scene.referenceVideo
+                    });
+                }
+            });
+
+            // From explicit references
+            d.references.forEach(ref => {
+                // Avoid duplicates from scenes
+                if (!refs.find(r => r.sceneId === ref.sceneId && r.title === ref.title)) {
+                    const scene = d.scenes.find(s => s.id === ref.sceneId);
+                    refs.push({
+                        sceneId: ref.sceneId,
+                        sceneName: scene ? scene.name : '',
+                        category: ref.category,
+                        title: ref.title,
+                        thumbnail: ref.thumbnail,
+                        whatWeLike: ref.whatWeLike || '',
+                        src: ref.src
+                    });
+                }
+            });
+
+            if (filter !== 'all') {
+                refs = refs.filter(r => r.category === filter);
+            }
+
+            let cardsHTML = '';
+            if (refs.length === 0) {
+                cardsHTML = `
+                    <div class="references-empty">
+                        <div class="references-empty-title">No references yet</div>
+                        <div>References will appear here as they are added to scenes.</div>
+                    </div>`;
+            } else {
+                cardsHTML = '<div class="references-grid">';
+                refs.forEach(ref => {
+                    const thumbContent = ref.thumbnail
+                        ? `<img src="${ref.thumbnail}" alt="${ref.title}">`
+                        : 'No image';
+                    cardsHTML += `
+                        <div class="ref-card" data-scene="${ref.sceneId}">
+                            <div class="ref-card-thumb">${thumbContent}</div>
+                            <div class="ref-card-body">
+                                <div class="ref-card-scene">${ref.sceneName}</div>
+                                <div class="ref-card-title">${ref.title}</div>
+                                <span class="ref-card-category ${ref.category}">${ref.category}</span>
+                                ${ref.whatWeLike ? `<div class="ref-card-wwl">\u201c${ref.whatWeLike}\u201d</div>` : ''}
+                            </div>
+                        </div>`;
+                });
+                cardsHTML += '</div>';
+            }
+
+            el.innerHTML = `
+                <div class="references-header">
+                    <div class="references-title">References</div>
+                    <div class="references-filter">
+                        <button class="ref-filter-btn ${filter==='all'?'active':''}" data-filter="all">All</button>
+                        <button class="ref-filter-btn ${filter==='photo'?'active':''}" data-filter="photo">Photo</button>
+                        <button class="ref-filter-btn ${filter==='video'?'active':''}" data-filter="video">Video</button>
+                        <button class="ref-filter-btn ${filter==='edit'?'active':''}" data-filter="edit">Edit</button>
+                    </div>
+                </div>
+                ${cardsHTML}
+                <div class="references-disclaimer">
+                    These references are intended to communicate the feeling and ideas we love.<br>
+                    We&rsquo;re happy for the Photo &amp; Video team to interpret them creatively.
+                </div>`;
+
+            // Filter buttons
+            el.querySelectorAll('.ref-filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => buildReferences(btn.dataset.filter));
+            });
+
+            // Card click opens scene
+            el.querySelectorAll('.ref-card').forEach(card => {
+                card.style.cursor = 'pointer';
+                card.addEventListener('click', () => {
+                    const sceneId = card.dataset.scene;
+                    if (sceneId) openScene(sceneId);
+                });
+            });
+        }
+
+        // ─── SHOT OVERVIEW VIEW ───────────────────────────────────
+        function buildShotOverview() {
+            const el = document.getElementById('viewShots');
+            const groups = {
+                'must-have':  { icon: '\u2605', label: 'Must Have',   scenes: [] },
+                'would-love': { icon: '\u2661', label: 'Would Love',  scenes: [] },
+                'optional':   { icon: '\u25CB', label: 'Optional',    scenes: [] }
+            };
+
+            d.scenes.forEach(scene => {
+                const p = scene.priority || 'optional';
+                if (groups[p]) groups[p].scenes.push(scene);
+            });
+
+            let html = '<div class="shots-title">Shot Overview</div>';
+
+            Object.entries(groups).forEach(([key, group]) => {
+                if (group.scenes.length === 0) return;
+                html += `
+                    <div class="shots-group ${key}">
+                        <div class="shots-group-header">
+                            <span class="shots-group-icon">${group.icon}</span>
+                            <span class="shots-group-label">${group.label}</span>
+                        </div>`;
+
+                group.scenes.forEach(scene => {
+                    const tags = [];
+                    if (scene.photoOp) tags.push('Photo');
+                    tags.push('Video');
+                    if (scene.outfit) tags.push(scene.outfit.split(' \u2014 ')[0]);
+
+                    html += `
+                        <div class="shot-card" data-scene="${scene.id}">
+                            <div class="shot-card-main">
+                                <div class="shot-card-name">${scene.name}</div>
+                                <div class="shot-card-details">
+                                    ${tags.map(t => `<span class="shot-card-tag">${t}</span>`).join('')}
+                                </div>
+                                <div class="shot-card-desc">${scene.visualIdea ? scene.visualIdea.split('\n')[0] : ''}</div>
+                            </div>
+                            <div class="shot-card-time">${fmt(scene.startTime)} \u2013 ${fmt(scene.endTime)}</div>
+                        </div>`;
+                });
+                html += '</div>';
+            });
+
+            html += `
+                <div class="shots-disclaimer">
+                    These references are intended to communicate the feeling and ideas we love.<br>
+                    We&rsquo;re happy for the Photo &amp; Video team to interpret them creatively.
+                </div>`;
+
+            el.innerHTML = html;
+
+            // Card click opens scene
+            el.querySelectorAll('.shot-card').forEach(card => {
+                card.addEventListener('click', () => openScene(card.dataset.scene));
+            });
+        }
+
+        // ─── NAVIGATION ──────────────────────────────────────────
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const view = this.dataset.view;
+                document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+                if (view === 'timeline')   document.getElementById('viewTimeline').classList.add('active');
+                if (view === 'references') {
+                    document.getElementById('viewReferences').classList.add('active');
+                    buildReferences();
+                }
+                if (view === 'shots') {
+                    document.getElementById('viewShots').classList.add('active');
+                    buildShotOverview();
+                }
+            });
+        });
+
+        // ─── KEYBOARD SHORTCUTS ───────────────────────────────────
+        document.addEventListener('keydown', function(e) {
+            // Don't capture when typing in inputs
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            if (e.code === 'Space') {
+                e.preventDefault();
+                togglePlay();
+            }
+            if (e.code === 'ArrowLeft') {
+                e.preventDefault();
+                if (audio.duration) {
+                    audio.currentTime = Math.max(0, audio.currentTime - 5);
+                    updateProgress();
+                    updatePlayhead();
+                    updateActiveScene();
+                }
+            }
+            if (e.code === 'ArrowRight') {
+                e.preventDefault();
+                if (audio.duration) {
+                    audio.currentTime = Math.min(audio.duration, audio.currentTime + 5);
+                    updateProgress();
+                    updatePlayhead();
+                    updateActiveScene();
+                }
+            }
+            if (e.code === 'Escape') {
+                closeScene();
+            }
+        });
+
+        // ─── AUDIO END ────────────────────────────────────────────
+        function onAudioEnd() {
+            document.getElementById('btnPlay').innerHTML = icons.play;
+            cancelAnimationFrame(rafId);
+            updateProgress();
+            updatePlayhead();
+            updateActiveScene();
+        }
+
+        // ─── INIT ─────────────────────────────────────────────────
+        function init() {
+            buildHeader();
+            buildPlayer();
+            buildTimeline();
+
+            audio.addEventListener('ended', onAudioEnd);
+
+            // Timeline click-to-seek (added once, uses event delegation)
+            document.getElementById('timelineContent').addEventListener('click', function(e) {
+                if (e.target.closest('.block.video') || e.target.closest('.cue-marker')) return;
+                const el = this;
+                const scrollEl = document.getElementById('timelineScroll');
+                const rect = el.getBoundingClientRect();
+                const x = e.clientX - rect.left + scrollEl.scrollLeft;
+                if (audio.duration) {
+                    const time = timeAt(x);
+                    if (time >= 0 && time <= audio.duration) {
+                        audio.currentTime = time;
+                        updateProgress();
+                        updatePlayhead();
+                        updateActiveScene();
+                    }
+                }
+            });
+
+            // Handle responsive PPS changes
+            let lastWidth = window.innerWidth;
+            window.addEventListener('resize', function() {
+                if (Math.abs(window.innerWidth - lastWidth) > 100) {
+                    lastWidth = window.innerWidth;
+                    rebuildTimeline();
+                }
+            });
+        }
+
+        init();
+    })();
+    </script>
+</body>
+</html>
