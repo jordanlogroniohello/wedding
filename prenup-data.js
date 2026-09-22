@@ -81,6 +81,20 @@ const projectData = {
             thumbnail: null
         },
         {
+            id: 'scene-073',
+            name: 'Verse 2 to Chorus Storyboard',
+            startTime: 73,
+            endTime: 109,
+            musicCue: 'Verse 2 \u2192 Pre-Chorus 2 \u2192 Chorus 2',
+            visualIdea: null,
+            notes: null,
+            referenceImage: 'assets/timeline/images/reference-verse2-storyboard.png',
+            referenceVideo: null,
+            whatWeLike: null,
+            priority: 'must-have',
+            thumbnail: 'assets/timeline/images/reference-verse2-storyboard.png'
+        },
+        {
             id: 'scene-132',
             name: 'Reference at 1:32',
             startTime: 92,
