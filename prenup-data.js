@@ -53,6 +53,20 @@ const projectData = {
     // Each scene appears on the VIDEO track and has a clickable detail panel.
     scenes: [
         {
+            id: 'scene-011',
+            name: 'Verse 1 to Chorus Storyboard',
+            startTime: 11,
+            endTime: 48,
+            musicCue: 'Verse 1 \u2192 Pre-Chorus 1 \u2192 Chorus 1',
+            visualIdea: null,
+            notes: null,
+            referenceImage: 'assets/timeline/images/reference-verse1-storyboard.png',
+            referenceVideo: null,
+            whatWeLike: null,
+            priority: 'must-have',
+            thumbnail: 'assets/timeline/images/reference-verse1-storyboard.png'
+        },
+        {
             id: 'scene-032',
             name: 'Reference at 0:32',
             startTime: 32,

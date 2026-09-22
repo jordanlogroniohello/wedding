@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Director's Notes — Angelica & Jordan</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0a0a0a;
+    color: #e8e4df;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    padding: 60px 20px 40px;
+    border-bottom: 1px solid #2a2520;
+  }
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    color: #c9a96e;
+  }
+  header p.subtitle {
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #8a8078;
+    margin-top: 8px;
+  }
+  header .song-badge {
+    display: inline-block;
+    margin-top: 24px;
+    padding: 10px 24px;
+    border: 1px solid #2a2520;
+    border-radius: 40px;
+    font-size: 0.85rem;
+    color: #c9a96e;
+  }
+  header .song-badge span { color: #8a8078; }
+
+  /* Main */
+  main { max-width: 900px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  /* Section Headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 50px 0 12px;
+  }
+  .section-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: #c9a96e;
+    white-space: nowrap;
+  }
+  .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #2a2520;
+  }
+  .section-desc {
+    font-size: 0.85rem;
+    color: #8a8078;
+    margin-bottom: 24px;
+  }
+
+  /* Song Breakdown */
+  .song-embed {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 30px;
+    background: #151210;
+  }
+  .song-embed iframe {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border: none;
+  }
+
+  /* Timeline */
+  .timeline { display: flex; flex-direction: column; gap: 2px; }
+  .timeline-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 16px;
+    padding: 14px 16px;
+    background: #131110;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .timeline-row:hover { background: #1a1714; }
+  .timestamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: #c9a96e;
+    padding-top: 2px;
+  }
+  .timeline-note { font-size: 0.9rem; color: #c8c0b8; }
+  .timeline-note em { color: #8a8078; font-style: italic; }
+
+  /* Reference Cards */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .ref-card {
+    background: #131110;
+    border: 1px solid #1e1b18;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .ref-card:hover { border-color: #2a2520; }
+  .ref-card .thumb {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: #1a1714;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3a3530;
+    font-size: 0.8rem;
+    overflow: hidden;
+  }
+  .ref-card .thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ref-card .thumb iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  .ref-card .info { padding: 14px 16px; }
+  .ref-card .info h4 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #e8e4df;
+    margin-bottom: 6px;
+  }
+  .ref-card .info p {
+    font-size: 0.8rem;
+    color: #8a8078;
+    line-height: 1.5;
+  }
+  .ref-card .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    font-size: 0.7rem;
+    border-radius: 20px;
+    background: #1e1b18;
+    color: #c9a96e;
+    margin: 0 16px 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* Mood Notes */
+  .mood-box {
+    background: #131110;
+    border-left: 3px solid #c9a96e;
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+  .mood-box h4 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #c9a96e;
+    margin-bottom: 8px;
+  }
+  .mood-box p {
+    font-size: 0.85rem;
+    color: #a8a098;
+    line-height: 1.7;
+  }
+
+  /* Checklist */
+  .checklist { list-style: none; padding: 0; }
+  .checklist li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 16px;
+    background: #131110;
+    border-radius: 8px;
+    margin-bottom: 2px;
+    font-size: 0.9rem;
+    color: #c8c0b8;
+  }
+  .checklist li::before {
+    content: '[ ]';
+    font-family: monospace;
+    color: #3a3530;
+    flex-shrink: 0;
+  }
+  .checklist li.done { color: #5a5550; text-decoration: line-through; }
+  .checklist li.done::before { content: '[x]'; color: #c9a96e; }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    border-top: 1px solid #2a2520;
+    font-size: 0.75rem;
+    color: #3a3530;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Director's Notes</h1>
+  <p class="subtitle">Angelica & Jordan &mdash; November 27, 2026</p>
+  <div class="song-badge">
+    <span>Our Song &mdash;</span> A Thousand Years &mdash; John Michael Howell, JVKE & ZVC
+  </div>
+  <p style="font-size:0.75rem; color:#5a5550; margin-top:12px;">
+    <a href="https://www.letras.com/jvke/a-thousand-years-feat-john-michael-howell-e-zvc/" target="_blank" style="color:#8a8078;">View Full Lyrics &rarr;</a>
+  </p>
+</header>
+
+<main>
+
+  <!-- ============================================ -->
+  <!--  THE STORYLINE                                -->
+  <!-- ============================================ -->
+
+  <div class="section-header"><h2>The Storyline</h2></div>
+  <p class="section-desc">#exchANGEofVowsWithDAN &mdash; A love story told through time.</p>
+
+  <div class="mood-box" style="border-left-color: #c9a96e;">
+    <h4>The Concept</h4>
+    <p>
+      A thousand years is not about how long you've waited &mdash; it's about how certain you are.
+      It's knowing that even if you had a thousand lifetimes, you'd still choose the same person
+      every single time.
+      <br><br>
+      <strong style="color:#c9a96e;">#exchANGEofVowsWithDAN</strong> &mdash;
+      ANGE found her DAN. DAN found his ANGE. And on November 27, 2026, they exchange the
+      only promise that matters: <em>every year, every lifetime, it's you.</em>
+    </p>
+  </div>
+
+  <div class="timeline">
+    <div class="timeline-row">
+      <span class="timestamp" style="color:#8a8078;">Act I</span>
+      <span class="timeline-note">
+        <strong style="color:#c9a96e;">"The Years Before"</strong><br>
+        Two separate lives. Angelica in her world, Jordan in his.
+        Getting ready alone, looking out a window, a solo walk.
+        Not lonely &mdash; just incomplete. A life that's fine, but not yet full.
+        <br><em>Visual: split screen or parallel edits. Cooler, muted tones. Slow, contemplative pace.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp" style="color:#8a8078;">Act II</span>
+      <span class="timeline-note">
+        <strong style="color:#c9a96e;">"Year One"</strong><br>
+        The moment everything changes. Walking toward each other.
+        First eye contact. A smile that rewrites the whole story.
+        The exact second where "before" becomes "after."
+        <br><em>Visual: the color shifts &mdash; warm tones flood in. Golden hour. The world gets brighter because they're in it together now.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp" style="color:#8a8078;">Act III</span>
+      <span class="timeline-note">
+        <strong style="color:#c9a96e;">"A Thousand Small Moments"</strong><br>
+        This is where the real love lives. Not in grand gestures &mdash; in the in-between.
+        Laughing at nothing. Walking without needing a destination. A look across the room
+        that says more than words. Fixing each other's hair. Comfortable silence.
+        The thousand tiny things that add up to forever.
+        <br><em>Visual: candid montage. Close-ups: hands intertwined, eyes meeting, natural laughs. Warm, intimate, real.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp" style="color:#8a8078;">Act IV</span>
+      <span class="timeline-note">
+        <strong style="color:#c9a96e;">"The exchANGE"</strong><br>
+        The climax. This is the moment it all becomes real.
+        Foreheads together, eyes closed. The ring. Hands holding like they'll never let go.
+        No more "someday" &mdash; it's now. ANGE and DAN, choosing each other out loud.
+        <br><em>Visual: hero shots. Wide cinematic framing. The most beautiful light of the day. Let the moment breathe.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp" style="color:#8a8078;">Act V</span>
+      <span class="timeline-note">
+        <strong style="color:#c9a96e;">"The Vow"</strong><br>
+        Everything settles. One last look at each other. A quiet smile that says:
+        <em>I'd choose you a thousand times over.</em>
+        <br><br>
+        Fade to text:
+        <br><br>
+        <strong style="color:#c9a96e; font-family:'Cormorant Garamond',serif; font-size:1.1rem;">
+        &ldquo;I'd wait a thousand years for you &mdash;<br>
+        but I don't have to. You're already here.&rdquo;
+        </strong>
+        <br><br>
+        <strong style="color:#e8e4df;">Angelica &amp; Jordan</strong><br>
+        <span style="color:#8a8078;">November 27, 2026</span><br>
+        <span style="color:#5a5550;">#exchANGEofVowsWithDAN</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ============================================ -->
+  <!--  SAVE THE DATE VIDEO                         -->
+  <!-- ============================================ -->
+
+  <div class="section-header"><h2>Save the Date Video</h2></div>
+  <p class="section-desc">Song-synced timeline — what I envision for each part of the music.</p>
+
+  <!-- Song Embed — replace VIDEO_ID with the actual YouTube ID -->
+  <a href="https://www.youtube.com/watch?v=5ptdEemGjrQ" target="_blank" class="song-embed" style="display:block; text-decoration:none;">
+    <img src="https://img.youtube.com/vi/5ptdEemGjrQ/maxresdefault.jpg" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;" alt="Thousand Years — JVKE">
+    <div style="position:absolute; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.3);">
+      <svg width="68" height="48" viewBox="0 0 68 48"><rect rx="10" fill="#c9a96e" width="68" height="48" opacity="0.9"/><polygon points="28,15 28,33 46,24" fill="#0a0a0a"/></svg>
+    </div>
+  </a>
+
+  <div class="mood-box">
+    <h4>Overall Vibe</h4>
+    <p>
+      Warm, cinematic, intimate. Golden hour tones. Slow builds that match the song's
+      emotion. Think soft focus, natural light, real candid moments mixed with styled shots.
+    </p>
+  </div>
+
+  <div class="mood-box">
+    <h4>The Energy</h4>
+    <p>
+      Not loud, not showy &mdash; just two people whose love speaks for itself.
+      The kind of love worth a thousand years. Real moments over posed ones.
+      Let the song carry the emotion, let the visuals breathe.
+    </p>
+  </div>
+
+  <!-- Timeline — add/remove rows as needed -->
+  <div class="timeline">
+    <div class="timeline-row">
+      <span class="timestamp">0:00 – 0:15</span>
+      <span class="timeline-note">
+        Intro — <em>Slow fade in. Detail shots: rings, invitation, getting ready moments. Soft, dreamy.</em>
+      </span>
+    </div>
+    <!-- STORYBOARD REFERENCE: 0:11 – 0:48 -->
+    <div style="margin:16px 0; border-radius:12px; overflow:hidden; border:1px solid #2a2520;">
+      <img src="verse-1.png" style="width:100%; display:block;" alt="Storyboard — 0:11 to 0:48">
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp">1:15 – 1:50</span>
+      <span class="timeline-note">
+        Chorus — <em>The big moment. Wide cinematic shots. Spinning, holding, the hero shots. Let it breathe.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp">1:50 – 2:20</span>
+      <span class="timeline-note">
+        Verse 2 — <em>Quieter moments. Foreheads together. Whispering. Walking hand in hand.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp">2:20 – 2:50</span>
+      <span class="timeline-note">
+        Bridge — <em>Emotional peak. Maybe old photos / throwback moments mixed in? Or just raw emotion.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp">2:50 – end</span>
+      <span class="timeline-note">
+        Outro — <em>Fade to the save-the-date card. "November 27, 2026." Soft ending.</em>
+      </span>
+    </div>
+  </div>
+
+  <!-- Video References -->
+  <div class="section-header"><h2>Video References</h2></div>
+  <p class="section-desc">Videos I like — what to take from each one.</p>
+
+  <p style="font-size:0.75rem; color:#5a5550; margin-bottom:20px; font-style:italic;">
+    These are actual anime clips and real wedding films &mdash; watch them and keep the ones you like, delete the rest.
+  </p>
+
+  <div class="ref-grid" style="grid-template-columns: 1fr 1fr;">
+
+    <!-- Frieren: Ring Scene (Ep 14) -->
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/cVRmlTXq55M" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Frieren Ep 14 &mdash; Himmel Puts a Ring on Frieren</h4>
+        <p>THE scene. Himmel kneels and gives the mirrored lotus ring (eternal love). He doesn't say "marry me" but they both know. Reference for: the ring moment, the kneeling, the quiet emotion.</p>
+      </div>
+      <span class="tag">The Ring</span>
+    </div>
+
+    <!-- Frieren: Himmel around Frieren -->
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/vUcqZBmMmE4" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Frieren Ep 14 &mdash; Ring of Eternal Love (Full Scene)</h4>
+        <p>The full version of the ring scene with the buildup. The way Himmel looks at her. Reference for: how to build up to an emotional moment, not rushing it.</p>
+      </div>
+      <span class="tag">Pacing / Emotion</span>
+    </div>
+
+    <!-- Frieren: Flowers of Himmel's Hometown -->
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/iRiSAHQYzq0" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Frieren &mdash; The Flowers of Himmel's Hometown</h4>
+        <p>Frieren conjures a field of flowers for Himmel. He always brought her flowers even when she didn't understand why. Reference for: flower shots, color palette, natural beauty.</p>
+      </div>
+      <span class="tag">Flowers / Color</span>
+    </div>
+
+    <!-- Frieren: Himmel's Wish -->
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/-C3Jqo7wUxE" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Frieren &mdash; Himmel's Wish</h4>
+        <p>What Himmel wanted most. The quiet devotion. Reference for: the stillness between two people, unspoken promises.</p>
+      </div>
+      <span class="tag">Quiet Moments</span>
+    </div>
+
+    <!-- Frieren: Amazing Shots Compilation -->
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/sJYE_xXzL9Q" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Amazing Shots of Frieren (Cinematography)</h4>
+        <p>Compilation of the anime's most beautiful frames. Reference for: color grading, wide shots, golden hour lighting, composition ideas for your photographer.</p>
+      </div>
+      <span class="tag">Cinematography</span>
+    </div>
+
+    <!-- Frieren: Sets Off (Netflix Official) -->
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/fIhyFMEhdiw" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Frieren Sets Off &mdash; Netflix Official Clip</h4>
+        <p>Official Netflix clip. The journey. Walking forward together into what's next. Reference for: the walking shots, the "beginning of something" energy.</p>
+      </div>
+      <span class="tag">The Walk</span>
+    </div>
+  </div>
+
+  <!-- Real Wedding / Prenup Video References -->
+  <div class="section-header"><h2>Wedding Video References</h2></div>
+  <p class="section-desc">Real prenup and save-the-date videos &mdash; browse these for style/editing inspo.</p>
+
+  <div class="ref-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/_LpZ91lOq6g" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Jacquilyn & Bernard &mdash; Pre-wedding Film (Bohol)</h4>
+        <p>Filipino prenup film. Check the color grading, pacing, and how they use the location.</p>
+      </div>
+      <span class="tag">Prenup Film</span>
+    </div>
+
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/SjEJkbpoITo" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Marley & Mark &mdash; Cinematic Save the Date</h4>
+        <p>Clean cinematic save-the-date. Check how they end with the date reveal.</p>
+      </div>
+      <span class="tag">Save the Date</span>
+    </div>
+
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/WzPMyxHJS3k" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Franck & Aileen &mdash; Wedding SDE (Bohol 2025)</h4>
+        <p>Philippine wedding SDE by Pure Offspring. Reference for overall production quality and storytelling.</p>
+      </div>
+      <span class="tag">Wedding SDE</span>
+    </div>
+
+    <div class="ref-card">
+      <div class="thumb"><iframe src="https://www.youtube.com/embed/o0vwdG3alSY" allowfullscreen></iframe></div>
+      <div class="info">
+        <h4>Cinematic Love Story &mdash; Pre-Wedding 2025</h4>
+        <p>Cinematic pre-wedding film. Check the transitions and how they sync to music.</p>
+      </div>
+      <span class="tag">Cinematic Style</span>
+    </div>
+  </div>
+
+  <!-- Key Frieren Moments to Reference -->
+  <div class="section-header"><h2>Frieren Moments to Recreate</h2></div>
+  <p class="section-desc">Scenes from the anime that we can draw from for our own shots.</p>
+
+  <div class="timeline">
+    <div class="timeline-row">
+      <span class="timestamp">The Ring</span>
+      <span class="timeline-note">
+        Himmel kneels and gives Frieren a mirrored lotus ring &mdash; a flower meaning "eternal love." He never says it's a proposal, but they both know. <em>Recreate: Jordan giving Angelica a meaningful token, close-up on hands, kneeling.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp">The Walk</span>
+      <span class="timeline-note">
+        Walking side by side through fields and forests, comfortable silence. Not posing &mdash; just being together. <em>Recreate: walking hand in hand, golden hour, natural setting.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp">The Flowers</span>
+      <span class="timeline-note">
+        Himmel always brought Frieren flowers, even when she didn't understand why. Love expressed through small gestures. <em>Recreate: candid moments with flowers, soft and unplanned.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp">The Gaze</span>
+      <span class="timeline-note">
+        The way Himmel looks at Frieren when she's not looking &mdash; pure admiration. <em>Recreate: candid shots of one watching the other, unposed, real.</em>
+      </span>
+    </div>
+    <div class="timeline-row">
+      <span class="timestamp">The Statue</span>
+      <span class="timeline-note">
+        Himmel left statues so their journey would be remembered forever. Gestures that outlast a lifetime. <em>Recreate: silhouette shots, framing that feels timeless and monumental.</em>
+      </span>
+    </div>
+  </div>
+
+
+  <!-- ============================================ -->
+  <!--  PRENUP PHOTOS                               -->
+  <!-- ============================================ -->
+
+  <div class="section-header"><h2>Prenup Photos</h2></div>
+  <p class="section-desc">Shot ideas, poses, and mood references for the photo shoot.</p>
+
+  <div class="mood-box">
+    <h4>Photo Vibe</h4>
+    <p>
+      Warm, golden, timeless. Frieren-inspired &mdash; love told through gestures, not poses.
+      Candid over editorial. Natural light, golden hour, soft tones.
+      The photos should feel like memories worth a thousand years.
+    </p>
+  </div>
+
+  <!-- Frieren-Inspired Shot Ideas -->
+  <div class="ref-grid">
+    <div class="ref-card">
+      <div class="thumb" style="font-size:1.5rem; color:#c9a96e;">&#128144;</div>
+      <div class="info">
+        <h4>"The Ring" Shot</h4>
+        <p>Close-up of hands &mdash; Jordan placing or holding Angelica's hand with the ring. Soft focus background. Like Himmel kneeling with the lotus ring.</p>
+      </div>
+      <span class="tag">Must Have</span>
+    </div>
+
+    <div class="ref-card">
+      <div class="thumb" style="font-size:1.5rem; color:#c9a96e;">&#127803;</div>
+      <div class="info">
+        <h4>"The Flowers" Shot</h4>
+        <p>Candid moment with flowers &mdash; giving, holding, or surrounded by them. Soft, natural, not staged. Himmel always brought Frieren flowers even when she didn't understand why.</p>
+      </div>
+      <span class="tag">Must Have</span>
+    </div>
+
+    <div class="ref-card">
+      <div class="thumb" style="font-size:1.5rem; color:#c9a96e;">&#128694;</div>
+      <div class="info">
+        <h4>"The Walk" Shot</h4>
+        <p>Walking together, shot from behind or the side. Comfortable, natural stride. Not looking at camera &mdash; just two people in their own world.</p>
+      </div>
+      <span class="tag">Must Have</span>
+    </div>
+
+    <div class="ref-card">
+      <div class="thumb" style="font-size:1.5rem; color:#c9a96e;">&#128065;</div>
+      <div class="info">
+        <h4>"The Gaze" Shot</h4>
+        <p>One watching the other when they're not looking. Pure admiration. The photographer should catch this candid &mdash; don't pose it.</p>
+      </div>
+      <span class="tag">Must Have</span>
+    </div>
+
+    <div class="ref-card">
+      <div class="thumb" style="font-size:1.5rem; color:#c9a96e;">&#127749;</div>
+      <div class="info">
+        <h4>"The Silhouette" Shot</h4>
+        <p>Sunset silhouette, wide framing. Two figures against a golden sky. Inspired by the statue scenes &mdash; monumental, timeless.</p>
+      </div>
+      <span class="tag">Nice to Have</span>
+    </div>
+
+    <div class="ref-card">
+      <div class="thumb" style="font-size:1.5rem; color:#c9a96e;">&#129303;</div>
+      <div class="info">
+        <h4>"The Stillness" Shot</h4>
+        <p>Foreheads together, eyes closed, just breathing. No movement. The quiet in-between moment. Like Frieren finally understanding what she had.</p>
+      </div>
+      <span class="tag">Nice to Have</span>
+    </div>
+  </div>
+
+
+  <!-- ============================================ -->
+  <!--  SHOOT CHECKLIST                             -->
+  <!-- ============================================ -->
+
+  <div class="section-header"><h2>Shoot Day Checklist</h2></div>
+  <p class="section-desc">Things to prep and remember.</p>
+
+  <ul class="checklist">
+    <li>Confirm location & permits</li>
+    <li>Outfits prepped (steamed, accessories ready)</li>
+    <li>Props: rings, invitation, flowers, etc.</li>
+    <li>Share this notes page with photographer & videographer</li>
+    <li>Playlist ready (Thousand Years + backup songs)</li>
+    <li>Golden hour time checked for shoot date</li>
+    <li>Backup plan for weather</li>
+  </ul>
+
+
+  <!-- ============================================ -->
+  <!--  NOTES TO TEAM                               -->
+  <!-- ============================================ -->
+
+  <div class="section-header"><h2>Notes to Team</h2></div>
+  <p class="section-desc">Anything else the photographer / videographer / editor should know.</p>
+
+  <div class="mood-box">
+    <h4>For the Photographer</h4>
+    <p>
+      Add notes here — preferred angles, things to avoid, must-have shots, etc.
+    </p>
+  </div>
+
+  <div class="mood-box">
+    <h4>For the Videographer</h4>
+    <p>
+      Add notes here — pacing preferences, slow-mo moments, drone shots?, etc.
+    </p>
+  </div>
+
+  <div class="mood-box">
+    <h4>For the Editor</h4>
+    <p>
+      Add notes here — song sync points, transition style, color grade references, etc.
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  Director's Notes &mdash; Angelica & Jordan &mdash; 2026
+</footer>
+
+</body>
+</html>
