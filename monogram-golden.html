@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A &amp; J</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Italianno&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#081a10}
+
+.background{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 65% 60% at 50% 50%,#1a3a2a 0%,#13301f 35%,#0d2818 60%,#081a10 85%,#051208 100%);
+  opacity:0;
+  animation:bgIn 2.2s ease forwards;
+}
+
+.vignette{
+  position:fixed;inset:0;z-index:1;
+  pointer-events:none;
+  background:radial-gradient(ellipse 72% 68% at 50% 50%,transparent 35%,rgba(5,12,8,.55) 100%);
+}
+
+.floral-top-left,
+.floral-bottom-right{
+  position:fixed;z-index:2;
+  pointer-events:none;
+  opacity:0;
+}
+.floral-top-left img,
+.floral-bottom-right img{
+  display:block;width:100%;height:auto;
+}
+
+.floral-top-left{
+  top:-5%;left:-4%;
+  width:clamp(180px,28vw,460px);
+  filter:drop-shadow(0 0 25px rgba(226,194,117,.2));
+  animation:floralTL 2.4s ease .5s forwards;
+}
+.floral-bottom-right{
+  bottom:-5%;right:-4%;
+  width:clamp(180px,28vw,460px);
+  transform:rotate(180deg) scale(.95);
+  filter:drop-shadow(0 0 25px rgba(226,194,117,.2));
+  animation:floralBR 2.4s ease .9s forwards;
+}
+
+.monogram{
+  position:fixed;z-index:3;
+  top:38%;left:50%;
+  transform:translate(-50%,-50%) scale(.94);
+  width:clamp(320px,42vw,680px);
+  opacity:0;
+  filter:drop-shadow(0 0 35px rgba(232,207,160,.25));
+  animation:monoReveal 2.2s ease 1.6s forwards;
+}
+.monogram img{display:block;width:100%;height:auto}
+
+canvas.sparkles{
+  position:fixed;inset:0;z-index:2;
+  pointer-events:none;
+}
+
+@keyframes bgIn{
+  to{opacity:1}
+}
+
+@keyframes floralTL{
+  0%{opacity:0;filter:drop-shadow(0 0 25px rgba(226,194,117,0)) blur(5px);transform:scale(.9)}
+  100%{opacity:.82;filter:drop-shadow(0 0 25px rgba(226,194,117,.2)) blur(0);transform:scale(1)}
+}
+
+@keyframes floralBR{
+  0%{opacity:0;filter:drop-shadow(0 0 25px rgba(226,194,117,0)) blur(5px);transform:rotate(180deg) scale(.88)}
+  100%{opacity:.82;filter:drop-shadow(0 0 25px rgba(226,194,117,.2)) blur(0);transform:rotate(180deg) scale(.95)}
+}
+
+@keyframes monoReveal{
+  0%{opacity:0;transform:translate(-50%,-50%) scale(.93);filter:drop-shadow(0 0 35px rgba(232,207,160,0))}
+  65%{opacity:1;transform:translate(-50%,-50%) scale(1.012);filter:drop-shadow(0 0 55px rgba(232,207,160,.45))}
+  100%{opacity:1;transform:translate(-50%,-50%) scale(1);filter:drop-shadow(0 0 35px rgba(232,207,160,.25))}
+}
+
+@keyframes monoGlow{
+  0%,100%{filter:drop-shadow(0 0 30px rgba(232,207,160,.22))}
+  50%{filter:drop-shadow(0 0 48px rgba(232,207,160,.38))}
+}
+
+/* ── Typography ── */
+.typography{
+  position:fixed;z-index:3;
+  left:50%;top:61%;
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;
+  gap:clamp(8px,1.4vh,18px);
+  pointer-events:none;
+}
+
+.names{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-style:italic;
+  color:#E8CFA0;
+  font-size:clamp(24px,3.5vw,42px);
+  font-weight:400;
+  letter-spacing:clamp(3px,.6vw,8px);
+  white-space:nowrap;
+  opacity:0;
+  animation:textFadeUp 1.4s ease 4s forwards;
+}
+
+.hashtag{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  color:rgba(232,207,160,.78);
+  font-size:clamp(14px,2vw,22px);
+  font-weight:500;
+  letter-spacing:clamp(1px,.25vw,2.5px);
+  opacity:0;
+  animation:textFadeUp 1.2s ease 4.8s forwards;
+}
+
+.date{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  color:#E8CFA0;
+  font-size:clamp(15px,2.2vw,24px);
+  font-weight:500;
+  letter-spacing:clamp(4px,.8vw,10px);
+  opacity:0;
+  animation:textFadeUp 1.2s ease 5.5s forwards;
+}
+
+@keyframes textFadeUp{
+  0%{opacity:0;transform:translateY(8px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .names,.hashtag,.date{animation:none;opacity:1}
+  .monogram{animation:none;opacity:1;transform:translate(-50%,-50%) scale(1)}
+  .floral-top-left,.floral-bottom-right{animation:none;opacity:.82}
+  .background{animation:none;opacity:1}
+}
+</style>
+</head>
+<body>
+
+<div class="background"></div>
+<div class="vignette"></div>
+
+<div class="floral-top-left">
+  <img src="floral-top-left.png" alt="">
+</div>
+<div class="floral-bottom-right">
+  <img src="floral-top-left.png" alt="">
+</div>
+
+<div class="monogram">
+  <img src="monogram.png" alt="A &amp; J">
+</div>
+
+<div class="typography">
+  <div class="names">Angelica &amp; Jordan</div>
+  <div class="hashtag">#exchANGEofVowsWithDAN</div>
+  <div class="date">11 &middot; 27 &middot; 26</div>
+</div>
+
+<canvas class="sparkles" id="sparkles"></canvas>
+
+<script>
+const cvs = document.getElementById('sparkles');
+const ctx = cvs.getContext('2d');
+let W, H;
+const dots = [];
+const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+function resize(){
+  W = cvs.width = innerWidth;
+  H = cvs.height = innerHeight;
+}
+addEventListener('resize', resize);
+resize();
+
+const COUNT = 120;
+const PALETTE = [
+  [232,207,160],
+  [220,195,140],
+  [240,225,190],
+];
+
+for(let i=0;i<COUNT;i++){
+  const c = PALETTE[Math.random()*PALETTE.length|0];
+  dots.push({
+    x: Math.random()*W,
+    y: Math.random()*H,
+    r: Math.random()<.15 ? 2.5+Math.random()*2 : Math.random()<.4 ? 1.2+Math.random()*1.3 : .4+Math.random()*.8,
+    base: Math.random()*.12+.06,
+    peak: Math.random()*.6+.35,
+    alpha: Math.random()*.08+.04,
+    state: 'idle',
+    wait: Math.random()*4000+1000,
+    dur: 2000+Math.random()*3000,
+    elapsed: 0,
+    c
+  });
+}
+
+let prev=0;
+
+function frame(t){
+  if(reduced){drawStatic();return}
+  const dt = Math.min(t-prev,50);
+  prev = t;
+  ctx.clearRect(0,0,W,H);
+
+  let active = 0;
+  for(let i=0;i<dots.length;i++){
+    if(dots[i].state!=='idle') active++;
+  }
+
+  for(let i=0;i<dots.length;i++){
+    const d = dots[i];
+
+    if(d.state==='idle'){
+      d.wait -= dt;
+      if(d.wait<=0 && active<25){
+        d.state='brighten';
+        d.elapsed=0;
+        d.dur=2000+Math.random()*3000;
+        active++;
+      }
+      d.alpha = d.base;
+    } else if(d.state==='brighten'){
+      d.elapsed += dt;
+      const p = Math.min(d.elapsed/d.dur,1);
+      d.alpha = d.base+(d.peak-d.base)*ease(p);
+      if(p>=1){d.state='dim';d.elapsed=0;d.dur=2000+Math.random()*3000}
+    } else if(d.state==='dim'){
+      d.elapsed += dt;
+      const p = Math.min(d.elapsed/d.dur,1);
+      d.alpha = d.peak-(d.peak-d.base)*ease(p);
+      if(p>=1){d.state='idle';d.wait=3000+Math.random()*8000;active--}
+    }
+
+    const a = Math.max(0,Math.min(1,d.alpha));
+    ctx.beginPath();
+    ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${d.c[0]},${d.c[1]},${d.c[2]},${a})`;
+    ctx.fill();
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function ease(t){return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2}
+
+function drawStatic(){
+  ctx.clearRect(0,0,W,H);
+  for(const d of dots){
+    ctx.beginPath();
+    ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${d.c[0]},${d.c[1]},${d.c[2]},${d.base})`;
+    ctx.fill();
+  }
+}
+
+requestAnimationFrame(frame);
+
+document.querySelector('.monogram').addEventListener('animationend',function(){
+  this.style.opacity='1';
+  this.style.transform='translate(-50%,-50%) scale(1)';
+  this.style.filter='drop-shadow(0 0 35px rgba(232,207,160,.25))';
+  this.style.animation='monoGlow 7s ease-in-out infinite';
+});
+</script>
+
+</body>
+</html>
