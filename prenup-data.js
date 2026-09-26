@@ -109,25 +109,6 @@ const projectData = {
             thumbnail: null
         },
         {
-            id: 'scene-110',
-            name: 'Intimate Moments with Bouquet',
-            startTime: 70,
-            endTime: 80,
-            musicCue: 'Chorus 1 \u2014 breath / transition',
-            visualIdea: 'A series of sweet, intimate moments between Angelica and Jordan:\n\u2022 Backhug \u2014 Jordan hugs Angelica from behind while she holds a bouquet\n\u2022 Holding the bouquet together \u2014 foreheads touching\n\u2022 Jordan putting a flower sa tenga ni Angelica',
-            notes: 'We imagine this in slow motion.',
-            referenceImages: [
-                { src: 'assets/timeline/images/reference-110-backhug.png', caption: 'Backhug with bouquet' },
-                { src: 'assets/timeline/images/reference-110-bouquet-together.jpeg', caption: 'Both holding the bouquet together' },
-                { src: 'assets/timeline/images/reference-110-flower-ear.png', caption: 'Jordan putting flower sa tenga ni Angelica' },
-            ],
-            referenceImage: 'assets/timeline/images/reference-110-backhug.png',
-            referenceVideo: null,
-            whatWeLike: 'The gentle intimacy of each moment. Warm, soft, natural feeling.',
-            priority: 'must-have',
-            thumbnail: 'assets/timeline/images/reference-110-backhug.png'
-        },
-        {
             id: 'scene-240',
             name: 'Almost Kiss / Save The Date',
             startTime: 160,

@@ -401,7 +401,7 @@
     }
     .timeline-content {
         position: relative;
-        min-height: calc(28px + var(--track-height) * 2);
+        min-height: calc(28px + var(--track-height) * 1);
     }
 
     /* Time ruler */
@@ -1380,10 +1380,16 @@
 
         function buildTrackLabels() {
             const el = document.getElementById('trackLabels');
+            const layers = assignLayers(d.scenes);
+            let videoLabels = '';
+            for (let i = 0; i < layers.length; i++) {
+                const label = layers.length === 1 ? 'Video' : 'V' + (i + 1);
+                videoLabels += `<div class="track-label video">${label}</div>`;
+            }
             el.innerHTML = `
                 <div class="ruler-spacer"></div>
                 <div class="track-label music">Music</div>
-                <div class="track-label video">Video</div>`;
+                ${videoLabels}`;
         }
 
         function buildTimelineContent() {
@@ -1428,19 +1434,40 @@
             });
             el.appendChild(musicRow);
 
-            // Track: Video
-            const videoRow = createTrackRow();
-            d.scenes.forEach(scene => {
-                const blk = createBlock(scene.startTime, scene.endTime, scene.name, 'video');
-                blk.dataset.sceneId = scene.id;
-                if (scene.priority === 'must-have') {
-                    blk.innerHTML += '<span class="block-star">\u2605</span>';
-                }
-                blk.addEventListener('click', () => openScene(scene.id));
-                videoRow.appendChild(blk);
+            // Track: Video \u2014 auto-layer overlapping scenes
+            const layers = assignLayers(d.scenes);
+            layers.forEach(layerScenes => {
+                const videoRow = createTrackRow();
+                layerScenes.forEach(scene => {
+                    const blk = createBlock(scene.startTime, scene.endTime, scene.name, 'video');
+                    blk.dataset.sceneId = scene.id;
+                    if (scene.priority === 'must-have') {
+                        blk.innerHTML += '<span class="block-star">\u2605</span>';
+                    }
+                    blk.addEventListener('click', () => openScene(scene.id));
+                    videoRow.appendChild(blk);
+                });
+                el.appendChild(videoRow);
             });
-            el.appendChild(videoRow);
 
+        }
+
+        function assignLayers(scenes) {
+            const sorted = [...scenes].sort((a, b) => a.startTime - b.startTime);
+            const layers = [];
+            sorted.forEach(scene => {
+                let placed = false;
+                for (let i = 0; i < layers.length; i++) {
+                    const last = layers[i][layers[i].length - 1];
+                    if (scene.startTime >= last.endTime) {
+                        layers[i].push(scene);
+                        placed = true;
+                        break;
+                    }
+                }
+                if (!placed) layers.push([scene]);
+            });
+            return layers;
         }
 
         function createTrackRow() {
@@ -1532,9 +1559,11 @@
                 ).join('');
             } else if (scene.referenceImage) {
                 refMediaHTML = `<div class="scene-reference-media"><img src="${scene.referenceImage}" alt="Reference"></div>`;
-            } else if (scene.referenceVideo) {
-                refMediaHTML = `<div class="scene-reference-media"><video src="${scene.referenceVideo}" controls></video></div>`;
-            } else {
+            }
+            if (scene.referenceVideo) {
+                refMediaHTML += `<div class="scene-reference-media"><video src="${scene.referenceVideo}" controls></video></div>`;
+            }
+            if (!refMediaHTML) {
                 refMediaHTML = `<div class="scene-reference-media">No reference media added yet</div>`;
             }
 
