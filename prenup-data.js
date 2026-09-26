@@ -138,7 +138,7 @@ const projectData = {
             thumbnail: null,
             src: 'assets/timeline/videos/main-reference.mp4',
             type: 'video',
-            whatWeLike: 'This is the overall reference for the feel, pacing, and visual direction we love for the entire prenup video.'
+            whatWeLike: 'Cinematic, slow-paced, with wide shots and a moody teal-green color grade — intimate but not close-up. This is the overall reference for the feel, pacing, and visual direction we love for the entire prenup video.'
         }
     ]
 };
