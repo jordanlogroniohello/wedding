@@ -19,8 +19,7 @@ const projectData = {
         name2: 'Jordan',
         prenupDate: 'September 22, 2026',
         weddingDate: 'November 27, 2026',
-        location: 'Ninoy Aquino Parks and Wildlife Center',
-        hashtag: '#exchANGEofVowsWithDAN'
+        location: 'Ninoy Aquino Parks and Wildlife Center'
     },
 
     // ─── SONG ─────────────────────────────────────────────────────────
