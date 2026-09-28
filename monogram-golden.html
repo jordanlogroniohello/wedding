@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>A &amp; J</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Italianno&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Italianno&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#081a10}
@@ -137,9 +137,10 @@ canvas.particles-back{
 
 .date{
   font-family:'Cormorant Garamond',Georgia,serif;
+  font-style:normal;
   color:#E8CFA0;
   font-size:clamp(15px,2.2vw,24px);
-  font-weight:500;
+  font-weight:600;
   letter-spacing:.5px;
   word-spacing:clamp(6px,1.2vw,14px);
   opacity:0;
@@ -252,12 +253,43 @@ const ctxF   = cFront.getContext('2d');
 const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
 let W, H;
 
+/* ── Soft center attenuation ── */
+let zCx=0, zCy=0, zRx=0, zRy=0;
+
+function calcCenter(){
+  const mono = document.querySelector('.monogram');
+  const typo = document.querySelector('.typography');
+  if(!mono||!typo) return;
+  const mr = mono.getBoundingClientRect();
+  const tr = typo.getBoundingClientRect();
+  const top = Math.min(mr.top, tr.top);
+  const bot = Math.max(mr.bottom, tr.bottom);
+  const lft = Math.min(mr.left, tr.left);
+  const rgt = Math.max(mr.right, tr.right);
+  zCx = (lft+rgt)/2;
+  zCy = (top+bot)/2;
+  zRx = (rgt-lft)/2 + W*.18;
+  zRy = (bot-top)/2 + H*.14;
+}
+
+function atten(px,py,minMul){
+  const dx = (px-zCx)/zRx;
+  const dy = (py-zCy)/zRy;
+  const d = dx*dx+dy*dy;
+  if(d >= 1) return 1;
+  const t = Math.sqrt(d);
+  const smooth = t*t*(3-2*t);
+  return minMul + (1-minMul)*smooth;
+}
+
 function resize(){
   W = cBack.width = cFront.width = innerWidth;
   H = cBack.height = cFront.height = innerHeight;
+  calcCenter();
 }
 addEventListener('resize', resize);
 resize();
+document.fonts.ready.then(()=> setTimeout(calcCenter, 100));
 
 const COL = [
   [232,207,160],
@@ -285,15 +317,15 @@ function edgeX(){
 }
 
 /* ═══ LAYER 1 — Background (many tiny, slow, minimal drift) ═══ */
-const BG_COUNT = 550;
+const BG_COUNT = 500;
 const bgParts = [];
 
 function spawnBG(randomY){
   return {
     x: Math.random()*W,
-    y: randomY ? Math.random()*H : -(Math.random()*40+5),
-    r: .3 + Math.random()*1.8,
-    a: .2 + Math.random()*.5,
+    y: randomY ? Math.pow(Math.random(),.7)*H : -(Math.random()*40+5),
+    r: .4 + Math.random()*2.5,
+    a: .35 + Math.random()*.6,
     vy: .12 + Math.random()*.3,
     vx: (Math.random()-.5)*.015,
     c: rCol()
@@ -318,29 +350,32 @@ function spawnMID(randomY){
 }
 for(let i=0;i<MID_COUNT;i++) midParts.push(spawnMID(true));
 
-/* ═══ LAYER 3 — Foreground bokeh (few, large, edge-biased, varied sizes) ═══ */
-const FG_COUNT = 16;
+/* ═══ LAYER 3 — Foreground bokeh (edge-biased, three size tiers) ═══ */
+const FG_VLARGE = 1;   // very large: 35-55px
+const FG_LARGE  = 8;   // large: 22-38px
+const FG_MED    = 15;  // medium: 12-26px
 const fgParts = [];
 
-function spawnFG(randomY){
-  const sizeRoll = Math.random();
-  const r = sizeRoll < .15 ? 35+Math.random()*20
-          : sizeRoll < .5  ? 22+Math.random()*16
-          :                  12+Math.random()*14;
-  const a = r > 35 ? .35 + Math.random()*.15
-          : r > 22 ? .5 + Math.random()*.2
-          :          .85 + Math.random()*.15;
+function spawnFG(randomY, size){
+  const r = size==='vl' ? 35+Math.random()*20
+          : size==='lg' ? 22+Math.random()*16
+          :               12+Math.random()*14;
+  const a = size==='vl' ? .35 + Math.random()*.15
+          : size==='lg' ? .5 + Math.random()*.2
+          :               .85 + Math.random()*.15;
   return {
     x: edgeX(),
     y: randomY ? Math.random()*H : -(r + Math.random()*80),
-    r: r,
+    r: r, size: size,
     a: a,
     vy: .35 + Math.random()*.45,
     vx: (Math.random()-.5)*.1,
     c: rBokeh()
   };
 }
-for(let i=0;i<FG_COUNT;i++) fgParts.push(spawnFG(true));
+for(let i=0;i<FG_VLARGE;i++) fgParts.push(spawnFG(true,'vl'));
+for(let i=0;i<FG_LARGE;i++)  fgParts.push(spawnFG(true,'lg'));
+for(let i=0;i<FG_MED;i++)    fgParts.push(spawnFG(true,'md'));
 
 /* ═══ TWINKLES — stationary warm points ═══ */
 const TW_COUNT = 18;
@@ -409,7 +444,7 @@ function frame(t){
     p.y += p.vy*s;
     p.x += p.vx*s;
     if(p.y > H+5){ bgParts[i]=spawnBG(false); continue; }
-    drawDot(ctxB,p.x,p.y,p.r,p.c,p.a);
+    const ba=atten(p.x,p.y,0); if(ba>0) drawDot(ctxB,p.x,p.y,p.r,p.c,p.a*ba);
   }
 
   /* Layer 2: Midground — moderate downward, slight drift */
@@ -418,7 +453,7 @@ function frame(t){
     p.y += p.vy*s;
     p.x += p.vx*s;
     if(p.y > H+10){ midParts[i]=spawnMID(false); continue; }
-    drawGlow(ctxB,p.x,p.y,p.r*2,p.c,p.a);
+    const ma=atten(p.x,p.y,0); if(ma>0) drawGlow(ctxB,p.x,p.y,p.r*2,p.c,p.a*ma);
   }
 
   /* Twinkles */
@@ -441,7 +476,7 @@ function frame(t){
       tw.a=tw.peak-(tw.peak-tw.base)*ease(p);
       if(p>=1){tw.state='idle';tw.wait=3000+Math.random()*6000;twA--;}
     }
-    drawDot(ctxB,tw.x,tw.y,tw.r,tw.c,Math.max(0,Math.min(1,tw.a)));
+    const ta=atten(tw.x,tw.y,0); if(ta>0) drawDot(ctxB,tw.x,tw.y,tw.r,tw.c,Math.max(0,Math.min(1,tw.a))*ta);
   }
 
   /* Layer 3: Foreground bokeh — slightly faster, gentle drift */
@@ -449,8 +484,8 @@ function frame(t){
     const p = fgParts[i];
     p.y += p.vy*s;
     p.x += p.vx*s;
-    if(p.y > H+p.r+20){ fgParts[i]=spawnFG(false); continue; }
-    drawBokeh(ctxF,p.x,p.y,p.r,p.c,p.a);
+    if(p.y > H+p.r+20){ fgParts[i]=spawnFG(false,p.size); continue; }
+    const fa=atten(p.x,p.y,0); if(fa>0) drawBokeh(ctxF,p.x,p.y,p.r,p.c,p.a*fa);
   }
 
   requestAnimationFrame(frame);
