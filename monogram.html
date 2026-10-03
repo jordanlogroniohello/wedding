@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A &amp; J Monogram</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: #0a1f14;
+    }
+
+    /* === EMERALD BACKGROUND === */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      /* Rich emerald gradient with depth */
+      background:
+        radial-gradient(ellipse at 50% 50%, rgba(30,70,45,0.6) 0%, transparent 60%),
+        radial-gradient(ellipse at 20% 20%, rgba(15,50,30,0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(15,50,30,0.4) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, #0d2818 0%, #071a0f 40%, #040e08 100%);
+    }
+
+    /* Subtle texture overlay */
+    .bg::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      opacity: 0.5;
+      mix-blend-mode: overlay;
+    }
+
+    /* Center glow behind monogram */
+    .bg::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 500px;
+      height: 500px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(201,169,110,0.06) 0%, rgba(30,70,45,0.1) 40%, transparent 70%);
+      border-radius: 50%;
+    }
+
+    /* === SPARKLES / STARS === */
+    .sparkles {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .sparkle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: twinkle var(--duration) ease-in-out var(--delay) infinite;
+    }
+
+    /* 4-pointed star sparkles */
+    .star {
+      position: absolute;
+      width: 0;
+      height: 0;
+      animation: twinkle var(--duration) ease-in-out var(--delay) infinite;
+    }
+    .star::before, .star::after {
+      content: '';
+      position: absolute;
+      background: rgba(255,255,255,0.8);
+    }
+    .star::before {
+      width: var(--size);
+      height: 1px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .star::after {
+      width: 1px;
+      height: var(--size);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    /* Gold bokeh particles */
+    .gold-particle {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,169,110,0.6) 0%, rgba(201,169,110,0) 70%);
+      animation: floatUp var(--duration) ease-in-out var(--delay) infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0; transform: scale(0.5); }
+      50% { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+      30% { opacity: 0.8; }
+      70% { opacity: 0.6; }
+      100% { opacity: 0; transform: translateY(-30px) scale(1.1); }
+    }
+
+    /* === DECORATIVE CORNER LEAVES === */
+    .corner-leaves {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .leaf-cluster {
+      position: absolute;
+    }
+
+    .leaf-cluster svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .leaf-cluster.top-left {
+      top: -30px;
+      left: -30px;
+      width: 280px;
+      height: 280px;
+      transform: rotate(0deg);
+    }
+    .leaf-cluster.top-right {
+      top: -30px;
+      right: -30px;
+      width: 250px;
+      height: 250px;
+      transform: scaleX(-1);
+    }
+    .leaf-cluster.bottom-left {
+      bottom: -30px;
+      left: -30px;
+      width: 240px;
+      height: 240px;
+      transform: scaleY(-1);
+    }
+    .leaf-cluster.bottom-right {
+      bottom: -30px;
+      right: -30px;
+      width: 270px;
+      height: 270px;
+      transform: scale(-1, -1);
+    }
+
+    /* === MONOGRAM CONTAINER === */
+    .monogram-wrap {
+      position: relative;
+      z-index: 5;
+      width: 500px;
+      height: 500px;
+    }
+    .monogram-wrap svg { width: 100%; height: 100%; overflow: visible; }
+
+    /* Handwriting animation */
+    .letter-path {
+      fill: none;
+      stroke: #C9A96E;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .letter-fill {
+      opacity: 0;
+      transition: opacity 0.8s ease;
+    }
+    .letter-fill.visible { opacity: 1; }
+    .wreath-path {
+      fill: none;
+      stroke: #4A6B4A;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+    }
+    .wreath-leaf {
+      fill: #4A6B4A;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .wreath-leaf.visible { opacity: 0.85; }
+    .wreath-bud {
+      fill: #6B8F6B;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .wreath-bud.visible { opacity: 0.7; }
+
+    .replay-btn {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 10;
+      background: rgba(201,169,110,0.15);
+      border: 1px solid rgba(201,169,110,0.4);
+      color: #C9A96E;
+      padding: 10px 20px;
+      font-family: 'Georgia', serif;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+    .replay-btn:hover { background: rgba(201,169,110,0.3); }
+  </style>
+</head>
+<body>
+
+  <!-- BACKGROUND LAYERS -->
+  <div class="bg"></div>
+  <div class="sparkles" id="sparkles"></div>
+  <div class="corner-leaves">
+    <!-- Top-left leaf cluster -->
+    <div class="leaf-cluster top-left">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="leafGold" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="rgba(201,169,110,0.35)"/>
+            <stop offset="100%" stop-color="rgba(160,130,70,0.15)"/>
+          </linearGradient>
+          <linearGradient id="leafGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="rgba(60,100,60,0.4)"/>
+            <stop offset="100%" stop-color="rgba(40,70,40,0.15)"/>
+          </linearGradient>
+        </defs>
+        <!-- Large gold leaf -->
+        <path d="M60,10 C80,40 100,90 110,140 C115,165 105,185 85,175 C65,165 55,130 50,100 C45,70 48,35 60,10Z"
+              fill="url(#leafGold)" opacity="0.5"/>
+        <!-- Leaf vein -->
+        <path d="M62,15 C75,55 90,110 100,155" fill="none" stroke="rgba(201,169,110,0.2)" stroke-width="0.8"/>
+        <!-- Medium green leaf -->
+        <path d="M20,40 C45,60 80,100 100,150 C105,165 95,180 80,170 C60,155 40,115 28,80 C18,50 15,40 20,40Z"
+              fill="url(#leafGreen)" opacity="0.45"/>
+        <path d="M25,45 C50,80 75,125 92,160" fill="none" stroke="rgba(60,100,60,0.2)" stroke-width="0.6"/>
+        <!-- Small accent leaf -->
+        <path d="M110,20 C120,50 125,95 120,130 C118,145 108,148 105,135 C100,115 102,70 110,20Z"
+              fill="url(#leafGold)" opacity="0.3"/>
+        <!-- Another green leaf -->
+        <path d="M5,100 C30,110 70,135 100,170 C110,182 105,195 90,188 C70,178 35,145 15,115 C5,100 3,98 5,100Z"
+              fill="url(#leafGreen)" opacity="0.35"/>
+        <!-- Tiny leaves -->
+        <path d="M140,5 C145,25 145,55 138,75 C135,82 130,80 130,72 C130,58 132,30 140,5Z"
+              fill="url(#leafGold)" opacity="0.25"/>
+        <path d="M0,160 C20,160 55,170 80,190 C88,196 85,202 75,200 C58,195 25,178 5,165Z"
+              fill="url(#leafGreen)" opacity="0.3"/>
+      </svg>
+    </div>
+    <!-- Top-right -->
+    <div class="leaf-cluster top-right">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60,10 C80,40 100,90 110,140 C115,165 105,185 85,175 C65,165 55,130 50,100 C45,70 48,35 60,10Z"
+              fill="rgba(60,100,60,0.3)" opacity="0.5"/>
+        <path d="M20,40 C45,60 80,100 100,150 C105,165 95,180 80,170 C60,155 40,115 28,80 C18,50 15,40 20,40Z"
+              fill="rgba(201,169,110,0.2)" opacity="0.4"/>
+        <path d="M110,20 C120,50 125,95 120,130 C118,145 108,148 105,135 C100,115 102,70 110,20Z"
+              fill="rgba(60,100,60,0.25)" opacity="0.35"/>
+        <path d="M0,100 C30,110 70,135 100,170 C110,182 105,195 90,188 C70,178 35,145 15,115Z"
+              fill="rgba(201,169,110,0.15)" opacity="0.3"/>
+      </svg>
+    </div>
+    <!-- Bottom-left -->
+    <div class="leaf-cluster bottom-left">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60,10 C80,40 100,90 110,140 C115,165 105,185 85,175 C65,165 55,130 50,100 C45,70 48,35 60,10Z"
+              fill="rgba(201,169,110,0.25)" opacity="0.4"/>
+        <path d="M20,40 C45,60 80,100 100,150 C105,165 95,180 80,170 C60,155 40,115 28,80 C18,50 15,40 20,40Z"
+              fill="rgba(60,100,60,0.35)" opacity="0.45"/>
+        <path d="M110,20 C120,50 125,95 120,130 C118,145 108,148 105,135 C100,115 102,70 110,20Z"
+              fill="rgba(60,100,60,0.2)" opacity="0.3"/>
+      </svg>
+    </div>
+    <!-- Bottom-right -->
+    <div class="leaf-cluster bottom-right">
+      <svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <path d="M60,10 C80,40 100,90 110,140 C115,165 105,185 85,175 C65,165 55,130 50,100 C45,70 48,35 60,10Z"
+              fill="rgba(60,100,60,0.35)" opacity="0.5"/>
+        <path d="M62,15 C75,55 90,110 100,155" fill="none" stroke="rgba(60,100,60,0.2)" stroke-width="0.8"/>
+        <path d="M20,40 C45,60 80,100 100,150 C105,165 95,180 80,170 C60,155 40,115 28,80 C18,50 15,40 20,40Z"
+              fill="rgba(201,169,110,0.25)" opacity="0.4"/>
+        <path d="M110,20 C120,50 125,95 120,130 C118,145 108,148 105,135 C100,115 102,70 110,20Z"
+              fill="rgba(201,169,110,0.2)" opacity="0.3"/>
+        <path d="M5,100 C30,110 70,135 100,170 C110,182 105,195 90,188 C70,178 35,145 15,115 C5,100 3,98 5,100Z"
+              fill="rgba(60,100,60,0.3)" opacity="0.35"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- MONOGRAM -->
+  <div class="monogram-wrap">
+    <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#D4B976"/>
+          <stop offset="50%" stop-color="#C9A96E"/>
+          <stop offset="100%" stop-color="#A88B4A"/>
+        </linearGradient>
+      </defs>
+
+      <!-- === BOTANICAL WREATH === -->
+      <g id="wreath" transform="translate(250,250)">
+        <path class="wreath-path" id="wreath-left"
+              d="M0,-180 C-60,-178 -120,-160 -155,-125 C-190,-90 -195,-40 -195,0 C-195,40 -190,90 -155,125 C-120,160 -60,178 0,180" stroke-width="1.5"/>
+        <path class="wreath-path" id="wreath-right"
+              d="M0,-180 C60,-178 120,-160 155,-125 C190,-90 195,-40 195,0 C195,40 190,90 155,125 C120,160 60,178 0,180" stroke-width="1.5"/>
+        <path class="wreath-path" id="wreath-left-inner"
+              d="M0,-170 C-55,-168 -112,-152 -145,-118 C-178,-84 -183,-38 -183,0 C-183,38 -178,84 -145,118 C-112,152 -55,168 0,170"
+              stroke="#5C7A5E" stroke-width="1" opacity="0.5"/>
+        <path class="wreath-path" id="wreath-right-inner"
+              d="M0,-170 C55,-168 112,-152 145,-118 C178,-84 183,-38 183,0 C183,38 178,84 145,118 C112,152 55,168 0,170"
+              stroke="#5C7A5E" stroke-width="1" opacity="0.5"/>
+        <!-- Leaves -->
+        <ellipse class="wreath-leaf" cx="-12" cy="-178" rx="8" ry="3.5" transform="rotate(-30,-12,-178)"/>
+        <ellipse class="wreath-leaf" cx="12" cy="-178" rx="8" ry="3.5" transform="rotate(30,12,-178)"/>
+        <ellipse class="wreath-leaf" cx="-115" cy="-138" rx="8" ry="3.5" transform="rotate(-60,-115,-138)"/>
+        <ellipse class="wreath-leaf" cx="-105" cy="-150" rx="7" ry="3" transform="rotate(-40,-105,-150)"/>
+        <ellipse class="wreath-leaf" cx="-128" cy="-125" rx="7" ry="3" transform="rotate(-70,-128,-125)"/>
+        <ellipse class="wreath-leaf" cx="-168" cy="-70" rx="8" ry="3.5" transform="rotate(-80,-168,-70)"/>
+        <ellipse class="wreath-leaf" cx="-175" cy="-55" rx="7" ry="3" transform="rotate(-85,-175,-55)"/>
+        <ellipse class="wreath-leaf" cx="-160" cy="-82" rx="6" ry="2.5" transform="rotate(-70,-160,-82)"/>
+        <ellipse class="wreath-leaf" cx="-178" cy="0" rx="8" ry="3.5" transform="rotate(90,-178,0)"/>
+        <ellipse class="wreath-leaf" cx="-180" cy="-15" rx="7" ry="3" transform="rotate(85,-180,-15)"/>
+        <ellipse class="wreath-leaf" cx="-180" cy="15" rx="7" ry="3" transform="rotate(95,-180,15)"/>
+        <ellipse class="wreath-leaf" cx="-168" cy="70" rx="8" ry="3.5" transform="rotate(80,-168,70)"/>
+        <ellipse class="wreath-leaf" cx="-160" cy="85" rx="7" ry="3" transform="rotate(70,-160,85)"/>
+        <ellipse class="wreath-leaf" cx="-175" cy="55" rx="6" ry="2.5" transform="rotate(85,-175,55)"/>
+        <ellipse class="wreath-leaf" cx="-115" cy="138" rx="8" ry="3.5" transform="rotate(60,-115,138)"/>
+        <ellipse class="wreath-leaf" cx="-128" cy="125" rx="7" ry="3" transform="rotate(70,-128,125)"/>
+        <ellipse class="wreath-leaf" cx="-102" cy="148" rx="7" ry="3" transform="rotate(45,-102,148)"/>
+        <ellipse class="wreath-leaf" cx="-12" cy="178" rx="8" ry="3.5" transform="rotate(30,-12,178)"/>
+        <ellipse class="wreath-leaf" cx="12" cy="178" rx="8" ry="3.5" transform="rotate(-30,12,178)"/>
+        <ellipse class="wreath-leaf" cx="115" cy="-138" rx="8" ry="3.5" transform="rotate(60,115,-138)"/>
+        <ellipse class="wreath-leaf" cx="105" cy="-150" rx="7" ry="3" transform="rotate(40,105,-150)"/>
+        <ellipse class="wreath-leaf" cx="128" cy="-125" rx="7" ry="3" transform="rotate(70,128,-125)"/>
+        <ellipse class="wreath-leaf" cx="168" cy="-70" rx="8" ry="3.5" transform="rotate(80,168,-70)"/>
+        <ellipse class="wreath-leaf" cx="175" cy="-55" rx="7" ry="3" transform="rotate(85,175,-55)"/>
+        <ellipse class="wreath-leaf" cx="160" cy="-82" rx="6" ry="2.5" transform="rotate(70,160,-82)"/>
+        <ellipse class="wreath-leaf" cx="178" cy="0" rx="8" ry="3.5" transform="rotate(90,178,0)"/>
+        <ellipse class="wreath-leaf" cx="180" cy="-15" rx="7" ry="3" transform="rotate(85,180,-15)"/>
+        <ellipse class="wreath-leaf" cx="180" cy="15" rx="7" ry="3" transform="rotate(95,180,15)"/>
+        <ellipse class="wreath-leaf" cx="168" cy="70" rx="8" ry="3.5" transform="rotate(-80,168,70)"/>
+        <ellipse class="wreath-leaf" cx="160" cy="85" rx="7" ry="3" transform="rotate(-70,160,85)"/>
+        <ellipse class="wreath-leaf" cx="175" cy="55" rx="6" ry="2.5" transform="rotate(-85,175,55)"/>
+        <ellipse class="wreath-leaf" cx="115" cy="138" rx="8" ry="3.5" transform="rotate(-60,115,138)"/>
+        <ellipse class="wreath-leaf" cx="128" cy="125" rx="7" ry="3" transform="rotate(-70,128,125)"/>
+        <ellipse class="wreath-leaf" cx="102" cy="148" rx="7" ry="3" transform="rotate(-45,102,148)"/>
+        <!-- Buds -->
+        <circle class="wreath-bud" cx="-30" cy="-176" r="2.5"/>
+        <circle class="wreath-bud" cx="30" cy="-176" r="2.5"/>
+        <circle class="wreath-bud" cx="-142" cy="-105" r="2.5"/>
+        <circle class="wreath-bud" cx="142" cy="-105" r="2.5"/>
+        <circle class="wreath-bud" cx="-180" cy="-35" r="2.5"/>
+        <circle class="wreath-bud" cx="180" cy="-35" r="2.5"/>
+        <circle class="wreath-bud" cx="-180" cy="35" r="2.5"/>
+        <circle class="wreath-bud" cx="180" cy="35" r="2.5"/>
+        <circle class="wreath-bud" cx="-142" cy="105" r="2.5"/>
+        <circle class="wreath-bud" cx="142" cy="105" r="2.5"/>
+        <circle class="wreath-bud" cx="-30" cy="176" r="2.5"/>
+        <circle class="wreath-bud" cx="30" cy="176" r="2.5"/>
+        <circle class="wreath-bud" cx="-80" cy="-162" r="2"/>
+        <circle class="wreath-bud" cx="80" cy="-162" r="2"/>
+        <circle class="wreath-bud" cx="-80" cy="162" r="2"/>
+        <circle class="wreath-bud" cx="80" cy="162" r="2"/>
+      </g>
+
+      <!-- === CALLIGRAPHIC A === -->
+      <g id="letterA" transform="translate(250,260)">
+        <path class="letter-path" id="pathA1"
+              d="M-95,60 C-90,40 -75,-10 -55,-55 C-45,-78 -30,-100 -15,-100 C0,-100 10,-80 20,-55 C35,-20 50,25 60,55" stroke-width="3"/>
+        <path class="letter-path" id="pathA2"
+              d="M-55,-5 C-35,-12 5,-12 40,-5" stroke-width="2.5"/>
+        <path class="letter-path" id="pathA3"
+              d="M-95,60 C-110,75 -130,100 -140,110 C-155,125 -160,130 -145,135 C-125,140 -90,125 -60,105 C-30,85 -5,65 15,55" stroke-width="2.5"/>
+      </g>
+
+      <!-- === CALLIGRAPHIC J === -->
+      <g id="letterJ" transform="translate(250,260)">
+        <path class="letter-path" id="pathJ1"
+              d="M45,-95 C50,-100 60,-100 55,-90" stroke-width="2.5"/>
+        <path class="letter-path" id="pathJ2"
+              d="M55,-90 C52,-60 48,-20 45,15 C42,50 35,80 20,100 C5,118 -15,125 -35,118 C-55,110 -60,90 -45,75 C-30,60 -5,55 20,60" stroke-width="3"/>
+        <path class="letter-path" id="pathJ3"
+              d="M20,60 C45,65 75,55 100,35 C120,18 135,0 140,-15 C145,-30 138,-38 125,-30 C112,-22 105,-5 110,15" stroke-width="2.5"/>
+      </g>
+
+      <!-- Filled versions -->
+      <g id="letterA-fill" class="letter-fill" transform="translate(250,260)">
+        <path d="M-95,60 C-90,40 -75,-10 -55,-55 C-45,-78 -30,-100 -15,-100 C0,-100 10,-80 20,-55 C35,-20 50,25 60,55"
+              fill="none" stroke="url(#goldGrad)" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M-55,-5 C-35,-12 5,-12 40,-5"
+              fill="none" stroke="url(#goldGrad)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M-95,60 C-110,75 -130,100 -140,110 C-155,125 -160,130 -145,135 C-125,140 -90,125 -60,105 C-30,85 -5,65 15,55"
+              fill="none" stroke="url(#goldGrad)" stroke-width="3" stroke-linecap="round"/>
+      </g>
+      <g id="letterJ-fill" class="letter-fill" transform="translate(250,260)">
+        <path d="M45,-95 C50,-100 60,-100 55,-90"
+              fill="none" stroke="url(#goldGrad)" stroke-width="3" stroke-linecap="round"/>
+        <path d="M55,-90 C52,-60 48,-20 45,15 C42,50 35,80 20,100 C5,118 -15,125 -35,118 C-55,110 -60,90 -45,75 C-30,60 -5,55 20,60"
+              fill="none" stroke="url(#goldGrad)" stroke-width="3.5" stroke-linecap="round"/>
+        <path d="M20,60 C45,65 75,55 100,35 C120,18 135,0 140,-15 C145,-30 138,-38 125,-30 C112,-22 105,-5 110,15"
+              fill="none" stroke="url(#goldGrad)" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+
+  <button class="replay-btn" onclick="replayAnimation()">Replay</button>
+
+  <script>
+    // === GENERATE SPARKLES & PARTICLES ===
+    function createSparkles() {
+      const container = document.getElementById('sparkles');
+      container.innerHTML = '';
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      // Small dot sparkles
+      for (let i = 0; i < 50; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        s.style.left = Math.random() * w + 'px';
+        s.style.top = Math.random() * h + 'px';
+        const size = 1 + Math.random() * 3;
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.setProperty('--duration', (3 + Math.random() * 5) + 's');
+        s.style.setProperty('--delay', (Math.random() * 5) + 's');
+        container.appendChild(s);
+      }
+
+      // 4-pointed star sparkles
+      for (let i = 0; i < 15; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        s.style.left = Math.random() * w + 'px';
+        s.style.top = Math.random() * h + 'px';
+        s.style.setProperty('--size', (8 + Math.random() * 16) + 'px');
+        s.style.setProperty('--duration', (4 + Math.random() * 6) + 's');
+        s.style.setProperty('--delay', (Math.random() * 6) + 's');
+        container.appendChild(s);
+      }
+
+      // Gold bokeh particles
+      for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'gold-particle';
+        p.style.left = Math.random() * w + 'px';
+        p.style.top = (Math.random() * h * 0.8 + h * 0.1) + 'px';
+        const size = 3 + Math.random() * 8;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.setProperty('--duration', (5 + Math.random() * 8) + 's');
+        p.style.setProperty('--delay', (Math.random() * 8) + 's');
+        container.appendChild(p);
+      }
+    }
+
+    createSparkles();
+    window.addEventListener('resize', createSparkles);
+
+    // === HANDWRITING ANIMATION ===
+    function animatePath(pathEl, duration, delay) {
+      const length = pathEl.getTotalLength();
+      pathEl.style.strokeDasharray = length;
+      pathEl.style.strokeDashoffset = length;
+      pathEl.style.transition = 'none';
+      pathEl.getBoundingClientRect();
+      pathEl.style.transition = `stroke-dashoffset ${duration}s cubic-bezier(0.4, 0, 0.2, 1) ${delay}s`;
+      pathEl.style.strokeDashoffset = '0';
+    }
+
+    function runAnimation() {
+      const allPaths = document.querySelectorAll('.letter-path, .wreath-path');
+      allPaths.forEach(p => {
+        const len = p.getTotalLength();
+        p.style.transition = 'none';
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+      });
+      document.querySelectorAll('.letter-fill').forEach(el => el.classList.remove('visible'));
+      document.querySelectorAll('.wreath-leaf').forEach(el => el.classList.remove('visible'));
+      document.querySelectorAll('.wreath-bud').forEach(el => el.classList.remove('visible'));
+      document.body.getBoundingClientRect();
+
+      animatePath(document.getElementById('wreath-left'), 1.5, 0);
+      animatePath(document.getElementById('wreath-right'), 1.5, 0.1);
+      animatePath(document.getElementById('wreath-left-inner'), 1.5, 0.2);
+      animatePath(document.getElementById('wreath-right-inner'), 1.5, 0.3);
+
+      const leaves = document.querySelectorAll('.wreath-leaf');
+      leaves.forEach((leaf, i) => setTimeout(() => leaf.classList.add('visible'), 1000 + i * 40));
+      const buds = document.querySelectorAll('.wreath-bud');
+      buds.forEach((bud, i) => setTimeout(() => bud.classList.add('visible'), 1500 + i * 50));
+
+      animatePath(document.getElementById('pathA1'), 1.2, 2.0);
+      animatePath(document.getElementById('pathA2'), 0.5, 3.0);
+      animatePath(document.getElementById('pathA3'), 1.0, 3.3);
+      animatePath(document.getElementById('pathJ1'), 0.3, 4.2);
+      animatePath(document.getElementById('pathJ2'), 1.3, 4.4);
+      animatePath(document.getElementById('pathJ3'), 0.8, 5.5);
+
+      setTimeout(() => {
+        document.getElementById('letterA').style.opacity = '0';
+        document.getElementById('letterA-fill').classList.add('visible');
+      }, 4500);
+      setTimeout(() => {
+        document.getElementById('letterJ').style.opacity = '0';
+        document.getElementById('letterJ-fill').classList.add('visible');
+      }, 6500);
+    }
+
+    function replayAnimation() {
+      document.getElementById('letterA').style.opacity = '1';
+      document.getElementById('letterJ').style.opacity = '1';
+      runAnimation();
+    }
+
+    window.addEventListener('load', () => setTimeout(runAnimation, 300));
+  </script>
+</body>
+</html>
