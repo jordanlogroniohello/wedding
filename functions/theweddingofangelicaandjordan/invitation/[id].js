@@ -1,5 +1,9 @@
 export async function onRequest(context) {
-  const url = new URL(context.request.url);
-  url.pathname = '/theweddingofangelicaandjordan/200.html';
-  return context.env.ASSETS.fetch(new Request(url, context.request));
+  const assetUrl = new URL(context.request.url);
+  assetUrl.pathname = '/theweddingofangelicaandjordan/invitation';
+  const response = await context.env.ASSETS.fetch(assetUrl);
+  return new Response(response.body, {
+    status: 200,
+    headers: response.headers
+  });
 }
