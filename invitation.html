@@ -1508,7 +1508,7 @@ document.getElementById('rsvpAnother').addEventListener('click', function(){
       var item = document.createElement('div');
       item.className = 'prenup-grid-item';
       var img = document.createElement('img');
-      img.src = 'prenup%20photos/' + encodeURIComponent(f);
+      img.src = 'prenup-photos/' + encodeURIComponent(f);
       img.alt = '';
       img.loading = 'lazy';
       item.appendChild(img);
@@ -1610,7 +1610,7 @@ document.getElementById('rsvpAnother').addEventListener('click', function(){
 
   function showLb(i){
     lbIdx = ((i % total) + total) % total;
-    lbImg.src = 'prenup%20photos/' + encodeURIComponent(prenupPhotos[lbIdx]);
+    lbImg.src = 'prenup-photos/' + encodeURIComponent(prenupPhotos[lbIdx]);
     lbCounter.textContent = (lbIdx + 1) + ' / ' + total;
   }
 
@@ -1619,7 +1619,7 @@ document.getElementById('rsvpAnother').addEventListener('click', function(){
     if(!item) return;
     var img = item.querySelector('img');
     if(!img) return;
-    var src = decodeURIComponent(img.src.split('prenup%20photos/')[1] || '');
+    var src = decodeURIComponent(img.src.split('prenup-photos/')[1] || '');
     var idx = prenupPhotos.indexOf(src);
     if(idx === -1) idx = 0;
     showLb(idx);
