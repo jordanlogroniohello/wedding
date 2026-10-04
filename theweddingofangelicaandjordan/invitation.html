@@ -43,6 +43,11 @@ body{
   overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
+body:not(.loaded) .floral-cover,
+body:not(.loaded) .nav,
+body:not(.loaded) .hero,
+body:not(.loaded) .sticker-bomb,
+body:not(.loaded) section{visibility:hidden}
 .scroll-progress{
   position:fixed;top:0;left:0;
   height:3px;
@@ -2142,6 +2147,7 @@ document.getElementById('rsvpAnother').addEventListener('click', function(){
     loadedCount++;
     preloaderFill.style.width = (loadedCount / totalImages * 100) + '%';
     if(loadedCount >= totalImages){
+      document.body.classList.add('loaded');
       preloader.classList.add('done');
       loader.classList.add('hidden');
       card.classList.add('ready');
