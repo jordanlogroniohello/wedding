@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Angelica & Jordan — Wedding Invitation</title>
+<link rel="icon" type="image/png" href="favicon.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Julius+Sans+One&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -134,13 +135,13 @@ body{
 .hero-floral-tl{
   top:-2%;left:-4%;
   transform:scaleX(-1);
-  animation:floralIn 2s ease .6s forwards;
 }
 .hero-floral-br{
   bottom:-2%;right:-4%;
   transform:rotate(180deg) scaleX(-1);
-  animation:floralIn 2s ease 1s forwards;
 }
+.revealed .hero-floral-tl{animation:floralIn 2s ease .6s forwards}
+.revealed .hero-floral-br{animation:floralIn 2s ease 1s forwards}
 @keyframes floralIn{
   0%{opacity:0;filter:blur(4px)}
   100%{opacity:.9;filter:blur(0)}
@@ -150,8 +151,8 @@ body{
   width:clamp(300px,50vw,600px);
   opacity:0;
   z-index:2;
-  animation:fadeScale 1.5s ease .3s forwards;
 }
+.revealed .hero-monogram{animation:fadeScale 1.5s ease .3s forwards}
 .hero-monogram img{width:100%;height:auto;display:block;
   filter:brightness(0) saturate(100%) invert(20%) sepia(15%) saturate(1200%) hue-rotate(100deg) brightness(95%);
 }
@@ -434,8 +435,6 @@ body{
   .entourage-parents{flex-direction:column;align-items:center;gap:0}
   .entourage-name{font-size:clamp(11px,3.2vw,14px)}
   .entourage-role{font-size:clamp(11px,3vw,14px)}
-  .entourage-sponsors,
-  .entourage-grid{gap:8px}
   .entourage-trio{
     grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   }
@@ -598,6 +597,87 @@ body{
 }
 @media(max-width:600px){
   .dresscode-groups{flex-direction:column;align-items:center;gap:clamp(32px,5vh,48px)}
+}
+
+/* ══════════════════════════════════════
+   GIFTS & WISHES
+   ══════════════════════════════════════ */
+.gifts{
+  text-align:center;
+  padding:clamp(60px,10vh,120px) clamp(20px,5vw,60px);
+  background:var(--white);
+}
+.gifts-message{
+  max-width:600px;
+  margin:0 auto clamp(28px,4vh,40px);
+  font-size:clamp(15px,1.6vw,18px);
+  line-height:1.8;
+  color:var(--text);
+  font-weight:400;
+}
+.gifts-qr{
+  max-width:280px;
+  margin:0 auto;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,.08);
+}
+.gifts-qr img{
+  width:100%;height:auto;display:block;
+}
+
+/* ══════════════════════════════════════
+   SEMI-PLUGGED CEREMONY
+   ══════════════════════════════════════ */
+.plugged{
+  text-align:center;
+  padding:clamp(48px,8vh,80px) clamp(20px,5vw,60px);
+  background:var(--sage-pale);
+}
+.plugged-icon{
+  font-size:clamp(32px,4vw,44px);
+  margin-bottom:clamp(12px,2vh,20px);
+}
+.plugged-message{
+  max-width:600px;
+  margin:0 auto;
+  font-size:clamp(14px,1.5vw,17px);
+  line-height:1.8;
+  color:var(--text);
+  font-weight:400;
+}
+
+/* ══════════════════════════════════════
+   FAQ
+   ══════════════════════════════════════ */
+.faq{
+  text-align:center;
+  padding:clamp(60px,10vh,120px) clamp(20px,5vw,60px);
+  background:var(--beige);
+}
+.faq-list{
+  max-width:680px;
+  margin:0 auto;
+  text-align:left;
+}
+.faq-item{
+  border-bottom:1px solid var(--sage-light);
+  padding:clamp(20px,3vh,28px) 0;
+}
+.faq-item:last-child{border-bottom:none}
+.faq-q{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:clamp(17px,1.8vw,21px);
+  font-weight:600;
+  font-style:italic;
+  color:var(--dark-deep);
+  margin-bottom:8px;
+}
+.faq-a{
+  font-size:clamp(14px,1.4vw,16px);
+  line-height:1.7;
+  color:var(--text);
+  font-weight:400;
 }
 
 /* ══════════════════════════════════════
@@ -788,22 +868,107 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 /* ══════════════════════════════════════
    STICKER BOMB + PRENUP GALLERY
    ══════════════════════════════════════ */
-.prenup-btn-wrap{text-align:center;margin:clamp(24px,4vh,40px) 0}
-.prenup-btn{
+.cta-duo{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(16px,3vw,32px);
+  max-width:720px;
+  margin:0 auto;
+  padding:clamp(40px,6vh,72px) clamp(20px,5vw,48px);
+}
+.cta-card{
+  text-align:center;
+  padding:clamp(28px,4vh,44px) clamp(20px,3vw,32px);
+  border:1px solid var(--sage-light);
+  border-radius:16px;
+  background:var(--white);
+  transition:transform .3s,box-shadow .3s;
+  cursor:pointer;
+}
+.cta-card:hover{transform:translateY(-4px);box-shadow:0 12px 36px rgba(0,0,0,.08)}
+.cta-card-icon{
+  font-size:clamp(28px,4vw,40px);
+  margin-bottom:clamp(12px,2vh,20px);
+  display:block;
+}
+.cta-card-title{
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(22px,3vw,30px);
+  color:var(--dark-deep);
+  margin-bottom:8px;
+}
+.cta-card-desc{
+  font-size:clamp(11px,1.3vw,13px);
+  color:var(--text-light);
+  letter-spacing:1px;
+  text-transform:uppercase;
+  font-weight:500;
+  margin-bottom:clamp(16px,2.5vh,24px);
+}
+.cta-card-btn{
   font-family:'Raleway',sans-serif;
-  font-size:clamp(13px,1.4vw,16px);
+  font-size:clamp(11px,1.2vw,13px);
   font-weight:600;
   letter-spacing:2px;
   text-transform:uppercase;
   color:var(--white);
   background:var(--green);
   border:none;
-  padding:14px 36px;
+  padding:12px 28px;
   border-radius:40px;
   cursor:pointer;
-  transition:background .3s,transform .3s,box-shadow .3s;
+  transition:background .3s,transform .3s;
+  text-decoration:none;
+  display:inline-block;
 }
-.prenup-btn:hover{background:var(--dark);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.2)}
+.cta-card-btn:hover{background:var(--dark);transform:translateY(-2px)}
+.cta-card-btn.cta-outline{
+  background:transparent;
+  color:var(--green);
+  border:1.5px solid var(--green);
+}
+.cta-card-btn.cta-outline:hover{background:var(--green);color:var(--white)}
+@media(max-width:520px){
+  .cta-duo{grid-template-columns:1fr;max-width:340px}
+}
+
+/* ══════════════════════════════════════
+   FLORAL COVER (Intro Reveal)
+   ══════════════════════════════════════ */
+.floral-cover{
+  position:fixed;inset:0;z-index:9500;
+  background:url('watercolor-bg.png') center/cover no-repeat var(--white);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.floral-cover.gone{display:none}
+.floral-petal{
+  position:absolute;
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-position:center;
+  pointer-events:none;
+}
+.floral-seal{
+  position:relative;z-index:2;
+  width:clamp(160px,28vw,240px);
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:0;
+  transition:transform .3s,filter .3s;
+}
+.floral-seal:hover{transform:scale(1.08);filter:brightness(1.05)}
+.floral-seal img{
+  width:100%;height:auto;
+  display:block;
+  filter:drop-shadow(0 6px 24px rgba(0,0,0,.25));
+  animation:sealPulse 2.5s ease-in-out infinite;
+}
+@keyframes sealPulse{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 6px 24px rgba(0,0,0,.25))}
+  50%{transform:scale(1.05);filter:drop-shadow(0 10px 36px rgba(201,168,76,.35))}
+}
 
 .sticker-bomb{
   position:fixed;inset:0;z-index:9002;
@@ -916,6 +1081,13 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 </head>
 <body>
 
+<!-- ═══ FLORAL COVER ═══ -->
+<div class="floral-cover" id="floralCover">
+  <button class="floral-seal" id="floralSeal">
+    <img src="assets/wax-seal.png" alt="Open Invitation">
+  </button>
+</div>
+
 <!-- ═══ NAVIGATION ═══ -->
 <nav class="nav" id="nav">
   <img class="nav-logo" src="monogram.png" alt="AJ">
@@ -928,6 +1100,8 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
     <li><a href="#entourage">Entourage</a></li>
     <li><a href="#venues">Ceremony &amp; Reception</a></li>
     <li><a href="#dresscode">Dress Code</a></li>
+    <li><a href="#gifts">Gifts</a></li>
+    <li><a href="#faq">FAQ</a></li>
     <li><a href="#rsvp">RSVP</a></li>
   </ul>
 </nav>
@@ -966,10 +1140,10 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 <!-- ═══ PHOTO SECTION ═══ -->
 <section class="photo-section" id="photoSection">
   <div class="photo-section-inner">
-    <div class="photo-slide active" style="background-image:url('assets/photo-slide-1.png')"></div>
-    <div class="photo-slide" style="background-image:url('assets/photo-slide-2.png')"></div>
-    <div class="photo-slide" style="background-image:url('assets/photo-slide-3.png')"></div>
-    <div class="photo-slide" style="background-image:url('assets/photo-slide-4.png')"></div>
+    <div class="photo-slide active" style="background-image:url('assets/photo-slide-1.jpg')"></div>
+    <div class="photo-slide" style="background-image:url('assets/photo-slide-2.jpg')"></div>
+    <div class="photo-slide" style="background-image:url('assets/photo-slide-3.jpg')"></div>
+    <div class="photo-slide" style="background-image:url('assets/photo-slide-4.jpg')"></div>
     <button class="photo-nav prev" id="photoPrev">&#8249;</button>
     <button class="photo-nav next" id="photoNext">&#8250;</button>
   </div>
@@ -985,31 +1159,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   <p>We are Angelica and Jordan, and our journey together has been nothing short of extraordinary. What started as a beautiful friendship blossomed into a love that continues to grow stronger each day.</p>
   <p>Through every adventure, every quiet moment, and every challenge we've faced together, our bond has only deepened. Now, we're excited to begin the next chapter of our lives as we celebrate our love with the people who matter most to us.</p>
   <p>Thank you for being part of our story and for sharing in our happiness.</p>
-  <div class="prenup-btn-wrap">
-    <button class="prenup-btn" id="prenupBtn" type="button">See Our Prenup Photos</button>
-  </div>
 </section>
-
-<!-- Sticker bomb overlay -->
-<div class="sticker-bomb" id="stickerBomb"></div>
-<!-- Prenup gallery overlay -->
-<button class="prenup-close" id="prenupClose">&#10005;</button>
-<div class="prenup-gallery" id="prenupGallery">
-  <div class="prenup-gallery-header">
-    <h2>Our Moments</h2>
-    <p>Prenup Photos</p>
-  </div>
-  <div class="prenup-grid" id="prenupGrid"></div>
-</div>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close" id="lbClose">&#10005;</button>
-  <button class="lightbox-nav lightbox-prev" id="lbPrev">&#10094;</button>
-  <img class="lightbox-img" id="lbImg" src="" alt="">
-  <button class="lightbox-nav lightbox-next" id="lbNext">&#10095;</button>
-  <div class="lightbox-counter" id="lbCounter"></div>
-</div>
 
 <!-- ═══ MARQUEE PHOTO GALLERY ═══ -->
 <div class="photo-marquee">
@@ -1036,6 +1186,42 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
     <div class="photo-marquee-item"><img src="assets/marquee/marquee-10.jpg" alt=""></div>
   </div>
 </div>
+
+<div class="cta-duo">
+  <div class="cta-card" id="prenupBtn">
+    <span class="cta-card-icon">&#9750;</span>
+    <div class="cta-card-title">Our Moments</div>
+    <div class="cta-card-desc">Browse our prenup photos</div>
+    <span class="cta-card-btn">View Gallery</span>
+  </div>
+  <a class="cta-card" href="#" id="stdVideoLink" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">
+    <span class="cta-card-icon">&#9655;</span>
+    <div class="cta-card-title">Save the Date</div>
+    <div class="cta-card-desc">Watch our video</div>
+    <span class="cta-card-btn cta-outline">Play Video</span>
+  </a>
+</div>
+</div>
+
+<!-- Sticker bomb overlay -->
+<div class="sticker-bomb" id="stickerBomb"></div>
+<!-- Prenup gallery overlay -->
+<button class="prenup-close" id="prenupClose">&#10005;</button>
+<div class="prenup-gallery" id="prenupGallery">
+  <div class="prenup-gallery-header">
+    <h2>Our Moments</h2>
+    <p>Prenup Photos</p>
+  </div>
+  <div class="prenup-grid" id="prenupGrid"></div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lbClose">&#10005;</button>
+  <button class="lightbox-nav lightbox-prev" id="lbPrev">&#10094;</button>
+  <img class="lightbox-img" id="lbImg" src="" alt="">
+  <button class="lightbox-nav lightbox-next" id="lbNext">&#10095;</button>
+  <div class="lightbox-counter" id="lbCounter"></div>
 </div>
 
 <!-- ═══ E-INVITE ═══ -->
@@ -1111,7 +1297,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
       <div class="entourage-name">Carl Jhovan Dimanarig</div>
       <div class="entourage-name">Kim Philip Qui&ntilde;ones</div>
       <div class="entourage-name">Russell David</div>
-      <div class="entourage-name">Isaac Alberto Guerrero Rodriguez</div>
+      <div class="entourage-name">Isaac Guerrero</div>
       <div class="entourage-name">Isaiah John Gonzales</div>
     </div>
     <div class="entourage-group">
@@ -1209,6 +1395,16 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 </section>
 </div>
 
+<!-- ═══ SEMI-PLUGGED CEREMONY ═══ -->
+<section class="plugged">
+  <div class="section-header">
+    <p class="section-label">A Gentle Reminder</p>
+    <h2 class="section-title">Semi-Plugged Ceremony</h2>
+  </div>
+  <div class="plugged-icon">📸</div>
+  <p class="plugged-message">We'd love for you to capture and share these special moments with us. We'll also have a professional photographer and videographer there to document the day, so we kindly ask that you be mindful of them and allow them space to capture the best moments. Most importantly, relax, enjoy, and celebrate with us!</p>
+</section>
+
 <!-- ═══ DRESS CODE ═══ -->
 <section class="dresscode" id="dresscode">
   <p class="section-label">What to Wear</p>
@@ -1244,6 +1440,48 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   </div>
 
   <p class="dresscode-warning">Strictly No White Please</p>
+</section>
+
+<!-- ═══ GIFTS & WISHES ═══ -->
+<section class="gifts" id="gifts">
+  <div class="section-header">
+    <p class="section-label">Share Your Blessings</p>
+    <h2 class="section-title">Gifts &amp; Wishes</h2>
+  </div>
+  <p class="gifts-message">Your presence is already a wonderful gift to us! 🤍 But as we begin this new chapter of our lives together, a monetary gift would be greatly appreciated and would mean so much to us as we build our future as husband and wife. Thank you for celebrating this special beginning with us! ✨</p>
+  <div class="gifts-qr">
+    <img src="assets/qr-maribank.png" alt="MariBank QR Code">
+  </div>
+</section>
+
+<!-- ═══ FAQ ═══ -->
+<section class="faq" id="faq">
+  <div class="section-header">
+    <p class="section-label">Have Questions?</p>
+    <h2 class="section-title">FAQ</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item">
+      <div class="faq-q">What time should I arrive?</div>
+      <div class="faq-a">Please arrive at least 30 minutes before the ceremony so you have time to settle in and find your seat.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I bring a plus-one?</div>
+      <div class="faq-a">We kindly ask that you only bring a plus-one if they are specifically included in your invitation.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Is there parking available?</div>
+      <div class="faq-a">Yes, parking is available.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I take photos during the ceremony?</div>
+      <div class="faq-a">We'd love for you to capture and share these special moments with us. We'll also have a professional photographer and videographer there to document the day, so we kindly ask that you be mindful of them and allow them space to capture the best moments. Most importantly, relax, enjoy, and celebrate with us!</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">What if I can't attend?</div>
+      <div class="faq-a">We'll be sad to miss you, but we completely understand. Please let us know through the RSVP form.</div>
+    </div>
+  </div>
 </section>
 
 <!-- ═══ RSVP ═══ -->
@@ -1373,21 +1611,23 @@ window.addEventListener('scroll', () => {
   nav.classList.toggle('scrolled', y > window.innerHeight * 0.7 + 50);
 }, {passive:true});
 
-/* ── Scroll-triggered animations ── */
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if(e.isIntersecting){
-      e.target.classList.add('animate-in');
-      if(e.target.classList.contains('stagger')){
-        Array.from(e.target.children).forEach(c => c.classList.add('animate-in'));
+/* ── Scroll-triggered animations (deferred until cover reveal) ── */
+function initScrollAnimations(){
+  var observer = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        e.target.classList.add('animate-in');
+        if(e.target.classList.contains('stagger')){
+          Array.from(e.target.children).forEach(function(c){ c.classList.add('animate-in'); });
+        }
       }
-    }
-  });
-}, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
+    });
+  }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
 
-document.querySelectorAll('.intro-subtitle,.intro-tagline,.intro-names,.countdown,.story p,.venue-card,.section-header').forEach(el => {
-  observer.observe(el);
-});
+  document.querySelectorAll('.intro-subtitle,.intro-tagline,.intro-names,.countdown,.story p,.venue-card,.section-header,.intro-hashtags,.gifts-message,.gifts-qr,.plugged-message,.faq-item').forEach(function(el){
+    observer.observe(el);
+  });
+}
 
 // Draggable card carousel (infinite loop)
 (function(){
@@ -1639,6 +1879,90 @@ document.getElementById('rsvpAnother').addEventListener('click', function(){
     if(e.key === 'ArrowRight') showLb(lbIdx + 1);
     else if(e.key === 'ArrowLeft') showLb(lbIdx - 1);
     else if(e.key === 'Escape') lb.classList.remove('active');
+  });
+})();
+
+/* ── Floral Cover Reveal ── */
+(function(){
+  var cover = document.getElementById('floralCover');
+  var seal = document.getElementById('floralSeal');
+  var floralSrc = 'floral-hero.png';
+  var sw = window.innerWidth;
+  var sh = window.innerHeight;
+  var size = sw < 768 ? Math.max(sw,sh) * 0.55 : Math.max(sw,sh) * 0.4;
+
+  document.body.style.overflow = 'hidden';
+
+  var corners = [
+    {x: -size*0.25, y: -size*0.25, rot: 0},
+    {x: sw - size*0.75, y: -size*0.25, rot: 90},
+    {x: -size*0.25, y: sh - size*0.75, rot: -90},
+    {x: sw - size*0.75, y: sh - size*0.75, rot: 180},
+    {x: sw*0.5 - size*0.5, y: -size*0.3, rot: 45},
+    {x: sw*0.5 - size*0.5, y: sh - size*0.7, rot: -135},
+    {x: -size*0.3, y: sh*0.5 - size*0.5, rot: -45},
+    {x: sw - size*0.7, y: sh*0.5 - size*0.5, rot: 135}
+  ];
+  if(sw >= 768){
+    corners.push(
+      {x: sw*0.25 - size*0.5, y: -size*0.2, rot: 20},
+      {x: sw*0.75 - size*0.5, y: -size*0.2, rot: -20},
+      {x: sw*0.25 - size*0.5, y: sh - size*0.8, rot: 160},
+      {x: sw*0.75 - size*0.5, y: sh - size*0.8, rot: -160}
+    );
+  }
+
+  corners.forEach(function(spot){
+    var petal = document.createElement('div');
+    petal.className = 'floral-petal';
+    petal.style.backgroundImage = 'url(' + floralSrc + ')';
+    petal.style.width = size + 'px';
+    petal.style.height = size + 'px';
+    petal.style.left = spot.x + 'px';
+    petal.style.top = spot.y + 'px';
+    petal.style.transform = 'rotate(' + spot.rot + 'deg)';
+    petal.style.opacity = '0.8';
+    cover.appendChild(petal);
+  });
+
+  seal.addEventListener('click', function(){
+    seal.style.pointerEvents = 'none';
+    gsap.to(seal, {scale:0, opacity:0, duration:1, ease:'back.in(1.5)'});
+
+    var petals = Array.from(cover.querySelectorAll('.floral-petal'));
+    petals.sort(function(a,b){
+      var ax = parseFloat(a.style.left) + size/2;
+      var ay = parseFloat(a.style.top) + size/2;
+      var bx = parseFloat(b.style.left) + size/2;
+      var by = parseFloat(b.style.top) + size/2;
+      var da = Math.sqrt(Math.pow(ax - sw/2,2) + Math.pow(ay - sh/2,2));
+      var db = Math.sqrt(Math.pow(bx - sw/2,2) + Math.pow(by - sh/2,2));
+      return da - db;
+    });
+
+    petals.forEach(function(p, i){
+      var px = parseFloat(p.style.left);
+      var py = parseFloat(p.style.top);
+      var cx = px + size/2;
+      var cy = py + size/2;
+      var exitX = cx <= sw/2 ? -size * 1.5 : sw + size * 0.5;
+      var exitY = cy <= sh/2 ? -size * 1.5 : sh + size * 0.5;
+      gsap.to(p, {
+        left: exitX, top: exitY, opacity: 0,
+        rotation: '+=' + ((Math.random()-0.5)*120),
+        duration: 1.2, delay: 0.6 + i * 0.12,
+        ease: 'power2.in'
+      });
+    });
+
+    var lastDelay = 0.6 + (petals.length - 1) * 0.12;
+    var totalMs = (lastDelay + 1.2) * 1000 + 300;
+    setTimeout(function(){
+      cover.classList.add('gone');
+      document.body.style.overflow = '';
+      document.body.classList.add('revealed');
+      initScrollAnimations();
+    }, totalMs);
   });
 })();
 </script>
