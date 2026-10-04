@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<base href="/theweddingofangelicaandjordan/">
 <title>Angelica & Jordan — Wedding Invitation</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="preload" href="watercolor-bg.png" as="image">
@@ -1083,6 +1084,27 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   0%,100%{opacity:.3}50%{opacity:.7}
 }
 
+.preloader{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--white);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.preloader.done{opacity:0;pointer-events:none;transition:opacity .5s ease}
+.preloader-text{
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:14px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--text-light);margin-bottom:16px;
+}
+.preloader-bar{
+  width:clamp(160px,40vw,240px);height:2px;
+  background:rgba(0,0,0,.08);border-radius:2px;overflow:hidden;
+}
+.preloader-fill{
+  height:100%;width:0;background:var(--gold);
+  transition:width .2s ease;
+}
+
 .cover-loader{
   position:absolute;z-index:10;
   font-family:'Cormorant Garamond',Georgia,serif;
@@ -1207,11 +1229,17 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 <body>
 <div class="scroll-progress" id="scrollProgress"></div>
 
+<!-- ═══ PRELOADER ═══ -->
+<div class="preloader" id="preloader">
+  <div class="preloader-text">Loading</div>
+  <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
+</div>
+
 <!-- ═══ FLORAL COVER ═══ -->
 <div class="floral-cover" id="floralCover">
   <div class="invite-card" id="inviteCard">
     <div class="invite-card-bg" id="cardBg"></div>
-    <div class="invite-card-greeting">Hi <span id="guestName">there</span>,</div>
+    <div class="invite-card-greeting">Hi! Hello!<br><span id="guestName"></span></div>
     <div class="invite-card-divider"></div>
     <div class="invite-card-message">Angelica &amp; Jordan sent you an invitation</div>
     <div class="invite-card-open">Tap to Open</div>
@@ -1724,7 +1752,15 @@ document.querySelector('.photo-section-inner').addEventListener('click', () => s
 const hamburger = document.getElementById('hamburger');
 const navLinks = document.getElementById('navLinks');
 hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
-navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', function(e){
+  navLinks.classList.remove('open');
+  var hash = this.getAttribute('href');
+  if(hash && hash.charAt(0) === '#'){
+    e.preventDefault();
+    var el = document.querySelector(hash);
+    if(el) el.scrollIntoView({behavior:'smooth'});
+  }
+}));
 
 /* ── Nav show/hide on scroll ── */
 const nav = document.getElementById('nav');
@@ -2080,29 +2116,41 @@ document.getElementById('rsvpAnother').addEventListener('click', function(){
     guestEl.textContent = guestName;
   } else if(guestId){
     guestEl.textContent = 'Our Beloved Guest';
+  } else {
+    guestEl.style.display = 'none';
   }
 
-  var criticalImages = [
-    'watercolor-bg.png',
-    'floral-hero.png',
-    'monogram.png',
-    'assets/photo-slide-1.jpg',
-    'assets/photo-slide-2.jpg',
-    'assets/photo-slide-3.jpg',
-    'assets/photo-slide-4.jpg'
+  var allImages = [
+    'watercolor-bg.png','floral-hero.png','monogram.png',
+    'assets/photo-slide-1.jpg','assets/photo-slide-2.jpg',
+    'assets/photo-slide-3.jpg','assets/photo-slide-4.jpg',
+    'assets/venue-church.jpg','assets/venue-reception.jpg',
+    'assets/color-swatches.png','assets/dress-code-guests.png',
+    'assets/dress-code-sponsors.png','assets/qr-maribank.png',
+    'assets/sticker-jordan.png','assets/sticker-angelica.png',
+    'assets/marquee/marquee-1.jpg','assets/marquee/marquee-2.jpg',
+    'assets/marquee/marquee-3.jpg','assets/marquee/marquee-4.jpg',
+    'assets/marquee/marquee-5.jpg','assets/marquee/marquee-6.jpg',
+    'assets/marquee/marquee-7.jpg','assets/marquee/marquee-8.jpg',
+    'assets/marquee/marquee-9.jpg','assets/marquee/marquee-10.jpg'
   ];
+  var preloader = document.getElementById('preloader');
+  var preloaderFill = document.getElementById('preloaderFill');
   var loadedCount = 0;
-  function onCriticalLoad(){
+  var totalImages = allImages.length;
+  function onImageLoad(){
     loadedCount++;
-    if(loadedCount >= criticalImages.length){
+    preloaderFill.style.width = (loadedCount / totalImages * 100) + '%';
+    if(loadedCount >= totalImages){
+      preloader.classList.add('done');
       loader.classList.add('hidden');
       card.classList.add('ready');
     }
   }
-  criticalImages.forEach(function(src){
+  allImages.forEach(function(src){
     var img = new Image();
-    img.onload = onCriticalLoad;
-    img.onerror = onCriticalLoad;
+    img.onload = onImageLoad;
+    img.onerror = onImageLoad;
     img.src = src;
   });
 
