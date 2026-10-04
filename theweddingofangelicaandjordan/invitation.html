@@ -47,7 +47,24 @@ body:not(.loaded) .floral-cover,
 body:not(.loaded) .nav,
 body:not(.loaded) .hero,
 body:not(.loaded) .sticker-bomb,
-body:not(.loaded) section{visibility:hidden}
+body:not(.loaded) section{opacity:0}
+body.loaded .floral-cover,
+body.loaded .nav,
+body.loaded .hero,
+body.loaded .sticker-bomb,
+body.loaded section{transition:opacity .4s ease}
+
+@keyframes shimmer{
+  0%{background-position:-200% 0}
+  100%{background-position:200% 0}
+}
+.skeleton{
+  background:linear-gradient(90deg,var(--sage-pale) 25%,var(--beige) 50%,var(--sage-pale) 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.5s ease-in-out infinite;
+}
+.lazy-img{opacity:0;transition:opacity .6s ease}
+.lazy-img.img-loaded{opacity:1}
 .scroll-progress{
   position:fixed;top:0;left:0;
   height:3px;
@@ -1273,13 +1290,13 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 <!-- ═══ HERO ═══ -->
 <section class="hero" id="home">
   <div class="hero-floral hero-floral-tl">
-    <img src="floral-hero.png" alt="">
+    <img src="floral-hero.png" alt="" decoding="async">
   </div>
   <div class="hero-floral hero-floral-br">
-    <img src="floral-hero.png" alt="">
+    <img src="floral-hero.png" alt="" decoding="async">
   </div>
   <div class="hero-monogram">
-    <img src="monogram.png" alt="A & J Monogram">
+    <img src="monogram.png" alt="A & J Monogram" decoding="async">
   </div>
   <div class="hero-scroll">
     <div class="hero-scroll-text">Scroll to continue</div>
@@ -1332,26 +1349,26 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 <!-- ═══ MARQUEE PHOTO GALLERY ═══ -->
 <div class="photo-marquee">
   <div class="photo-marquee-track">
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-1.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-2.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-3.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-4.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-5.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-6.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-7.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-8.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-9.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-10.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-1.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-2.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-3.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-4.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-5.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-6.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-7.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-8.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-9.jpg" alt=""></div>
-    <div class="photo-marquee-item"><img src="assets/marquee/marquee-10.jpg" alt=""></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-1.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-2.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-3.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-4.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-5.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-6.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-7.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-8.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-9.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-10.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-1.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-2.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-3.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-4.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-5.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-6.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-7.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-8.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-9.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-10.jpg" alt="" loading="lazy" decoding="async"></div>
   </div>
 </div>
 
@@ -1532,7 +1549,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 </div>
 <section class="venues">
   <div class="venue-card">
-    <div class="venue-photo" style="background:url('assets/venue-church.jpg') center/cover no-repeat"></div>
+    <div class="venue-photo skeleton" style="background:url('assets/venue-church.jpg') center/cover no-repeat"></div>
     <div class="venue-overlay"></div>
     <div class="venue-info">
       <div class="venue-label">Wedding Ceremony</div>
@@ -1546,7 +1563,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   </div>
 
   <div class="venue-card">
-    <div class="venue-photo" style="background:url('assets/venue-reception.jpg') center/cover no-repeat"></div>
+    <div class="venue-photo skeleton" style="background:url('assets/venue-reception.jpg') center/cover no-repeat"></div>
     <div class="venue-overlay"></div>
     <div class="venue-info">
       <div class="venue-label">Wedding Reception</div>
@@ -1581,22 +1598,22 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
     <div class="dresscode-group">
       <div class="dresscode-group-title">Principal Sponsors</div>
       <div class="dresscode-group-desc">Beige Barong &amp; Beige Dress</div>
-      <div class="dresscode-img">
-        <img src="assets/dress-code-sponsors.png" alt="Barong & Dress" loading="lazy">
+      <div class="dresscode-img skeleton">
+        <img class="lazy-img" src="assets/dress-code-sponsors.png" alt="Barong & Dress" loading="lazy" decoding="async">
       </div>
     </div>
 
     <div class="dresscode-group">
       <div class="dresscode-group-title">Guests (Semi-Formal / Smart Casual)</div>
       <div class="dresscode-group-desc">Green, Sage Green, Beige, or Cream</div>
-      <div class="dresscode-img">
-        <img src="assets/dress-code-guests.png" alt="Guest Outfits" loading="lazy">
+      <div class="dresscode-img skeleton">
+        <img class="lazy-img" src="assets/dress-code-guests.png" alt="Guest Outfits" loading="lazy" decoding="async">
       </div>
     </div>
   </div>
 
   <div class="dresscode-palette">
-    <img src="assets/color-swatches.png" alt="Color Palette" class="dresscode-palette-img" loading="lazy">
+    <img src="assets/color-swatches.png" alt="Color Palette" class="dresscode-palette-img lazy-img" loading="lazy" decoding="async">
     <div class="dresscode-palette-labels">
       <span>Green</span>
       <span>Sage Green</span>
@@ -1616,7 +1633,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   </div>
   <p class="gifts-message">Your presence is already a wonderful gift to us! 🤍 But as we begin this new chapter of our lives together, a monetary gift would be greatly appreciated and would mean so much to us as we build our future as husband and wife. Thank you for celebrating this special beginning with us! ✨</p>
   <div class="gifts-qr">
-    <img src="assets/qr-maribank.png" alt="MariBank QR Code" loading="lazy">
+    <img src="assets/qr-maribank.png" alt="MariBank QR Code" class="lazy-img" loading="lazy" decoding="async">
   </div>
 </section>
 
@@ -1653,8 +1670,8 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 <!-- ═══ RSVP ═══ -->
 <section class="rsvp" id="rsvp">
   <div class="rsvp-card">
-    <img src="floral-hero.png" alt="" class="rsvp-floral" loading="lazy">
-    <img src="floral-hero.png" alt="" class="rsvp-floral rsvp-floral-bottom" loading="lazy">
+    <img src="floral-hero.png" alt="" class="rsvp-floral lazy-img" loading="lazy" decoding="async">
+    <img src="floral-hero.png" alt="" class="rsvp-floral rsvp-floral-bottom lazy-img" loading="lazy" decoding="async">
     <p class="rsvp-label">Répondez S'il Vous Plaît</p>
     <h2 class="rsvp-title">RSVP</h2>
     <p class="rsvp-subtitle">We would be honored to have you celebrate with us.<br>Kindly let us know if you can make it.</p>
@@ -2125,24 +2142,15 @@ document.getElementById('rsvpAnother').addEventListener('click', function(){
     guestEl.style.display = 'none';
   }
 
-  var allImages = [
+  var criticalImages = [
     'watercolor-bg.png','floral-hero.png','monogram.png',
-    'assets/photo-slide-1.jpg','assets/photo-slide-2.jpg',
-    'assets/photo-slide-3.jpg','assets/photo-slide-4.jpg',
-    'assets/venue-church.jpg','assets/venue-reception.jpg',
-    'assets/color-swatches.png','assets/dress-code-guests.png',
-    'assets/dress-code-sponsors.png','assets/qr-maribank.png',
-    'assets/sticker-jordan.png','assets/sticker-angelica.png',
-    'assets/marquee/marquee-1.jpg','assets/marquee/marquee-2.jpg',
-    'assets/marquee/marquee-3.jpg','assets/marquee/marquee-4.jpg',
-    'assets/marquee/marquee-5.jpg','assets/marquee/marquee-6.jpg',
-    'assets/marquee/marquee-7.jpg','assets/marquee/marquee-8.jpg',
-    'assets/marquee/marquee-9.jpg','assets/marquee/marquee-10.jpg'
+    'assets/photo-slide-1.jpg',
+    'assets/sticker-jordan.png','assets/sticker-angelica.png'
   ];
   var preloader = document.getElementById('preloader');
   var preloaderFill = document.getElementById('preloaderFill');
   var loadedCount = 0;
-  var totalImages = allImages.length;
+  var totalImages = criticalImages.length;
   function onImageLoad(){
     loadedCount++;
     preloaderFill.style.width = (loadedCount / totalImages * 100) + '%';
@@ -2153,12 +2161,50 @@ document.getElementById('rsvpAnother').addEventListener('click', function(){
       card.classList.add('ready');
     }
   }
-  allImages.forEach(function(src){
+  criticalImages.forEach(function(src){
     var img = new Image();
     img.onload = onImageLoad;
     img.onerror = onImageLoad;
     img.src = src;
   });
+
+  document.querySelectorAll('.lazy-img').forEach(function(img){
+    if(img.complete){
+      img.classList.add('img-loaded');
+      var p = img.closest('.skeleton');
+      if(p) p.classList.remove('skeleton');
+    } else {
+      img.addEventListener('load', function(){
+        this.classList.add('img-loaded');
+        var p = this.closest('.skeleton');
+        if(p) p.classList.remove('skeleton');
+      });
+      img.addEventListener('error', function(){
+        this.classList.add('img-loaded');
+        var p = this.closest('.skeleton');
+        if(p) p.classList.remove('skeleton');
+      });
+    }
+  });
+
+  var lazyVenues = document.querySelectorAll('.venue-photo.skeleton');
+  var venueObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var el = entry.target;
+        var bgImg = new Image();
+        var style = el.getAttribute('style') || '';
+        var match = style.match(/url\(['"]?([^'")]+)/);
+        if(match){
+          bgImg.onload = function(){ el.classList.remove('skeleton'); };
+          bgImg.onerror = function(){ el.classList.remove('skeleton'); };
+          bgImg.src = match[1];
+        }
+        venueObs.unobserve(el);
+      }
+    });
+  },{rootMargin:'200px'});
+  lazyVenues.forEach(function(v){ venueObs.observe(v); });
 
   var corners = [
     {x: -size*0.25, y: -size*0.25, rot: 0},
