@@ -1640,12 +1640,27 @@ function initScrollAnimations(){
   function getHalf(){ return track.scrollWidth / 2; }
   function wrap(v){
     var half = getHalf();
+    if(half <= 0) return v;
     v = v % half;
     if(v > 0) v -= half;
     return v;
   }
 
-  currentOffset = -getHalf();
+  function initCarousel(){
+    currentOffset = -getHalf();
+    requestAnimationFrame(tick);
+  }
+
+  var imgs = track.querySelectorAll('img');
+  var loaded = 0;
+  var total = imgs.length;
+  if(total === 0){ initCarousel(); }
+  else {
+    imgs.forEach(function(img){
+      if(img.complete){ loaded++; if(loaded >= total) initCarousel(); }
+      else { img.addEventListener('load', function(){ loaded++; if(loaded >= total) initCarousel(); }); }
+    });
+  }
 
   function tick(){
     if(!isDragging){
@@ -1655,7 +1670,6 @@ function initScrollAnimations(){
     track.style.transform = 'translateX(' + currentOffset + 'px)';
     requestAnimationFrame(tick);
   }
-  requestAnimationFrame(tick);
 
   function onDown(e){
     isDragging = true;
