@@ -704,6 +704,88 @@ body.loaded section{transition:opacity .4s ease}
 }
 
 /* ══════════════════════════════════════
+   WEDDING TIMELINE
+   ══════════════════════════════════════ */
+.timeline{
+  text-align:center;
+  padding:clamp(60px,10vh,120px) clamp(16px,4vw,60px);
+  background:var(--beige);
+}
+.tl-scroll{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  margin:clamp(28px,5vh,48px) auto 0;
+  scrollbar-width:none;
+}
+.tl-scroll::-webkit-scrollbar{display:none}
+.tl-strip{
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  min-width:max-content;
+  padding:0 clamp(8px,2vw,24px);
+  position:relative;
+}
+.tl-item{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:clamp(80px,12vw,110px);
+  flex-shrink:0;
+  position:relative;
+}
+.tl-item-icon{
+  width:clamp(32px,4.5vw,44px);
+  height:clamp(32px,4.5vw,44px);
+  color:var(--dark-deep);
+  margin-bottom:clamp(12px,2vw,20px);
+}
+.tl-line{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+  height:12px;
+  margin-bottom:clamp(12px,2vw,20px);
+}
+.tl-line::before{
+  content:'';
+  position:absolute;
+  top:50%;
+  left:0;right:0;
+  height:1px;
+  background:var(--sage);
+}
+.tl-item:first-child .tl-line::before{left:50%}
+.tl-item:last-child .tl-line::before{right:50%}
+.tl-dot{
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--sage);
+  position:relative;
+  z-index:1;
+  flex-shrink:0;
+}
+.tl-item-time{
+  font-size:clamp(11px,1.2vw,14px);
+  font-weight:600;
+  color:var(--dark-deep);
+  line-height:1.2;
+  white-space:nowrap;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.tl-item-label{
+  font-size:clamp(9px,1vw,12px);
+  color:var(--text-light);
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  margin-top:4px;
+  line-height:1.4;
+}
+
+/* ══════════════════════════════════════
    SEMI-PLUGGED CEREMONY
    ══════════════════════════════════════ */
 .plugged{
@@ -739,7 +821,6 @@ body.loaded section{transition:opacity .4s ease}
 }
 .faq-item{
   border-bottom:1px solid var(--sage-light);
-  padding:clamp(20px,3vh,28px) 0;
 }
 .faq-item:last-child{border-bottom:none}
 .faq-q{
@@ -748,13 +829,40 @@ body.loaded section{transition:opacity .4s ease}
   font-weight:600;
   font-style:italic;
   color:var(--dark-deep);
-  margin-bottom:8px;
+  padding:clamp(20px,3vh,28px) 0;
+  cursor:pointer;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  user-select:none;
+}
+.faq-q::after{
+  content:'+';
+  font-family:'Inter',sans-serif;
+  font-size:clamp(18px,2vw,24px);
+  font-style:normal;
+  font-weight:300;
+  color:var(--green);
+  flex-shrink:0;
+  transition:transform .3s ease;
+}
+.faq-item.open .faq-q::after{
+  content:'\2212';
 }
 .faq-a{
   font-size:clamp(14px,1.4vw,16px);
   line-height:1.7;
   color:var(--text);
   font-weight:400;
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .4s ease,padding .4s ease;
+  padding:0 0 0 0;
+}
+.faq-item.open .faq-a{
+  max-height:300px;
+  padding:0 0 clamp(20px,3vh,28px) 0;
 }
 
 /* ══════════════════════════════════════
@@ -1523,7 +1631,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 
   <div class="entourage-divider"></div>
 
-  <div class="entourage-trio">
+  <div class="entourage-grid">
     <div class="entourage-group">
       <div class="entourage-role">Coin Bearer</div>
       <div class="entourage-name">Andrei Gabriel Vi&ntilde;alon</div>
@@ -1536,20 +1644,18 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
       <div class="entourage-role">Ring Bearer</div>
       <div class="entourage-name">Apollo Jholancob</div>
     </div>
+    <div class="entourage-group">
+      <div class="entourage-role">Banner Bearer</div>
+      <div class="entourage-name">Elias Joaquin Vi&ntilde;alon</div>
+    </div>
   </div>
 
   <div class="entourage-divider"></div>
 
-  <div class="entourage-grid">
-    <div class="entourage-group">
-      <div class="entourage-role">Flower Girls</div>
-      <div class="entourage-name">Amara Jholancob</div>
-      <div class="entourage-name">Mia Elishajoy Luce&ntilde;a</div>
-    </div>
-    <div class="entourage-group">
-      <div class="entourage-role">Here Comes the Bride</div>
-      <div class="entourage-name">Elias Joaquin Vi&ntilde;alon</div>
-    </div>
+  <div class="entourage-group" style="text-align:center">
+    <div class="entourage-role">Flower Girls</div>
+    <div class="entourage-name">Amara Jholancob</div>
+    <div class="entourage-name">Mia Elishajoy Luce&ntilde;a</div>
   </div>
 </section>
 
@@ -1590,6 +1696,68 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 </section>
 </div>
 
+<!-- ═══ WEDDING TIMELINE ═══ -->
+<section class="timeline" id="timeline">
+  <div class="section-header">
+    <p class="section-label">Order of the Day</p>
+    <h2 class="section-title">Wedding Timeline</h2>
+  </div>
+  <div class="tl-scroll">
+    <div class="tl-strip">
+
+      <div class="tl-item">
+        <i data-lucide="church" class="tl-item-icon"></i>
+        <div class="tl-line"><span class="tl-dot"></span></div>
+        <div class="tl-item-time">10 AM</div>
+        <div class="tl-item-label">Ceremony</div>
+      </div>
+
+      <div class="tl-item">
+        <i data-lucide="camera" class="tl-item-icon"></i>
+        <div class="tl-line"><span class="tl-dot"></span></div>
+        <div class="tl-item-time">12 PM</div>
+        <div class="tl-item-label">Photo Session</div>
+      </div>
+
+      <div class="tl-item">
+        <i data-lucide="wine" class="tl-item-icon"></i>
+        <div class="tl-line"><span class="tl-dot"></span></div>
+        <div class="tl-item-time">1 PM</div>
+        <div class="tl-item-label">Cocktail Hour</div>
+      </div>
+
+      <div class="tl-item">
+        <i data-lucide="utensils" class="tl-item-icon"></i>
+        <div class="tl-line"><span class="tl-dot"></span></div>
+        <div class="tl-item-time">2 PM</div>
+        <div class="tl-item-label">Luncheon</div>
+      </div>
+
+      <div class="tl-item">
+        <i data-lucide="mic" class="tl-item-icon"></i>
+        <div class="tl-line"><span class="tl-dot"></span></div>
+        <div class="tl-item-time">3 PM</div>
+        <div class="tl-item-label">Reception</div>
+      </div>
+
+      <div class="tl-item">
+        <i data-lucide="clapperboard" class="tl-item-icon"></i>
+        <div class="tl-line"><span class="tl-dot"></span></div>
+        <div class="tl-item-time">4 PM</div>
+        <div class="tl-item-label">Same-Day Edit</div>
+      </div>
+
+      <div class="tl-item">
+        <i data-lucide="heart" class="tl-item-icon"></i>
+        <div class="tl-line"><span class="tl-dot"></span></div>
+        <div class="tl-item-time">5 PM</div>
+        <div class="tl-item-label">Send-Off</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
 <!-- ═══ SEMI-PLUGGED CEREMONY ═══ -->
 <section class="plugged">
   <div class="section-header">
@@ -1609,7 +1777,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   <div class="dresscode-groups">
     <div class="dresscode-group">
       <div class="dresscode-group-title">Principal Sponsors</div>
-      <div class="dresscode-group-desc">Beige Barong &amp; Beige Dress</div>
+      <div class="dresscode-group-desc">Beige Barong &amp; Beige Long Gown</div>
       <div class="dresscode-img skeleton">
         <img class="lazy-img" src="assets/dress-code-sponsors.png" alt="Barong & Dress" loading="lazy" decoding="async">
       </div>
@@ -1719,7 +1887,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 <!-- ═══ FOOTER ═══ -->
 <footer class="footer">
   <p class="footer-hashtag">#exchANGEofVowsWithDAN &nbsp;&middot;&nbsp; #DANeverEndingLoveWithANGE</p>
-  <p>Angelica &amp; Jordan &mdash; <span class="date-highlight">November 27, 2026</span></p>
+  <p>Angelica &amp; Jordan | <span class="date-highlight">November 27, 2026</span></p>
 </footer>
 
 <script>
@@ -1820,7 +1988,7 @@ function initScrollAnimations(){
     });
   }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
 
-  document.querySelectorAll('.intro-subtitle,.intro-tagline,.intro-names,.countdown,.story p,.venue-card,.section-header,.intro-hashtags,.gifts-message,.gifts-qr,.plugged-message,.faq-item').forEach(function(el){
+  document.querySelectorAll('.intro-subtitle,.intro-tagline,.intro-names,.countdown,.story p,.venue-card,.section-header,.intro-hashtags,.gifts-message,.gifts-qr,.plugged-message,.faq-item,.tl-item').forEach(function(el){
     observer.observe(el);
   });
 }
@@ -1948,6 +2116,16 @@ document.getElementById('rsvpForm').addEventListener('submit', async function(e)
     btn.textContent = 'Send RSVP';
     alert('Something went wrong. Please try again.');
   }
+});
+
+/* ── FAQ Accordion ── */
+document.querySelectorAll('.faq-q').forEach(function(q){
+  q.addEventListener('click', function(){
+    var item = this.closest('.faq-item');
+    var wasOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(function(i){ i.classList.remove('open'); });
+    if(!wasOpen) item.classList.add('open');
+  });
 });
 
 /* ── Sticker Bomb + Prenup Gallery ── */
@@ -2299,6 +2477,8 @@ document.getElementById('rsvpForm').addEventListener('submit', async function(e)
   });
 })();
 </script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<script>lucide.createIcons();</script>
 
 </body>
 </html>
