@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <base href="/theweddingofangelicaandjordan/">
-<title>Angelica & Jordan — Wedding Invitation</title>
+<title>Angelica & Jordan - Wedding Invitation</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="preload" href="watercolor-bg.png" as="image">
 <link rel="preload" href="floral-hero.png" as="image">
@@ -247,17 +247,59 @@ body.loaded section{transition:opacity .4s ease}
   color:var(--gold);
   font-weight:700;
 }
-.intro-subtitle{
-  font-family:'Cormorant Garamond',Georgia,serif;
-  font-size:clamp(22px,2.8vw,32px);
-  font-weight:400;
-  font-style:italic;
-  color:var(--dark-deep);
-  letter-spacing:2px;
+.intro-date{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   margin-top:clamp(8px,1.5vh,16px);
   margin-bottom:clamp(8px,1.5vh,16px);
   opacity:0;
   transform:translateY(15px);
+}
+.intro-date-top{
+  font-family:'Raleway',sans-serif;
+  font-size:clamp(9px,1.2vw,13px);
+  font-weight:600;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:var(--text-light);
+  margin-bottom:clamp(6px,1vh,10px);
+}
+.intro-date-row{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(14px,2.5vw,24px);
+  border:1px solid var(--sage-light);
+  height:clamp(28px,4vw,36px);
+  padding:0 clamp(20px,3vw,36px);
+  overflow:visible;
+}
+.intro-date-left,.intro-date-right{
+  font-family:'Raleway',sans-serif;
+  font-size:clamp(10px,1.3vw,14px);
+  font-weight:700;
+  letter-spacing:0.25em;
+  text-transform:uppercase;
+  color:var(--dark-deep);
+}
+.intro-date-circle{
+  width:clamp(42px,5.5vw,56px);
+  height:clamp(42px,5.5vw,56px);
+  border-radius:50%;
+  background:var(--dark-deep);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  padding-left: 5px;
+}
+.intro-date-circle span{
+  font-family:serif;
+  font-size:clamp(18px,2.4vw,26px);
+  font-weight:700;
+  color:var(--white);
+  line-height:1;
 }
 .intro-tagline{
   font-family:'Great Vibes',cursive;
@@ -1432,7 +1474,13 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
     <div class="countdown-item"><div class="countdown-num" id="cd-secs">--</div><div class="countdown-label">Seconds</div></div>
   </div>
   <p class="intro-hashtags">#exch<span class="hashtag-highlight">ANGE</span>ofVowsWith<span class="hashtag-highlight">DAN</span> &nbsp;&middot;&nbsp; #<span class="hashtag-highlight">DAN</span>everEndingLoveWith<span class="hashtag-highlight">ANGE</span></p>
-  <p class="intro-subtitle">November 27, 2026</p>
+  <div class="intro-date">
+    <div class="intro-date-row">
+      <span class="intro-date-left">NOV</span>
+      <div class="intro-date-circle"><span>27</span></div>
+      <span class="intro-date-right">2026</span>
+    </div>
+  </div>
 </section>
 
 <!-- ═══ PHOTO SECTION ═══ -->
@@ -1631,31 +1679,24 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 
   <div class="entourage-divider"></div>
 
-  <div class="entourage-grid">
+  <div class="entourage-trio">
     <div class="entourage-group">
       <div class="entourage-role">Coin Bearer</div>
       <div class="entourage-name">Andrei Gabriel Vi&ntilde;alon</div>
+      <div class="entourage-role" style="margin-top:clamp(8px,1.5vw,14px)">Ring Bearer</div>
+      <div class="entourage-name">Apollo Jholancob</div>
+    </div>
+    <div class="entourage-group">
+      <div class="entourage-role">Flower Girls</div>
+      <div class="entourage-name">Amara Jholancob</div>
+      <div class="entourage-name">Mia Elishajoy Luce&ntilde;a</div>
     </div>
     <div class="entourage-group">
       <div class="entourage-role">Bible Bearer</div>
       <div class="entourage-name">Jophiel Logronio</div>
-    </div>
-    <div class="entourage-group">
-      <div class="entourage-role">Ring Bearer</div>
-      <div class="entourage-name">Apollo Jholancob</div>
-    </div>
-    <div class="entourage-group">
-      <div class="entourage-role">Banner Bearer</div>
+      <div class="entourage-role" style="margin-top:clamp(8px,1.5vw,14px)">Banner Bearer</div>
       <div class="entourage-name">Elias Joaquin Vi&ntilde;alon</div>
     </div>
-  </div>
-
-  <div class="entourage-divider"></div>
-
-  <div class="entourage-group" style="text-align:center">
-    <div class="entourage-role">Flower Girls</div>
-    <div class="entourage-name">Amara Jholancob</div>
-    <div class="entourage-name">Mia Elishajoy Luce&ntilde;a</div>
   </div>
 </section>
 
@@ -1988,7 +2029,7 @@ function initScrollAnimations(){
     });
   }, {threshold:0.15, rootMargin:'0px 0px -40px 0px'});
 
-  document.querySelectorAll('.intro-subtitle,.intro-tagline,.intro-names,.countdown,.story p,.venue-card,.section-header,.intro-hashtags,.gifts-message,.gifts-qr,.plugged-message,.faq-item,.tl-item').forEach(function(el){
+  document.querySelectorAll('.intro-date,.intro-tagline,.intro-names,.countdown,.story p,.venue-card,.section-header,.intro-hashtags,.gifts-message,.gifts-qr,.plugged-message,.faq-item,.tl-item').forEach(function(el){
     observer.observe(el);
   });
 }

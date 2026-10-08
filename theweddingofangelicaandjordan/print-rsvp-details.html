@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RSVP &amp; Details — 5R Print</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Raleway:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+@page{size:5in 7in;margin:0}
+body{
+  font-family:'Raleway',sans-serif;
+  background:#e8e4dc;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:24px;
+  -webkit-font-smoothing:antialiased;
+}
+.card{
+  width:5in;height:7in;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+.bg{
+  position:absolute;
+  inset:0;
+  background:url('watercolor-bg.png') center/cover no-repeat;
+  z-index:0;
+}
+.bg::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  background:rgba(245,240,230,0.3);
+}
+.floral{
+  position:absolute;
+  width:65%;
+  z-index:2;
+  pointer-events:none;
+  opacity:0.3;
+}
+.floral img{width:100%;display:block}
+.floral-tl{top:-20px;left:-30px;transform:rotate(180deg)}
+.floral-br{bottom:-20px;right:-30px}
+.content{
+  position:relative;
+  z-index:3;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  flex:1;
+  padding:0.5in 0.45in;
+  width:100%;
+}
+.section-title{
+  font-family:'Great Vibes',cursive;
+  font-size:24px;
+  color:#0e2418;
+  margin-bottom:2px;
+}
+.section-label{
+  font-size:6.5px;
+  font-weight:700;
+  letter-spacing:0.3em;
+  text-transform:uppercase;
+  color:#8baa98;
+  margin-bottom:4px;
+}
+.divider{
+  width:50px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#c9a84c,transparent);
+  margin:6px auto;
+}
+.small-divider{
+  width:30px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,#c2d4ca,transparent);
+  margin:14px auto;
+}
+
+/* RSVP */
+.rsvp-block{width:100%;margin-bottom:4px}
+.rsvp-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:9.5px;
+  font-weight:600;
+  font-style:italic;
+  color:#5a7a68;
+  margin-bottom:8px;
+  line-height:1.5;
+}
+.rsvp-qr{
+  width:80px;height:80px;
+  margin:0 auto 6px;
+}
+.rsvp-qr img{
+  width:100%;height:100%;
+  object-fit:contain;
+}
+.rsvp-url{
+  font-size:6px;
+  font-weight:500;
+  letter-spacing:0.1em;
+  color:#8baa98;
+}
+
+/* Gift */
+.gift-block{width:100%;max-width:280px}
+.gift-text{
+  font-family:'Cormorant Garamond',serif;
+  font-size:9px;
+  font-weight:600;
+  color:#0e2418;
+  line-height:1.6;
+}
+
+/* Attire */
+.attire-block{width:100%}
+.attire-theme{
+  font-family:'Cormorant Garamond',serif;
+  font-size:13px;
+  font-weight:700;
+  font-style:italic;
+  color:#0e2418;
+  margin-bottom:8px;
+}
+.attire-groups{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  width:100%;
+}
+.attire-group{flex:1;max-width:48%}
+.attire-group-title{
+  font-size:5.5px;
+  font-weight:700;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:#8baa98;
+  margin-bottom:2px;
+  white-space:nowrap;
+}
+.attire-group-desc{
+  font-family:'Cormorant Garamond',serif;
+  font-size:8.5px;
+  font-weight:600;
+  color:#0e2418;
+  line-height:1.5;
+  margin-bottom:6px;
+}
+.attire-img{
+  width:100%;
+  max-height:50px;
+  object-fit:contain;
+}
+.color-swatches{
+  width:130px;
+  margin:8px auto 0;
+}
+.color-swatches img{
+  width:100%;
+  height:auto;
+  display:block;
+}
+.swatch-labels{
+  display:flex;
+  justify-content:space-between;
+  margin-top:3px;
+  padding:0 2px;
+}
+.swatch-labels span{
+  font-size:5.5px;
+  font-weight:700;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:#5a7a68;
+  text-align:center;
+}
+.attire-warning{
+  font-size:7px;
+  font-weight:700;
+  letter-spacing:0.2em;
+  text-transform:uppercase;
+  color:#c9a84c;
+  margin-top:6px;
+}
+
+@media print{
+  body{background:none;padding:0;min-height:auto}
+}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="bg"></div>
+  <div class="floral floral-tl"><img src="floral-hero.png" alt=""></div>
+  <div class="floral floral-br"><img src="floral-hero.png" alt=""></div>
+
+  <div class="content">
+
+    <!-- RSVP -->
+    <p class="section-label">Kindly Respond</p>
+    <h2 class="section-title">RSVP</h2>
+    <div class="divider"></div>
+
+    <div class="rsvp-block">
+      <p class="rsvp-text">Please confirm your attendance by scanning the QR code below</p>
+      <div class="rsvp-qr">
+        <img src="assets/qr-rsvp.png" alt="RSVP QR Code">
+      </div>
+    </div>
+
+    <div class="small-divider"></div>
+
+    <!-- Gifts -->
+    <p class="section-label">Share Your Blessings</p>
+    <h2 class="section-title">Gifts &amp; Wishes</h2>
+    <div class="divider"></div>
+
+    <div class="gift-block">
+      <p class="gift-text">Your presence is already a wonderful gift to us! But as we begin this new chapter of our lives together, a monetary gift would be greatly appreciated and would mean so much to us as we build our future as husband and wife.</p>
+    </div>
+
+    <div class="small-divider"></div>
+
+    <!-- Attire / Dress Code -->
+    <p class="section-label">What to Wear</p>
+    <h2 class="section-title">Dress Code</h2>
+    <div class="divider"></div>
+
+    <div class="attire-block">
+      <p class="attire-theme">Garden Elegance</p>
+
+      <div class="attire-groups">
+        <div class="attire-group">
+          <div class="attire-group-title">Principal Sponsors</div>
+          <div class="attire-group-desc">Beige Barong &amp; Beige Long Gown</div>
+          <img class="attire-img" src="assets/dress-code-sponsors.png" alt="Barong & Dress">
+        </div>
+        <div class="attire-group">
+          <div class="attire-group-title">Guests (Semi-Formal / Smart Casual)</div>
+          <div class="attire-group-desc">Green, Sage Green, Beige, or Cream</div>
+          <img class="attire-img" src="assets/dress-code-guests.png" alt="Guest Outfits">
+        </div>
+      </div>
+
+      <div class="color-swatches">
+        <img src="assets/color-swatches.png" alt="Color Palette">
+        <div class="swatch-labels">
+          <span>Green</span>
+          <span>Sage Green</span>
+          <span>Beige</span>
+          <span>Cream</span>
+        </div>
+      </div>
+
+      <p class="attire-warning">Strictly No White Please</p>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
