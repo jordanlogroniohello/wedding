@@ -9,7 +9,7 @@
 <link rel="preload" href="watercolor-bg.png" as="image">
 <link rel="preload" href="floral-hero.png" as="image">
 <link rel="preload" href="monogram.png" as="image">
-<link rel="preload" href="assets/photo-slide-1.jpg" as="image">
+<link rel="preload" href="prenup-photos/prenup-13.JPG?v=2" as="image">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Julius+Sans+One&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -234,7 +234,7 @@ body.loaded section{transition:opacity .4s ease}
   padding:clamp(60px,10vh,120px) clamp(20px,5vw,60px);
   background:var(--white);
   position:relative;
-  overflow:hidden;
+  overflow:visible;
 }
 .intro-hashtags{
   font-size:clamp(12px,1.5vw,16px);
@@ -266,14 +266,21 @@ body.loaded section{transition:opacity .4s ease}
   margin-bottom:clamp(6px,1vh,10px);
 }
 .intro-date-row{
-  display:flex;
+  display:inline-flex;
   align-items:center;
   justify-content:center;
   gap:clamp(14px,2.5vw,24px);
-  border:1px solid var(--sage-light);
-  height:clamp(28px,4vw,36px);
+  position:relative;
   padding:0 clamp(20px,3vw,36px);
-  overflow:visible;
+}
+.intro-date-row::before{
+  content:'';
+  position:absolute;
+  top:50%;
+  left:0;right:0;
+  height:clamp(28px,4vw,36px);
+  transform:translateY(-50%);
+  border:1px solid var(--sage-light);
 }
 .intro-date-left,.intro-date-right{
   font-family:'Raleway',sans-serif;
@@ -293,6 +300,7 @@ body.loaded section{transition:opacity .4s ease}
   justify-content:center;
   flex-shrink:0;
   padding-left: 5px;
+  z-index: 1;
 }
 .intro-date-circle span{
   font-family:serif;
@@ -827,6 +835,60 @@ body.loaded section{transition:opacity .4s ease}
   line-height:1.4;
 }
 
+@media(max-width:600px){
+  .tl-scroll{overflow-x:visible}
+  .tl-strip{
+    flex-direction:column;
+    align-items:stretch;
+    min-width:auto;
+    padding:0 16px;
+    position:relative;
+  }
+  .tl-strip::before{
+    content:'';
+    position:absolute;
+    top:0;bottom:0;
+    left:50%;
+    width:1px;
+    background:var(--sage);
+    transform:translateX(-50%);
+  }
+  .tl-item{
+    width:50%;
+    padding:8px 0;
+    position:relative;
+  }
+  .tl-item:nth-child(odd){
+    align-self:flex-start;
+    align-items:flex-end;
+    padding-right:20px;
+  }
+  .tl-item:nth-child(even){
+    align-self:flex-end;
+    align-items:flex-start;
+    padding-left:20px;
+  }
+  .tl-item:nth-child(odd){text-align:right}
+  .tl-item:nth-child(even){text-align:left}
+  .tl-item-icon{
+    width:28px;height:28px;
+    margin-bottom:6px;
+  }
+  .tl-line{
+    position:absolute;
+    top:50%;
+    width:8px;height:8px;
+    margin-bottom:0;
+    transform:translateY(-50%);
+  }
+  .tl-item:nth-child(odd) .tl-line{right:-4px}
+  .tl-item:nth-child(even) .tl-line{left:-4px}
+  .tl-line::before{display:none}
+  .tl-dot{width:8px;height:8px}
+  .tl-item-time{font-size:12px}
+  .tl-item-label{font-size:9px;margin-top:2px}
+}
+
 /* ══════════════════════════════════════
    SEMI-PLUGGED CEREMONY
    ══════════════════════════════════════ */
@@ -1327,13 +1389,18 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   color:var(--text-light);margin-top:6px;
 }
 .prenup-grid{
-  columns:4;
-  column-gap:12px;
+  display:flex;
+  gap:10px;
   width:100%;
+  align-items:flex-start;
+}
+.prenup-col{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
 }
 .prenup-grid-item{
-  break-inside:avoid;
-  margin-bottom:12px;
   border-radius:12px;
   overflow:hidden;
   box-shadow:0 2px 12px rgba(0,0,0,.1);
@@ -1353,14 +1420,8 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 }
 .prenup-close.active{display:flex}
 @media(max-width:600px){
-  .prenup-grid{columns:2;column-gap:8px}
-  .prenup-grid-item{margin-bottom:8px}
-}
-@media(min-width:768px) and (max-width:1023px){
-  .prenup-grid{columns:3}
-}
-@media(min-width:1200px){
-  .prenup-grid{columns:5;column-gap:14px}
+  .prenup-grid{gap:8px}
+  .prenup-col{gap:8px}
 }
 
 /* Lightbox */
@@ -1486,11 +1547,11 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 <!-- ═══ PHOTO SECTION ═══ -->
 <section class="photo-section" id="photoSection">
   <div class="photo-section-inner">
-    <div class="photo-slide active" style="background-image:url('assets/photo-slide-1.jpg')"></div>
+    <div class="photo-slide active" style="background-image:url('prenup-photos/prenup-13.JPG?v=2')"></div>
     <div class="photo-slide" style="background-image:url('assets/photo-slide-2.jpg')"></div>
-    <div class="photo-slide" style="background-image:url('assets/photo-slide-3.jpg')"></div>
-    <div class="photo-slide" style="background-image:url('assets/photo-slide-4.jpg')"></div>
-    <div class="photo-slide" style="background-image:url('assets/photo-slide-5.jpg')"></div>
+    <div class="photo-slide" style="background-image:url('prenup-photos/prenup-31.JPG?v=2')"></div>
+    <div class="photo-slide" style="background-image:url('prenup-photos/prenup-41.JPG?v=2')"></div>
+    <div class="photo-slide" style="background-image:url('prenup-photos/prenup-45.JPG?v=2')"></div>
     <button class="photo-nav prev" id="photoPrev">&#8249;</button>
     <button class="photo-nav next" id="photoNext">&#8250;</button>
   </div>
@@ -1511,26 +1572,18 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 <!-- ═══ MARQUEE PHOTO GALLERY ═══ -->
 <div class="photo-marquee">
   <div class="photo-marquee-track">
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-1.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-2.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-3.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-4.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-5.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-6.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-7.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-8.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-9.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-10.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-1.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-2.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-3.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-4.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-5.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-6.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-7.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-8.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-9.jpg" alt="" loading="lazy" decoding="async"></div>
-    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="assets/marquee/marquee-10.jpg" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-06.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-10.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-51.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-20.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-47.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-22.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-06.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-10.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-51.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-20.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-47.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
+    <div class="photo-marquee-item skeleton"><img class="lazy-img" src="prenup-photos/prenup-22.JPG?v=2" alt="" loading="lazy" decoding="async"></div>
   </div>
 </div>
 
@@ -1687,15 +1740,15 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
       <div class="entourage-name">Apollo Jholancob</div>
     </div>
     <div class="entourage-group">
-      <div class="entourage-role">Flower Girls</div>
-      <div class="entourage-name">Amara Jholancob</div>
-      <div class="entourage-name">Mia Elishajoy Luce&ntilde;a</div>
-    </div>
-    <div class="entourage-group">
       <div class="entourage-role">Bible Bearer</div>
       <div class="entourage-name">Jophiel Logronio</div>
       <div class="entourage-role" style="margin-top:clamp(8px,1.5vw,14px)">Banner Bearer</div>
       <div class="entourage-name">Elias Joaquin Vi&ntilde;alon</div>
+    </div>
+    <div class="entourage-group">
+      <div class="entourage-role">Flower Girls</div>
+      <div class="entourage-name">Amara Jholancob</div>
+      <div class="entourage-name">Mia Elishajoy Luce&ntilde;a</div>
     </div>
   </div>
 </section>
@@ -1853,9 +1906,6 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
     <h2 class="section-title">Gifts &amp; Wishes</h2>
   </div>
   <p class="gifts-message">Your presence is already a wonderful gift to us! 🤍 But as we begin this new chapter of our lives together, a monetary gift would be greatly appreciated and would mean so much to us as we build our future as husband and wife. Thank you for celebrating this special beginning with us! ✨</p>
-  <div class="gifts-qr">
-    <img src="assets/qr-maribank.png" alt="MariBank QR Code" class="lazy-img" loading="lazy" decoding="async">
-  </div>
 </section>
 
 <!-- ═══ FAQ ═══ -->
@@ -2173,17 +2223,17 @@ document.querySelectorAll('.faq-q').forEach(function(q){
 (function(){
   var stickerSrcs = ['assets/sticker-jordan.png','assets/sticker-angelica.png'];
   var prenupPhotos = [
-    '1.JPG','2.JPG','3.JPG','4.JPG','5.JPG','6.JPG',
-    'P1.JPG','P2.JPG','P3.JPG',
-    'PAO_7052.JPG','PAO_7058.JPG','PAO_7068.JPG','PAO_7074.JPG','PAO_7080.JPG',
-    'PAO_7094.JPG','PAO_7098.JPG','PAO_7127.JPG','PAO_7160.JPG','PAO_7169.JPG',
-    'PAO_7180.JPG','PAO_7184.JPG','PAO_7189.JPG','PAO_7196.JPG','PAO_7210.JPG',
-    'PAO_7222.JPG','PAO_7320.JPG','PAO_7332.JPG','PAO_7338.JPG','PAO_7348.JPG',
-    'PAO_7357.JPG','PAO_7363.JPG','PAO_7367.JPG','PAO_7391.JPG','PAO_7400.JPG',
-    'PAO_7421.JPG','PAO_7435.JPG','PAO_7439.JPG','PAO_7478.JPG','PAO_7489.JPG',
-    'PAO_7514.JPG','PAO_7525.JPG','PAO_7531.JPG','PAO_7556.JPG','PAO_7567.JPG',
-    'PAO_7586.JPG','PAO_7660.JPG','PAO_7666.JPG','PAO_7693.JPG','PAO_7704.JPG',
-    'PAO_7753.JPG','PAO_7784.JPG','ROEL3726.JPG'
+    'prenup-01.JPG','prenup-02.JPG','prenup-03.JPG','prenup-04.JPG','prenup-05.JPG',
+    'prenup-06.JPG','prenup-07.JPG','prenup-08.JPG','prenup-09.png','prenup-10.JPG',
+    'prenup-11.JPG','prenup-12.JPG','prenup-13.JPG','prenup-14.JPG','prenup-15.JPG',
+    'prenup-16.JPG','prenup-17.JPG','prenup-18.JPG','prenup-19.JPG','prenup-20.JPG',
+    'prenup-21.JPG','prenup-22.JPG','prenup-23.JPG','prenup-24.JPG','prenup-25.JPG',
+    'prenup-26.JPG','prenup-27.JPG','prenup-28.JPG','prenup-29.JPG','prenup-30.JPG',
+    'prenup-31.JPG','prenup-32.JPG','prenup-33.JPG','prenup-34.JPG','prenup-35.JPG',
+    'prenup-36.JPG','prenup-37.JPG','prenup-38.JPG','prenup-39.JPG','prenup-40.JPG',
+    'prenup-41.JPG','prenup-42.JPG','prenup-43.JPG','prenup-44.JPG','prenup-45.JPG',
+    'prenup-46.JPG','prenup-47.JPG','prenup-48.JPG','prenup-49.JPG','prenup-50.JPG',
+    'prenup-51.JPG','prenup-52.JPG','prenup-53.JPG'
   ];
 
   document.getElementById('prenupBtn').addEventListener('click', function(){
@@ -2195,15 +2245,26 @@ document.querySelectorAll('.faq-q').forEach(function(q){
 
     var grid = document.getElementById('prenupGrid');
     grid.innerHTML = '';
-    prenupPhotos.forEach(function(f){
+    var numCols = window.innerWidth < 601 ? 2 : window.innerWidth < 768 ? 3 : window.innerWidth < 1024 ? 4 : 5;
+    var cols = [];
+    for(var c=0;c<numCols;c++){
+      var col = document.createElement('div');
+      col.className = 'prenup-col';
+      grid.appendChild(col);
+      cols.push(col);
+    }
+    var perCol = Math.ceil(prenupPhotos.length / numCols);
+    prenupPhotos.forEach(function(f, i){
       var item = document.createElement('div');
       item.className = 'prenup-grid-item';
       var img = document.createElement('img');
-      img.src = 'prenup-photos/' + encodeURIComponent(f);
+      img.src = 'prenup-photos/' + encodeURIComponent(f) + '?v=2';
       img.alt = '';
       img.loading = 'lazy';
       item.appendChild(img);
-      grid.appendChild(item);
+      var colIdx = Math.floor(i / perCol);
+      if(colIdx >= numCols) colIdx = numCols - 1;
+      cols[colIdx].appendChild(item);
     });
 
     var sw = window.innerWidth;
@@ -2301,7 +2362,7 @@ document.querySelectorAll('.faq-q').forEach(function(q){
 
   function showLb(i){
     lbIdx = ((i % total) + total) % total;
-    lbImg.src = 'prenup-photos/' + encodeURIComponent(prenupPhotos[lbIdx]);
+    lbImg.src = 'prenup-photos/' + encodeURIComponent(prenupPhotos[lbIdx]) + '?v=2';
     lbCounter.textContent = (lbIdx + 1) + ' / ' + total;
   }
 
@@ -2310,7 +2371,7 @@ document.querySelectorAll('.faq-q').forEach(function(q){
     if(!item) return;
     var img = item.querySelector('img');
     if(!img) return;
-    var src = decodeURIComponent(img.src.split('prenup-photos/')[1] || '');
+    var src = decodeURIComponent((img.src.split('prenup-photos/')[1] || '').split('?')[0]);
     var idx = prenupPhotos.indexOf(src);
     if(idx === -1) idx = 0;
     showLb(idx);
@@ -2380,7 +2441,7 @@ document.querySelectorAll('.faq-q').forEach(function(q){
 
   var criticalImages = [
     'watercolor-bg.png','floral-hero.png','monogram.png',
-    'assets/photo-slide-1.jpg',
+    'prenup-photos/prenup-13.JPG?v=2',
     'assets/sticker-jordan.png','assets/sticker-angelica.png'
   ];
   var preloader = document.getElementById('preloader');
