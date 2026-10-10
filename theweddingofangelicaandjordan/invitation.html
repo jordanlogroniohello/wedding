@@ -250,11 +250,15 @@ body.loaded section{transition:opacity .4s ease}
   overflow:visible;
 }
 .intro-hashtags{
-  font-size:clamp(12px,1.5vw,16px);
+  font-size:clamp(11px,1.5vw,16px);
   font-weight:500;
   color:var(--green-mid);
   letter-spacing:1px;
   margin-top:clamp(20px,3vh,32px);
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:4px 12px;
 }
 .hashtag-highlight{
   color:var(--gold);
@@ -602,11 +606,11 @@ body.loaded section{transition:opacity .4s ease}
 .section-floral img{width:100%;height:auto;display:block}
 .section-floral-tl{
   top:-2%;left:-4%;
-  transform:scaleX(-1);
+  transform: rotate(180deg) scaleX(1);
 }
 .section-floral-br{
   bottom:-2%;right:-4%;
-  transform:rotate(180deg) scaleX(-1);
+  /* transform:rotate(180deg) scaleX(-1); */
 }
 .venues{
   max-width:900px;margin:0 auto;
@@ -1576,11 +1580,25 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   box-shadow:0 2px 12px rgba(0,0,0,.1);
   cursor:pointer;
   transition:transform .3s,box-shadow .3s;
+  position:relative;
+  background:#e0dbd3;
+  min-height:180px;
 }
+.prenup-grid-item::before{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:linear-gradient(90deg,#e0dbd3 25%,#ece8e1 50%,#e0dbd3 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.5s ease-in-out infinite;
+}
+.prenup-grid-item.loaded{min-height:auto;background:none}
+.prenup-grid-item.loaded::before{display:none}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .prenup-grid-item:hover{transform:scale(1.02);box-shadow:0 4px 20px rgba(0,0,0,.18)}
 .prenup-grid-item img{
   width:100%;height:auto;display:block;
+  opacity:0;transition:opacity .3s;
 }
+.prenup-grid-item.loaded img{opacity:1}
 .prenup-close{
   position:fixed;top:20px;right:20px;
   width:44px;height:44px;border-radius:50%;
@@ -1711,7 +1729,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
     <div class="countdown-item"><div class="countdown-num" id="cd-mins">--</div><div class="countdown-label">Minutes</div></div>
     <div class="countdown-item"><div class="countdown-num" id="cd-secs">--</div><div class="countdown-label">Seconds</div></div>
   </div>
-  <p class="intro-hashtags">#exch<span class="hashtag-highlight">ANGE</span>ofVowsWith<span class="hashtag-highlight">DAN</span> &nbsp;&middot;&nbsp; #<span class="hashtag-highlight">DAN</span>everEndingLoveWith<span class="hashtag-highlight">ANGE</span></p>
+  <p class="intro-hashtags"><span>#exch<span class="hashtag-highlight">ANGE</span>ofVowsWith<span class="hashtag-highlight">DAN</span></span><span>#<span class="hashtag-highlight">DAN</span>everEndingLoveWith<span class="hashtag-highlight">ANGE</span></span></p>
   <div class="intro-date">
     <div class="intro-date-row">
       <span class="intro-date-left">NOV</span>
@@ -2558,6 +2576,7 @@ document.querySelectorAll('.faq-q').forEach(function(q){
       img.src = 'prenup-photos/' + encodeURIComponent(f) + '?v=2';
       img.alt = '';
       img.loading = 'lazy';
+      img.onload = function(){ item.classList.add('loaded'); };
       item.appendChild(img);
       var colIdx = Math.floor(i / perCol);
       if(colIdx >= numCols) colIdx = numCols - 1;
