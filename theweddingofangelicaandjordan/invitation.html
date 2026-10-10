@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <base href="/theweddingofangelicaandjordan/">
 <title>Angelica & Jordan - Wedding Invitation</title>
-<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="preload" href="watercolor-bg.png" as="image">
 <link rel="preload" href="floral-hero.png" as="image">
 <link rel="preload" href="monogram.png" as="image">
@@ -576,6 +577,24 @@ body.loaded section{transition:opacity .4s ease}
 .venues-wrap{
   background:var(--white);
   padding-bottom:clamp(60px,10vh,120px);
+  position:relative;
+  overflow:hidden;
+}
+.section-floral{
+  position:absolute;
+  pointer-events:none;
+  width:clamp(200px,30vw,400px);
+  z-index:0;
+  opacity: 0.7;
+}
+.section-floral img{width:100%;height:auto;display:block}
+.section-floral-tl{
+  top:-2%;left:-4%;
+  transform:scaleX(-1);
+}
+.section-floral-br{
+  bottom:-2%;right:-4%;
+  transform:rotate(180deg) scaleX(-1);
 }
 .venues{
   max-width:900px;margin:0 auto;
@@ -733,6 +752,8 @@ body.loaded section{transition:opacity .4s ease}
   text-align:center;
   padding:clamp(60px,10vh,120px) clamp(20px,5vw,60px);
   background:var(--white);
+  position:relative;
+  overflow:hidden;
 }
 .gifts-message{
   max-width:600px;
@@ -759,7 +780,7 @@ body.loaded section{transition:opacity .4s ease}
 .timeline{
   text-align:center;
   padding:clamp(60px,10vh,120px) clamp(16px,4vw,60px);
-  background:var(--beige);
+  
 }
 .tl-scroll{
   overflow-x:auto;
@@ -895,7 +916,7 @@ body.loaded section{transition:opacity .4s ease}
 .plugged{
   text-align:center;
   padding:clamp(48px,8vh,80px) clamp(20px,5vw,60px);
-  background:var(--sage-pale);
+  background:var(--beige);
 }
 .plugged-icon{
   font-size:clamp(32px,4vw,44px);
@@ -1755,6 +1776,8 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 
 <!-- ═══ WHEN & WHERE ═══ -->
 <div class="venues-wrap">
+<div class="section-floral section-floral-tl"><img src="floral-accent.png" alt="" loading="lazy" decoding="async"></div>
+<div class="section-floral section-floral-br"><img src="floral-accent.png" alt="" loading="lazy" decoding="async"></div>
 <div class="section-header" id="venues">
   <p class="section-label">Time and Place</p>
   <h2 class="section-title">When &amp; Where</h2>
@@ -1901,6 +1924,8 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 
 <!-- ═══ GIFTS & WISHES ═══ -->
 <section class="gifts" id="gifts">
+  <div class="section-floral section-floral-tl"><img src="floral-accent.png" alt="" loading="lazy" decoding="async"></div>
+  <div class="section-floral section-floral-br"><img src="floral-accent.png" alt="" loading="lazy" decoding="async"></div>
   <div class="section-header">
     <p class="section-label">Share Your Blessings</p>
     <h2 class="section-title">Gifts &amp; Wishes</h2>
@@ -1921,7 +1946,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
     </div>
     <div class="faq-item">
       <div class="faq-q">Can I bring a plus-one?</div>
-      <div class="faq-a">We kindly ask that you only bring a plus-one if they are specifically included in your invitation.</div>
+      <div class="faq-a">We appreciate your understanding, but due to limited seats, we are unable to accommodate additional guests beyond those named in the invitation.</div>
     </div>
     <div class="faq-item">
       <div class="faq-q">Is there parking available?</div>
@@ -2522,16 +2547,35 @@ document.querySelectorAll('.faq-q').forEach(function(q){
     );
   }
 
-  corners.forEach(function(spot){
+  var goldenSrc = 'floral-accent.png';
+  var goldenSize = size * 0.7;
+  var goldenSpots = [
+    {x: sw*0.15 - goldenSize*0.5, y: sh*0.15 - goldenSize*0.5, rot: 15},
+    {x: sw*0.85 - goldenSize*0.5, y: sh*0.15 - goldenSize*0.5, rot: -30},
+    {x: sw*0.1 - goldenSize*0.5, y: sh*0.85 - goldenSize*0.5, rot: -150},
+    {x: sw*0.85 - goldenSize*0.5, y: sh*0.85 - goldenSize*0.5, rot: 160},
+    {x: sw*0.5 - goldenSize*0.5, y: sh*0.08 - goldenSize*0.5, rot: -10},
+    {x: sw*0.5 - goldenSize*0.5, y: sh*0.92 - goldenSize*0.5, rot: 170}
+  ];
+  if(sw >= 768){
+    goldenSpots.push(
+      {x: -goldenSize*0.3, y: sh*0.35 - goldenSize*0.5, rot: -60},
+      {x: sw - goldenSize*0.7, y: sh*0.35 - goldenSize*0.5, rot: 120}
+    );
+  }
+
+  corners.concat(goldenSpots).forEach(function(spot, idx){
     var petal = document.createElement('div');
     petal.className = 'floral-petal';
-    petal.style.backgroundImage = 'url(' + floralSrc + ')';
-    petal.style.width = size + 'px';
-    petal.style.height = size + 'px';
+    var isGolden = idx >= corners.length;
+    petal.style.backgroundImage = 'url(' + (isGolden ? goldenSrc : floralSrc) + ')';
+    var s = isGolden ? goldenSize : size;
+    petal.style.width = s + 'px';
+    petal.style.height = s + 'px';
     petal.style.left = spot.x + 'px';
     petal.style.top = spot.y + 'px';
     petal.style.transform = 'rotate(' + spot.rot + 'deg)';
-    petal.style.opacity = '0.8';
+    petal.style.opacity = isGolden ? '0.6' : '0.8';
     cover.appendChild(petal);
   });
 
