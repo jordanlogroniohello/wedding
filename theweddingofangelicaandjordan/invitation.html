@@ -1540,8 +1540,10 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   background-size:contain;
   background-repeat:no-repeat;
   background-position:center;
-  filter:drop-shadow(2px 3px 6px rgba(0,0,0,.3));
   will-change:transform;
+}
+@media(min-width:768px){
+  .sticker{filter:drop-shadow(2px 3px 6px rgba(0,0,0,.3))}
 }
 
 .prenup-gallery{
@@ -2585,19 +2587,18 @@ document.querySelectorAll('.faq-q').forEach(function(q){
 
     var sw = window.innerWidth;
     var sh = window.innerHeight;
-    var size = sw < 768 ? Math.max(sw,sh) * 0.6 : Math.max(sw,sh) * 0.4;
-    var overlap = sw < 768 ? 0.32 : 0.3;
-    var step = size * overlap;
-    var cols = Math.ceil(sw / step) + 2;
-    var rows = Math.ceil(sh / step) + 2;
-    var startOffX = -size * 0.3;
-    var startOffY = -size * 0.3;
+    var isMobile = sw < 768;
+    var size = isMobile ? Math.max(sw,sh) * 0.55 : Math.max(sw,sh) * 0.38;
+    var step = size * 0.35;
+    var pad = size * 0.6;
+    var gridCols = Math.ceil((sw + pad * 2) / step) + 1;
+    var gridRows = Math.ceil((sh + pad * 2) / step) + 1;
 
     var allSpots = [];
-    for(var r = 0; r < rows; r++){
-      for(var c = 0; c < cols; c++){
-        var x = startOffX + c * step + (r % 2 === 1 ? step * 0.5 : 0);
-        var y = startOffY + r * step;
+    for(var r = 0; r < gridRows; r++){
+      for(var c = 0; c < gridCols; c++){
+        var x = -pad + c * step + (r % 2 === 1 ? step * 0.5 : 0);
+        var y = -pad + r * step;
         var cx = x + size / 2;
         var cy = y + size / 2;
         var dist = Math.sqrt(Math.pow(cx - sw/2, 2) + Math.pow(cy - sh/2, 2));
@@ -2606,6 +2607,7 @@ document.querySelectorAll('.faq-q').forEach(function(q){
     }
     allSpots.sort(function(a,b){ return b.dist - a.dist; });
 
+    var delay = isMobile ? 0.015 : 0.02;
     allSpots.forEach(function(spot, i){
       var sticker = document.createElement('div');
       sticker.className = 'sticker';
@@ -2615,26 +2617,24 @@ document.querySelectorAll('.faq-q').forEach(function(q){
 
       var endX = spot.x;
       var endY = spot.y;
-      var rot = (Math.random() - 0.5) * 35;
+      var rot = (Math.random() - 0.5) * 30;
       var scx = endX + size / 2;
       var scy = endY + size / 2;
-      var startX = scx <= sw / 2 ? -size * 1.5 : sw + size * 0.5;
-      var startY = scy <= sh / 2 ? -size * 1.5 : sh + size * 0.5;
+      var offX = scx <= sw / 2 ? -size * 1.5 : sw + size * 0.5;
+      var offY = scy <= sh / 2 ? -size * 1.5 : sh + size * 0.5;
 
-      sticker.style.left = startX + 'px';
-      sticker.style.top = startY + 'px';
-      sticker.style.transform = 'rotate(' + rot + 'deg)';
+      sticker.style.left = endX + 'px';
+      sticker.style.top = endY + 'px';
       sticker.style.zIndex = Math.floor(Math.random() * 50);
       bomb.appendChild(sticker);
 
-      gsap.to(sticker, {
-        left: endX, top: endY,
-        duration: 0.35, delay: i * 0.02,
-        ease: 'power2.out'
-      });
+      gsap.fromTo(sticker,
+        {x: offX - endX, y: offY - endY, rotation: rot},
+        {x: 0, y: 0, rotation: rot, duration: 0.35, delay: i * delay, ease: 'power2.out'}
+      );
     });
 
-    var totalFlyIn = allSpots.length * 20 + 500;
+    var totalFlyIn = allSpots.length * (delay * 1000) + 500;
     setTimeout(function(){
       document.getElementById('prenupGallery').classList.add('active');
       document.getElementById('prenupClose').classList.add('active');
@@ -2643,20 +2643,20 @@ document.querySelectorAll('.faq-q').forEach(function(q){
     setTimeout(function(){
       var allStickers = Array.from(document.querySelectorAll('.sticker'));
       allStickers.reverse().forEach(function(s, i){
-        var curLeft = parseFloat(s.style.left);
-        var curTop = parseFloat(s.style.top);
-        var exitX = curLeft < sw / 2 ? -size * 1.5 : sw + size * 0.5;
-        var exitY = curTop < sh / 2 ? -size * 1.5 : sh + size * 0.5;
+        var left = parseFloat(s.style.left);
+        var top = parseFloat(s.style.top);
+        var exitX = (left + size/2) < sw/2 ? -size * 1.5 - left : sw + size * 0.5 - left;
+        var exitY = (top + size/2) < sh/2 ? -size * 1.5 - top : sh + size * 0.5 - top;
         gsap.to(s, {
-          left: exitX, top: exitY,
-          duration: 0.35, delay: i * 0.03,
+          x: exitX, y: exitY,
+          duration: 0.3, delay: i * 0.02,
           ease: 'power2.in'
         });
       });
       setTimeout(function(){
         bomb.classList.remove('active');
         bomb.innerHTML = '';
-      }, allStickers.length * 30 + 500);
+      }, allStickers.length * 20 + 500);
     }, totalFlyIn + 2000);
   });
 
