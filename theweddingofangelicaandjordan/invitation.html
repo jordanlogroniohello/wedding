@@ -1242,6 +1242,31 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 }
 
 /* ══════════════════════════════════════
+   MUSIC TOGGLE
+   ══════════════════════════════════════ */
+.music-toggle{
+  position:fixed;
+  bottom:24px;right:24px;
+  z-index:9000;
+  width:44px;height:44px;
+  border-radius:50%;
+  border:none;
+  background:var(--green);
+  color:var(--white);
+  cursor:pointer;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 2px 12px rgba(0,0,0,.2);
+  transition:transform .2s,background .2s;
+}
+.music-toggle:hover{transform:scale(1.1)}
+.music-toggle.visible{display:flex}
+.music-toggle .music-off{display:none}
+.music-toggle.muted .music-on{display:none}
+.music-toggle.muted .music-off{display:block}
+
+/* ══════════════════════════════════════
    FLORAL COVER + ENVELOPE
    ══════════════════════════════════════ */
 .floral-cover{
@@ -1506,6 +1531,12 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   <div class="cover-loader" id="coverLoader">Preparing your invitation</div>
 </div>
 
+<audio id="bgMusic" src="assets/bg-music.mp3" loop preload="auto"></audio>
+<button class="music-toggle" id="musicToggle" aria-label="Toggle music">
+  <svg class="music-icon music-on" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+  <svg class="music-icon music-off" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+</button>
+
 <!-- ═══ NAVIGATION ═══ -->
 <nav class="nav" id="nav">
   <img class="nav-logo" src="monogram.png" alt="AJ">
@@ -1585,9 +1616,10 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   <h2 class="section-title">Our Story</h2>
 </div>
 <section class="story">
-  <p>We are Angelica and Jordan, and our journey together has been nothing short of extraordinary. What started as a beautiful friendship blossomed into a love that continues to grow stronger each day.</p>
-  <p>Through every adventure, every quiet moment, and every challenge we've faced together, our bond has only deepened. Now, we're excited to begin the next chapter of our lives as we celebrate our love with the people who matter most to us.</p>
-  <p>Thank you for being part of our story and for sharing in our happiness.</p>
+  <p>We are Angelica and Jordan, and our love story began during our third year of college. On November 6, 2016, Angelica said yes, marking the beginning of our journey together. Over the past ten years, we've grown together and supported each other through life's ups and downs.</p>
+  <p><strong>Ten years, countless memories, and one beautiful promise.</strong></p>
+  <p>On November 27, 2026, we begin our greatest chapter yet, not just as two people in love, but as husband and wife.</p>
+  <p>And after a decade together, our forever is only just beginning.</p>
 </section>
 
 <!-- ═══ MARQUEE PHOTO GALLERY ═══ -->
@@ -1822,18 +1854,33 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   <div class="tl-scroll">
     <div class="tl-strip">
 
+
       <div class="tl-item">
-        <i data-lucide="church" class="tl-item-icon"></i>
+        <i data-lucide="users" class="tl-item-icon"></i>
         <div class="tl-line"><span class="tl-dot"></span></div>
         <div class="tl-item-time">10 AM</div>
-        <div class="tl-item-label">Ceremony</div>
+        <div class="tl-item-label">Guest Arrival</div>
       </div>
 
       <div class="tl-item">
-        <i data-lucide="camera" class="tl-item-icon"></i>
+        <i data-lucide="footprints" class="tl-item-icon"></i>
         <div class="tl-line"><span class="tl-dot"></span></div>
-        <div class="tl-item-time">12 PM</div>
-        <div class="tl-item-label">Photo Session</div>
+        <div class="tl-item-time">10:30 AM</div>
+        <div class="tl-item-label">Processional</div>
+      </div>
+
+      <div class="tl-item">
+        <i data-lucide="church" class="tl-item-icon"></i>
+        <div class="tl-line"><span class="tl-dot"></span></div>
+        <div class="tl-item-time">11 AM</div>
+        <div class="tl-item-label">Wedding Ceremony</div>
+      </div>
+
+      <div class="tl-item">
+        <i data-lucide="map-pin" class="tl-item-icon"></i>
+        <div class="tl-line"><span class="tl-dot"></span></div>
+        <div class="tl-item-time">12:30 PM</div>
+        <div class="tl-item-label">Venue Arrival</div>
       </div>
 
       <div class="tl-item">
@@ -1844,17 +1891,17 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
       </div>
 
       <div class="tl-item">
-        <i data-lucide="utensils" class="tl-item-icon"></i>
+        <i data-lucide="mic" class="tl-item-icon"></i>
         <div class="tl-line"><span class="tl-dot"></span></div>
         <div class="tl-item-time">2 PM</div>
-        <div class="tl-item-label">Luncheon</div>
+        <div class="tl-item-label">Reception Program</div>
       </div>
 
       <div class="tl-item">
-        <i data-lucide="mic" class="tl-item-icon"></i>
+        <i data-lucide="utensils" class="tl-item-icon"></i>
         <div class="tl-line"><span class="tl-dot"></span></div>
         <div class="tl-item-time">3 PM</div>
-        <div class="tl-item-label">Reception</div>
+        <div class="tl-item-label">Luncheon</div>
       </div>
 
       <div class="tl-item">
@@ -2583,6 +2630,22 @@ document.querySelectorAll('.faq-q').forEach(function(q){
   card.addEventListener('click', function(){
     if(opened) return;
     opened = true;
+
+    var bgMusic = document.getElementById('bgMusic');
+    var musicBtn = document.getElementById('musicToggle');
+    bgMusic.volume = 0.4;
+    bgMusic.play().then(function(){
+      musicBtn.classList.add('visible');
+    }).catch(function(){});
+    musicBtn.addEventListener('click', function(){
+      if(bgMusic.paused){
+        bgMusic.play();
+        musicBtn.classList.remove('muted');
+      } else {
+        bgMusic.pause();
+        musicBtn.classList.add('muted');
+      }
+    });
 
     gsap.to(card, {scale:0.8, opacity:0, duration:0.6, ease:'back.in(1.5)'});
 
