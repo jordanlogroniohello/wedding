@@ -12,6 +12,8 @@
 <link rel="preload" href="monogram.png" as="image">
 <link rel="preload" href="prenup-photos/prenup-13.JPG?v=2" as="image">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Julius+Sans+One&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -1125,6 +1127,58 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   color:var(--text-light);
   line-height:1.7;
 }
+.qr-ticket{
+  margin:24px auto 0;
+  background:var(--white);
+  border-radius:16px;
+  padding:28px 24px 24px;
+  max-width:300px;
+  box-shadow:0 4px 24px rgba(0,0,0,.08);
+  border:1px solid rgba(201,168,76,.2);
+}
+.qr-ticket-label{
+  font-family:'Julius Sans One',sans-serif;
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color:var(--text-light);
+  margin-bottom:16px;
+}
+.qr-ticket-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;
+  font-weight:700;
+  color:var(--dark-deep);
+  margin-bottom:4px;
+}
+.qr-ticket-table{
+  font-size:13px;
+  color:var(--text-light);
+  margin-bottom:16px;
+}
+.qr-code-wrap{
+  display:flex;justify-content:center;
+  margin-bottom:16px;
+}
+.qr-code-wrap canvas,.qr-code-wrap img{border-radius:8px}
+.qr-download-btn{
+  display:inline-block;
+  padding:10px 28px;
+  background:var(--green);
+  color:var(--white);
+  border:none;border-radius:50px;
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  transition:background .2s,transform .2s;
+  text-decoration:none;
+}
+.qr-download-btn:hover{background:var(--dark);transform:translateY(-2px)}
+.rsvp-decline-msg{
+  font-style:italic;
+  margin-top:8px;
+}
 @media(max-width:600px){
   .rsvp-row{grid-template-columns:1fr}
   .rsvp-floral{width:250px}
@@ -1793,7 +1847,7 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   <div class="entourage-grid">
     <div class="entourage-group">
       <div class="entourage-role">Best Man</div>
-      <div class="entourage-name">Daniel Casin</div>
+      <div class="entourage-name">Marlon Daniel Casin</div>
     </div>
     <div class="entourage-group">
       <div class="entourage-role">Maid of Honor</div>
@@ -2104,6 +2158,13 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
       <div class="rsvp-success-icon">&#10003;</div>
       <h3>Thank You!</h3>
       <p id="rsvpSuccessMsg">Your RSVP has been received. We can't wait to celebrate with you!</p>
+      <div class="qr-ticket" id="qrTicket" style="display:none">
+        <div class="qr-ticket-label">Your Wedding Pass</div>
+        <div class="qr-ticket-name" id="qrGuestName"></div>
+        <div class="qr-ticket-table" id="qrTableInfo"></div>
+        <div class="qr-code-wrap" id="qrCode"></div>
+        <button class="qr-download-btn" id="qrDownloadBtn">Download QR Pass</button>
+      </div>
     </div>
   </div>
 </section>
@@ -2115,6 +2176,12 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 </footer>
 
 <script>
+/* ── Guest ID (global) ── */
+var pathParts = window.location.pathname.replace(/\/+$/,'').split('/');
+var lastPart = pathParts[pathParts.length - 1];
+var guestId = (lastPart && lastPart !== 'invitation' && lastPart !== 'invitation.html') ? lastPart : null;
+if(!guestId && window.location.search) guestId = window.location.search.substring(1);
+
 /* ── Countdown Timer ── */
 const wedding = new Date('2026-11-27T14:00:00+08:00').getTime();
 function updateCountdown(){
@@ -2314,28 +2381,109 @@ function initScrollAnimations(){
 })();
 
 // RSVP Form → Google Sheets
-const SHEET_URL = 'https://script.google.com/macros/s/AKfycbz5Mw03KUOw_6kUJ5vH_-LIT1Q-HArVD6EWv9Muq2WGBmPt9uTs_MuK1rRda0w0GQe91A/exec';
+var supabaseClient = supabase.createClient(
+  'https://twcynoszygedohyoqftu.supabase.co',
+  'sb_publishable_FAwCKHnzhIFI2_at0KubEw_msQfc6yF'
+);
+
 document.getElementById('rsvpForm').addEventListener('submit', async function(e){
   e.preventDefault();
-  const btn = this.querySelector('.rsvp-btn');
+  var btn = this.querySelector('.rsvp-btn');
   btn.disabled = true;
   btn.textContent = 'Sending...';
-  const data = Object.fromEntries(new FormData(this));
-  data.timestamp = new Date().toLocaleString('en-PH',{timeZone:'Asia/Manila'});
+  var formData = Object.fromEntries(new FormData(this));
+  var isAttending = formData.attending === 'Yes';
+
   try {
-    await fetch(SHEET_URL, {
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(data)
-    });
+    var guestRow = null;
+    if(guestId){
+      var res = await supabaseClient.from('guests').select('id,full_name,table_number').eq('guest_id', guestId).single();
+      guestRow = res.data;
+    }
+
+    var rsvpData = {
+      attending: isAttending,
+      message: formData.message || null
+    };
+    if(guestRow) rsvpData.guest_id = guestRow.id;
+
+    var ins = await supabaseClient.from('rsvps').insert(rsvpData).select('qr_token').single();
+    if(ins.error) throw ins.error;
+
     this.style.display = 'none';
-    var isAttending = data.attending === 'Yes';
+
     document.getElementById('rsvpSuccessMsg').textContent = isAttending
       ? 'Your RSVP has been received. We can\'t wait to celebrate with you!'
       : 'Your RSVP has been received. We\'ll miss you, but thank you for letting us know!';
     document.getElementById('rsvpSuccess').style.display = 'block';
+
+    if(isAttending && ins.data){
+      var qrPayload = JSON.stringify({
+        g: guestId || 'walk-in',
+        t: ins.data.qr_token,
+        n: guestRow ? guestRow.full_name : formData.name
+      });
+
+      var qrTicket = document.getElementById('qrTicket');
+      var gName = guestRow ? guestRow.full_name : formData.name;
+      document.getElementById('qrGuestName').textContent = gName;
+      document.getElementById('qrTableInfo').textContent = guestRow && guestRow.table_number
+        ? 'Table ' + guestRow.table_number
+        : '';
+
+      var qrContainer = document.getElementById('qrCode');
+      qrContainer.innerHTML = '';
+      var qr = new QRCode(qrContainer, {
+        text: qrPayload,
+        width: 200,
+        height: 200,
+        colorDark: '#0e2418',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+
+      qrTicket.style.display = 'block';
+
+      document.getElementById('qrDownloadBtn').addEventListener('click', function(){
+        setTimeout(function(){
+          var canvas = qrContainer.querySelector('canvas');
+          if(!canvas) return;
+
+          var dl = document.createElement('canvas');
+          var pad = 40;
+          dl.width = canvas.width + pad * 2;
+          dl.height = canvas.height + pad * 2 + 80;
+          var ctx = dl.getContext('2d');
+
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, dl.width, dl.height);
+
+          ctx.drawImage(canvas, pad, pad);
+
+          ctx.fillStyle = '#0e2418';
+          ctx.font = 'bold 16px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(gName, dl.width / 2, canvas.height + pad + 30);
+
+          ctx.fillStyle = '#8baa98';
+          ctx.font = '12px sans-serif';
+          ctx.fillText('Angelica & Jordan | Nov 27, 2026', dl.width / 2, canvas.height + pad + 52);
+
+          if(guestRow && guestRow.table_number){
+            ctx.fillStyle = '#c9a84c';
+            ctx.font = 'bold 13px sans-serif';
+            ctx.fillText('Table ' + guestRow.table_number, dl.width / 2, canvas.height + pad + 72);
+          }
+
+          var link = document.createElement('a');
+          link.download = 'wedding-pass-' + (guestId || 'guest') + '.png';
+          link.href = dl.toDataURL('image/png');
+          link.click();
+        }, 100);
+      });
+    }
   } catch(err) {
+    console.error('RSVP error:', err);
     btn.disabled = false;
     btn.textContent = 'Send RSVP';
     alert('Something went wrong. Please try again.');
@@ -2559,11 +2707,6 @@ document.querySelectorAll('.faq-q').forEach(function(q){
   var size = sw < 768 ? Math.max(sw,sh) * 0.55 : Math.max(sw,sh) * 0.4;
 
   document.body.style.overflow = 'hidden';
-
-  var pathParts = window.location.pathname.replace(/\/+$/,'').split('/');
-  var lastPart = pathParts[pathParts.length - 1];
-  var guestId = (lastPart && lastPart !== 'invitation' && lastPart !== 'invitation.html') ? lastPart : null;
-  if(!guestId && window.location.search) guestId = window.location.search.substring(1);
 
   /* Guest lookup — loaded from CSV at runtime */
   var catMap = {'Immediate Family':'f','Principal Sponsor':'ps','Entourage':'e','Guest':'g'};
