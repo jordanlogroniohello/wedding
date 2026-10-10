@@ -2718,45 +2718,32 @@ document.querySelectorAll('.faq-q').forEach(function(q){
 
   document.body.style.overflow = 'hidden';
 
-  /* Guest lookup — loaded from CSV at runtime */
-  var catMap = {'Immediate Family':'f','Principal Sponsor':'ps','Entourage':'e','Guest':'g'};
+  /* Guest lookup — loaded from Supabase */
   var cardBg = document.getElementById('cardBg');
   cardBg.classList.add('card-bg-entourage');
   if(!guestId) guestEl.style.display = 'none';
 
-  fetch('guest-list.csv?t=' + Date.now()).then(function(r){return r.text()}).then(function(csv){
-    var guests = {};
-    csv.trim().split('\n').slice(1).forEach(function(row){
-      var c = row.split(',');
-      if(c.length >= 5) guests[c[1].trim()] = [c[2].trim(), catMap[c[4].trim()] || 'g', c[0].trim()];
+  if(guestId){
+    supabaseClient.from('guests').select('display_name,full_name,category').eq('guest_id', guestId).single().then(function(res){
+      var g = res.data;
+      if(!g) { guestEl.textContent = 'Our Beloved Guest'; return; }
+      var bgMap = {ps:g.display_name.indexOf('Ninong')===0?'card-bg-ninong':'card-bg-ninang',e:'card-bg-entourage',f:'card-bg-entourage',g:'card-bg-guest'};
+      cardBg.className = 'invite-card-bg';
+      cardBg.classList.add(bgMap[g.category] || 'card-bg-entourage');
+      guestEl.textContent = g.display_name;
+
+      var rsvpNameInput = document.getElementById('rsvpName');
+      if(rsvpNameInput && g.full_name){
+        rsvpNameInput.value = g.full_name;
+        rsvpNameInput.readOnly = true;
+        rsvpNameInput.style.opacity = '1';
+        rsvpNameInput.style.color = 'var(--dark-deep)';
+        rsvpNameInput.style.fontWeight = '600';
+        rsvpNameInput.style.background = 'rgba(201,168,76,.08)';
+        rsvpNameInput.style.cursor = 'default';
+      }
     });
-    var guestData = guests[guestId];
-    var guestName = guestData ? guestData[0] : '';
-    var guestCat = guestData ? guestData[1] : 'e';
-    var bgMap = {ps:guestName.indexOf('Ninong')===0?'card-bg-ninong':'card-bg-ninang',e:'card-bg-entourage',f:'card-bg-entourage',g:'card-bg-guest'};
-    cardBg.className = 'invite-card-bg';
-    cardBg.classList.add(bgMap[guestCat] || 'card-bg-entourage');
-
-    if(guestId && guestName){
-      guestEl.textContent = guestName;
-    } else if(guestId){
-      guestEl.textContent = 'Our Beloved Guest';
-    } else {
-      guestEl.style.display = 'none';
-    }
-
-    var rsvpNameInput = document.getElementById('rsvpName');
-    var fullName = guestData ? guestData[2] : '';
-    if(rsvpNameInput && fullName){
-      rsvpNameInput.value = fullName;
-      rsvpNameInput.readOnly = true;
-      rsvpNameInput.style.opacity = '1';
-      rsvpNameInput.style.color = 'var(--dark-deep)';
-      rsvpNameInput.style.fontWeight = '600';
-      rsvpNameInput.style.background = 'rgba(201,168,76,.08)';
-      rsvpNameInput.style.cursor = 'default';
-    }
-  }).catch(function(){});
+  }
 
   var criticalImages = [
     'watercolor-bg.png','floral-hero.png','monogram.png',
