@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guest List — Angelica & Jordan</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2d6a4f">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Great+Vibes&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        wed: { 50:'#f0f7f2', 100:'#d8f3dc', 200:'#b7e4c7', 400:'#52b788', 500:'#2d6a4f', 600:'#1b4332', 700:'#0e2418' },
+        warm: { 50:'#faf8f5', 100:'#f5f2ed', 200:'#eae6e0', 300:'#d4cfc7' }
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        script: ['Great Vibes', 'cursive'],
+        serif: ['Cormorant Garamond', 'serif']
+      }
+    }
+  }
+}
+</script>
+<style>
+  [data-filter].active { --tw-ring-offset-width:0px; }
+</style>
+</head>
+<body class="bg-warm-100 min-h-screen font-sans text-gray-800 antialiased">
+
+<!-- ═══ HERO BANNER ═══ -->
+<header class="bg-gradient-to-br from-wed-500 via-wed-600 to-wed-700 text-white relative overflow-hidden">
+  <div class="absolute inset-0 opacity-[0.07]" style="background-image:url('floral-hero.png');background-size:300px;background-position:top left"></div>
+  <div class="absolute inset-0 opacity-[0.07]" style="background-image:url('floral-hero.png');background-size:300px;background-position:bottom right;transform:rotate(180deg)"></div>
+  <div class="relative z-10 max-w-5xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center sm:justify-between gap-4 text-center sm:text-left">
+    <div class="flex flex-col sm:flex-row items-center gap-3 sm:gap-5">
+      <img src="monogram.png" alt="A&J" class="h-10 sm:h-14 brightness-0 invert">
+      <div>
+        <h1 class="font-script text-3xl sm:text-4xl tracking-wide">Angelica & Jordan</h1>
+        <p class="font-serif text-xs sm:text-sm tracking-[3px] uppercase text-white/90 mt-1">November 27, 2026</p>
+      </div>
+    </div>
+    <div class="font-serif text-[10px] sm:text-xs tracking-[2px] uppercase text-white/90">Wedding Guest List</div>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+
+  <!-- ═══ STATS ═══ -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="stats">
+    <div class="bg-white rounded-2xl p-5 shadow-sm text-center">
+      <div class="text-3xl font-bold text-gray-800" id="sT">—</div>
+      <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">Total</div>
+    </div>
+    <div class="bg-white rounded-2xl p-5 shadow-sm text-center">
+      <div class="text-3xl font-bold text-emerald-600" id="sC">—</div>
+      <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">Going</div>
+    </div>
+    <div class="bg-white rounded-2xl p-5 shadow-sm text-center">
+      <div class="text-3xl font-bold text-red-500" id="sD">—</div>
+      <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">Declined</div>
+    </div>
+    <div class="bg-white rounded-2xl p-5 shadow-sm text-center">
+      <div class="text-3xl font-bold text-amber-500" id="sP">—</div>
+      <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">Pending</div>
+    </div>
+  </div>
+
+  <!-- ═══ SEARCH + FILTERS ═══ -->
+  <div class="bg-white rounded-2xl shadow-sm p-4 mb-6">
+    <div class="relative mb-3">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-300" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="q" placeholder="Search guests..." class="w-full pl-10 pr-4 py-3 bg-warm-50 border border-warm-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-wed-400/30 focus:border-wed-400 transition">
+    </div>
+    <div class="flex gap-2 flex-wrap">
+      <button data-filter="status" data-v="all" class="active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 text-white transition">All</button>
+      <button data-filter="status" data-v="confirmed" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-emerald-50 hover:text-emerald-600 transition">Going</button>
+      <button data-filter="status" data-v="declined" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-red-50 hover:text-red-500 transition">Declined</button>
+      <button data-filter="status" data-v="pending" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-amber-50 hover:text-amber-600 transition">Pending</button>
+      <button data-filter="status" data-v="checkedin" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition">Checked In</button>
+      <span class="w-px bg-warm-200 mx-1 hidden sm:block"></span>
+      <button data-filter="cat" data-v="all" class="active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 text-white transition">Everyone</button>
+      <button data-filter="cat" data-v="ps" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-slate-100 hover:text-slate-600 transition">VIP</button>
+      <button data-filter="cat" data-v="f" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-amber-50 hover:text-amber-700 transition">Family</button>
+      <button data-filter="cat" data-v="e" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-emerald-50 hover:text-emerald-600 transition">Entourage</button>
+      <button data-filter="cat" data-v="g" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-slate-100 hover:text-slate-500 transition">Guests</button>
+    </div>
+  </div>
+
+  <!-- ═══ TABLE ═══ -->
+  <div class="bg-white rounded-2xl shadow-sm overflow-x-auto" id="tableWrap">
+    <table class="w-full text-sm min-w-[600px]">
+      <thead>
+        <tr class="border-b border-warm-200 text-left">
+          <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Guest</th>
+          <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden sm:table-cell">Category</th>
+          <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Table</th>
+          <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
+          <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden md:table-cell">Message</th>
+          <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody id="tbody" class="divide-y divide-warm-100">
+        <tr><td colspan="6" class="px-5 py-16 text-center text-gray-300">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</main>
+
+<script>
+try{screen.orientation.lock('landscape').catch(function(){});}catch(e){}
+var sb=supabase.createClient('https://twcynoszygedohyoqftu.supabase.co','sb_publishable_FAwCKHnzhIFI2_at0KubEw_msQfc6yF');
+var guests=[],sFilter='all',cFilter='all',query='';
+var catLabel={ps:'VIP / Sponsor',e:'Entourage',f:'Family',g:'Guest'};
+var catOrder={ps:0,f:1,e:2,g:3};
+var statusColors={
+  confirmed:'bg-emerald-50 text-emerald-600',
+  declined:'bg-red-50 text-red-500',
+  pending:'bg-amber-50 text-amber-600',
+  checkedin:'bg-blue-50 text-blue-600'
+};
+var statusActive={
+  all:'bg-gray-800 text-white',
+  confirmed:'bg-emerald-600 text-white',
+  declined:'bg-red-500 text-white',
+  pending:'bg-amber-500 text-white',
+  checkedin:'bg-blue-600 text-white'
+};
+var catActive={
+  all:'bg-gray-800 text-white',
+  ps:'bg-slate-600 text-white',
+  f:'bg-amber-700 text-white',
+  e:'bg-emerald-600 text-white',
+  g:'bg-slate-500 text-white'
+};
+var avatarBg={ps:'bg-slate-600',e:'bg-emerald-600',f:'bg-amber-800',g:'bg-gray-400'};
+
+async function load(){
+  var g=await sb.from('guests').select('*');
+  if(g.error)return;
+  var r=await sb.from('rsvps').select('guest_id,attending,message,submitted_at');
+  var c=await sb.from('checkins').select('guest_id,checked_in_at');
+  var rm={};(r.data||[]).forEach(function(x){
+    if(!rm[x.guest_id]||x.submitted_at>rm[x.guest_id].submitted_at)rm[x.guest_id]=x;
+  });
+  var cm={};(c.data||[]).forEach(function(x){cm[x.guest_id]=x;});
+  guests=(g.data||[]).map(function(g){
+    var rv=rm[g.id]||null,ci=cm[g.id]||null;
+    var st=ci?'checkedin':rv?(rv.attending?'confirmed':'declined'):'pending';
+    return{id:g.id,name:g.full_name,display:g.display_name,cat:g.category,
+      table:g.table_number,status:st,msg:rv?rv.message:null};
+  });
+  guests.sort(function(a,b){
+    var co=catOrder[a.cat]-catOrder[b.cat];
+    return co!==0?co:a.name.localeCompare(b.name);
+  });
+  stats();render();
+}
+
+function stats(){
+  var co=guests.filter(function(g){return g.status==='confirmed'||g.status==='checkedin'}).length;
+  document.getElementById('sT').textContent=guests.length;
+  document.getElementById('sC').textContent=co;
+  document.getElementById('sD').textContent=guests.filter(function(g){return g.status==='declined'}).length;
+  document.getElementById('sP').textContent=guests.filter(function(g){return g.status==='pending'}).length;
+}
+
+function render(){
+  var tb=document.getElementById('tbody');
+  var f=guests.filter(function(g){
+    if(sFilter!=='all'&&g.status!==sFilter)return false;
+    if(cFilter!=='all'&&g.cat!==cFilter)return false;
+    if(query&&g.name.toLowerCase().indexOf(query)===-1)return false;
+    return true;
+  });
+  if(!f.length){tb.innerHTML='<tr><td colspan="6" class="px-5 py-16 text-center text-gray-300">No guests found</td></tr>';return;}
+
+  var lastCat='';
+  tb.innerHTML=f.map(function(g){
+    var ini=g.name.split(' ').map(function(w){return w[0]}).join('').substring(0,2).toUpperCase();
+    var labels={confirmed:'Going',declined:'Declined',pending:'Pending',checkedin:'Checked In'};
+    var sc=statusColors[g.status];
+    var btn='';
+    if(g.status==='confirmed')btn='<button class="ci inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 active:scale-95 transition" data-id="'+g.id+'">&#10003; Check In</button>';
+    else if(g.status==='checkedin')btn='<span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-500 text-xs font-semibold">&#10003; Done</span>';
+    else btn='<span class="text-gray-300">—</span>';
+
+    var secRow='';
+    if(g.cat!==lastCat){
+      lastCat=g.cat;
+      var secNames={ps:'VIP / Principal Sponsors',f:'Immediate Family',e:'Entourage',g:'Guests'};
+      var count=f.filter(function(x){return x.cat===g.cat}).length;
+      secRow='<tr><td colspan="6" class="px-5 pt-6 pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-[2px] bg-warm-50">'+secNames[g.cat]+' &middot; '+count+'</td></tr>';
+    }
+
+    return secRow+'<tr class="hover:bg-warm-50/50 transition-colors">'+
+      '<td class="px-5 py-3"><div class="flex items-center gap-3">'+
+        '<div class="w-8 h-8 rounded-lg '+avatarBg[g.cat]+' flex items-center justify-center text-white text-[11px] font-bold shrink-0">'+ini+'</div>'+
+        '<span class="font-medium">'+esc(g.name)+'</span></div></td>'+
+      '<td class="px-5 py-3 text-gray-400 text-xs hidden sm:table-cell">'+catLabel[g.cat]+'</td>'+
+      '<td class="px-5 py-3 text-gray-500 text-xs">'+(g.table?'Table '+g.table:'—')+'</td>'+
+      '<td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide '+sc+'">'+labels[g.status]+'</span></td>'+
+      '<td class="px-5 py-3 text-gray-400 text-xs max-w-[200px] truncate hidden md:table-cell">'+(g.msg?'&ldquo;'+esc(g.msg)+'&rdquo;':'—')+'</td>'+
+      '<td class="px-5 py-3 text-right">'+btn+'</td></tr>';
+  }).join('');
+
+  tb.querySelectorAll('.ci').forEach(function(b){
+    b.addEventListener('click',function(){checkin(this.dataset.id,this)});
+  });
+}
+
+async function checkin(id,b){
+  b.disabled=true;b.textContent='...';
+  var r=await sb.from('checkins').insert({guest_id:id,checked_in_by:'dashboard'}).select().single();
+  if(r.error){b.disabled=false;b.innerHTML='&#10003; Check In';return;}
+  var g=guests.find(function(x){return x.id===id});
+  if(g)g.status='checkedin';
+  stats();render();
+}
+
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+document.getElementById('q').addEventListener('input',function(){query=this.value.toLowerCase().trim();render();});
+
+document.querySelectorAll('[data-filter="status"]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var v=this.dataset.v;
+    document.querySelectorAll('[data-filter="status"]').forEach(function(x){
+      x.className='px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 transition';
+    });
+    this.className='px-3.5 py-1.5 rounded-lg text-xs font-semibold transition active '+(statusActive[v]||'');
+    sFilter=v;render();
+  });
+});
+document.querySelectorAll('[data-filter="cat"]').forEach(function(b){
+  b.addEventListener('click',function(){
+    var v=this.dataset.v;
+    document.querySelectorAll('[data-filter="cat"]').forEach(function(x){
+      x.className='px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 transition';
+    });
+    this.className='px-3.5 py-1.5 rounded-lg text-xs font-semibold transition active '+(catActive[v]||'');
+    cFilter=v;render();
+  });
+});
+
+load();
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>

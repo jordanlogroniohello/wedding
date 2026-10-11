@@ -23,7 +23,6 @@
 <link rel="preload" href="prenup-photos/prenup-13.JPG?v=2" as="image">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Julius+Sans+One&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -513,7 +512,7 @@ body.loaded section{transition:opacity .4s ease}
 .entourage-wrap{
   background:url('watercolor-bg.png') center/cover no-repeat var(--white);
   text-align:center;
-  padding:clamp(60px,10vh,120px) clamp(20px,5vw,60px);
+  padding:clamp(60px,10vh,120px) clamp(12px,4vw,60px);
 }
 .entourage-parents{
   display:flex;justify-content:center;gap:clamp(40px,8vw,120px);
@@ -538,6 +537,12 @@ body.loaded section{transition:opacity .4s ease}
   color:var(--dark-deep);
   line-height:2;
   font-weight:500;
+  overflow-wrap:break-word;
+  text-wrap:balance;
+}
+.entourage-col,
+.entourage-group{
+  container-type:inline-size;
 }
 .entourage-divider{
   width:60px;
@@ -577,14 +582,16 @@ body.loaded section{transition:opacity .4s ease}
 }
 @media(max-width:600px){
   .entourage-parents{flex-direction:column;align-items:center;gap:0}
-  .entourage-name{font-size:clamp(11px,3.2vw,14px)}
-  .entourage-role{font-size:clamp(11px,3vw,14px)}
+  .entourage-name{font-size:clamp(9px,6.5cqi,14px)}
+  .entourage-role{font-size:clamp(9px,6cqi,14px)}
   .entourage-trio{
     grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   }
   .entourage-trio .entourage-group:nth-child(odd){text-align:right}
   .entourage-trio .entourage-group:nth-child(even){text-align:left}
   .entourage-trio .entourage-group:last-child{grid-column:1/-1;text-align:center}
+  .entourage-trio .entourage-group:last-child .entourage-name{font-size:clamp(9px,3.2vw,14px)}
+  .entourage-trio .entourage-group:last-child .entourage-role{font-size:clamp(9px,3vw,14px)}
 }
 
 /* ══════════════════════════════════════
@@ -1013,6 +1020,7 @@ body.loaded section{transition:opacity .4s ease}
   background:linear-gradient(180deg,var(--green) 0%,var(--dark-deep) 100%);
   padding:clamp(60px,10vh,120px) clamp(20px,5vw,60px);
   text-align:center;
+  position:relative;overflow:hidden;
 }
 .rsvp-card{
   position:relative;
@@ -1141,54 +1149,68 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   color:var(--text-light);
   line-height:1.7;
 }
-.qr-ticket{
-  margin:24px auto 0;
-  background:var(--white);
-  border-radius:16px;
-  padding:28px 24px 24px;
-  max-width:300px;
-  box-shadow:0 4px 24px rgba(0,0,0,.08);
-  border:1px solid rgba(201,168,76,.2);
+.rsvp-confirmed{
+  margin:28px auto 0;
+  background:linear-gradient(145deg,#faf8f3,#fff);
+  border-radius:20px;
+  padding:32px 28px;
+  max-width:340px;
+  box-shadow:0 4px 24px rgba(0,0,0,.06);
+  border:1.5px solid rgba(201,168,76,.25);
+  text-align:center;
+  position:relative;
+  overflow:hidden;
 }
-.qr-ticket-label{
+.rsvp-confirmed::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--gold),var(--green),var(--gold));
+}
+.rsvp-confirmed-label{
   font-family:'Julius Sans One',sans-serif;
-  font-size:10px;
-  letter-spacing:3px;
+  font-size:9px;
+  letter-spacing:4px;
   text-transform:uppercase;
-  color:var(--text-light);
+  color:var(--gold);
   margin-bottom:16px;
 }
-.qr-ticket-name{
-  font-family:'Cormorant Garamond',serif;
-  font-size:20px;
-  font-weight:700;
+.rsvp-confirmed-name{
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(26px,4vw,34px);
   color:var(--dark-deep);
-  margin-bottom:4px;
+  margin-bottom:8px;
+  line-height:1.2;
 }
-.qr-ticket-table{
+.rsvp-confirmed-divider{
+  width:60px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  margin:12px auto;
+}
+.rsvp-confirmed-details{
+  font-family:'Cormorant Garamond',serif;
+  font-size:15px;
+  color:var(--text-light);
+  line-height:1.8;
+}
+.rsvp-confirmed-details strong{
+  color:var(--dark-deep);font-weight:600;
+}
+.rsvp-confirmed-table{
+  display:inline-block;
+  margin-top:14px;
+  padding:6px 20px;
+  background:rgba(201,168,76,.1);
+  border-radius:50px;
+  font-family:'Julius Sans One',sans-serif;
+  font-size:11px;
+  letter-spacing:2px;
+  color:var(--gold);
+}
+.rsvp-confirmed-footer{
+  margin-top:20px;
   font-size:13px;
   color:var(--text-light);
-  margin-bottom:16px;
+  font-style:italic;
 }
-.qr-code-wrap{
-  display:flex;justify-content:center;
-  margin-bottom:16px;
-}
-.qr-code-wrap canvas,.qr-code-wrap img{border-radius:8px}
-.qr-download-btn{
-  display:inline-block;
-  padding:10px 28px;
-  background:var(--green);
-  color:var(--white);
-  border:none;border-radius:50px;
-  font-family:inherit;
-  font-size:14px;
-  font-weight:600;
-  cursor:pointer;
-  transition:background .2s,transform .2s;
-  text-decoration:none;
-}
-.qr-download-btn:hover{background:var(--dark);transform:translateY(-2px)}
 .rsvp-decline-msg{
   font-style:italic;
   margin-top:8px;
@@ -1208,6 +1230,19 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   color:var(--sage);
   font-size:13px;
   letter-spacing:1px;
+  position:relative;overflow:hidden;
+}
+.footer::before,.footer::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+}
+.footer::before{
+  background:url('floral-hero.png') top left/300px;
+  opacity:.07;
+}
+.footer::after{
+  background:url('floral-hero.png') bottom right/300px;
+  transform:rotate(180deg);
+  opacity:.07;
 }
 .footer-hashtag{
   font-size:clamp(14px,1.5vw,18px);
@@ -1763,8 +1798,8 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
 <section class="story">
   <p>We are Angelica and Jordan, and our love story began during our third year of college. On November 6, 2016, Angelica said yes, marking the beginning of our journey together. Over the past ten years, we've grown together and supported each other through life's ups and downs.</p>
   <p><strong>Ten years, countless memories, and one beautiful promise.</strong></p>
-  <p>On November 27, 2026, we begin our greatest chapter yet, not just as two people in love, but as husband and wife.</p>
-  <p>And after a decade together, our forever is only just beginning.</p>
+  <p>As we celebrate a decade together, we're excited to take the next step in our journey and tie the knot on November 27, 2026.</p>
+  <p>Thank you for being part of our story. We look forward to celebrating this special day with you.</p>
 </section>
 
 <!-- ═══ MARQUEE PHOTO GALLERY ═══ -->
@@ -1847,26 +1882,28 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
     <div class="entourage-col">
       <div class="entourage-name">Mr. Lorenzo David</div>
       <div class="entourage-name">Mr. Richard Pati&ntilde;o</div>
-      <div class="entourage-name">Mr. Erwin Luce&ntilde;a</div>
-      <div class="entourage-name">Mr. Domingo Dimanarig</div>
-      <div class="entourage-name">Mr. Philip Bagsio</div>
-      <div class="entourage-name">Mr. Jim Azur Cederia</div>
       <div class="entourage-name">Atty. Celestino Caingat, Jr.</div>
+      <div class="entourage-name">Mr. Domingo Dimanarig</div>
       <div class="entourage-name">Mr. Jonatan Gonzales</div>
+      <div class="entourage-name">Mr. Erwin Luce&ntilde;a</div>
+      <div class="entourage-name">Mr. Pedro Victorino Andrada Jr.</div>
+      <div class="entourage-name">Mr. Philip Bagsio</div>
       <div class="entourage-name">Mr. Roderick Nogales</div>
+      <div class="entourage-name">Mr. Jim Azur Cederia</div>
       <div class="entourage-name">Mr. Clemente Cedelis</div>
       <div class="entourage-name">Mr. Ronald Closa</div>
     </div>
     <div class="entourage-col">
       <div class="entourage-name">Ms. Olivia Logronio</div>
       <div class="entourage-name">Mrs. Amelia Dimanarig</div>
-      <div class="entourage-name">Ms. Joy Murillo</div>
-      <div class="entourage-name">Mrs. Rosemarie Opone</div>
-      <div class="entourage-name">Mrs. Cyrel Bagsio</div>
-      <div class="entourage-name">Mrs. Aby Joy Cederia</div>
       <div class="entourage-name">Dr. Ma. Rovil Caingat</div>
+      <div class="entourage-name">Mrs. Rosemarie Opone</div>
       <div class="entourage-name">Mrs. Lina Fullo</div>
+      <div class="entourage-name">Ms. Joy Murillo</div>
+      <div class="entourage-name">Mrs. Adelina Andrada</div>
+      <div class="entourage-name">Mrs. Cyrel Bagsio</div>
       <div class="entourage-name">Mrs. Jojie Olea</div>
+      <div class="entourage-name">Mrs. Aby Joy Cederia</div>
       <div class="entourage-name">Ms. Marilou Delos Santos</div>
       <div class="entourage-name">Mrs. Irene Closa</div>
     </div>
@@ -1888,21 +1925,21 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   <div class="entourage-grid">
     <div class="entourage-group">
       <div class="entourage-role">Groomsmen</div>
-      <div class="entourage-name">Mark Emil Cabrera</div>
-      <div class="entourage-name">Michael Ryan Puma</div>
       <div class="entourage-name">Carl Jhovan Dimanarig</div>
-      <div class="entourage-name">Kim Philip Qui&ntilde;ones</div>
       <div class="entourage-name">Russell David</div>
-      <div class="entourage-name">Isaac Guerrero</div>
+      <div class="entourage-name">Michael Ryan Puma</div>
+      <div class="entourage-name">Kim Philip Qui&ntilde;ones</div>
+      <div class="entourage-name">Mark Emil Cabrera</div>
+      <div class="entourage-name">Isaac Alberto Guerrero Rodriguez</div>
       <div class="entourage-name">Isaiah John Gonzales</div>
     </div>
     <div class="entourage-group">
       <div class="entourage-role">Bridesmaids</div>
-      <div class="entourage-name">Pauline Victorino</div>
-      <div class="entourage-name">Aura Jane Opone</div>
       <div class="entourage-name">Nica Jane Magalso</div>
-      <div class="entourage-name">Rose Jan Gonzales</div>
       <div class="entourage-name">Joydalen Julia Fullo</div>
+      <div class="entourage-name">Aura Jane Opone</div>
+      <div class="entourage-name">Rose Jan Gonzales</div>
+      <div class="entourage-name">Pauline Victorino</div>
       <div class="entourage-name">Milyn Grace Fullo</div>
       <div class="entourage-name">Maria Angela Tulop</div>
     </div>
@@ -2188,12 +2225,16 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
       <div class="rsvp-success-icon">&#10003;</div>
       <h3>Thank You!</h3>
       <p id="rsvpSuccessMsg">Your RSVP has been received. We can't wait to celebrate with you!</p>
-      <div class="qr-ticket" id="qrTicket" style="display:none">
-        <div class="qr-ticket-label">Your Wedding Pass</div>
-        <div class="qr-ticket-name" id="qrGuestName"></div>
-        <div class="qr-ticket-table" id="qrTableInfo"></div>
-        <div class="qr-code-wrap" id="qrCode"></div>
-        <button class="qr-download-btn" id="qrDownloadBtn">Download QR Pass</button>
+      <div class="rsvp-confirmed" id="rsvpConfirmed" style="display:none">
+        <div class="rsvp-confirmed-label">You're Confirmed</div>
+        <div class="rsvp-confirmed-name" id="confirmedName"></div>
+        <div class="rsvp-confirmed-divider"></div>
+        <div class="rsvp-confirmed-details">
+          <strong>November 27, 2026</strong><br>
+          Ceremony &amp; Reception
+        </div>
+        <div class="rsvp-confirmed-table" id="confirmedTable" style="display:none"></div>
+        <div class="rsvp-confirmed-footer">We can't wait to celebrate with you!</div>
       </div>
     </div>
   </div>
@@ -2437,7 +2478,7 @@ document.getElementById('rsvpForm').addEventListener('submit', async function(e)
     };
     if(guestRow) rsvpData.guest_id = guestRow.id;
 
-    var ins = await supabaseClient.from('rsvps').insert(rsvpData).select('qr_token').single();
+    var ins = await supabaseClient.from('rsvps').insert(rsvpData).select().single();
     if(ins.error) throw ins.error;
 
     this.style.display = 'none';
@@ -2447,70 +2488,15 @@ document.getElementById('rsvpForm').addEventListener('submit', async function(e)
       : 'Your RSVP has been received. We\'ll miss you, but thank you for letting us know!';
     document.getElementById('rsvpSuccess').style.display = 'block';
 
-    if(isAttending && ins.data){
-      var qrPayload = JSON.stringify({
-        g: guestId || 'walk-in',
-        t: ins.data.qr_token,
-        n: guestRow ? guestRow.full_name : formData.name
-      });
-
-      var qrTicket = document.getElementById('qrTicket');
+    if(isAttending){
       var gName = guestRow ? guestRow.full_name : formData.name;
-      document.getElementById('qrGuestName').textContent = gName;
-      document.getElementById('qrTableInfo').textContent = guestRow && guestRow.table_number
-        ? 'Table ' + guestRow.table_number
-        : '';
-
-      var qrContainer = document.getElementById('qrCode');
-      qrContainer.innerHTML = '';
-      var qr = new QRCode(qrContainer, {
-        text: qrPayload,
-        width: 200,
-        height: 200,
-        colorDark: '#0e2418',
-        colorLight: '#ffffff',
-        correctLevel: QRCode.CorrectLevel.M
-      });
-
-      qrTicket.style.display = 'block';
-
-      document.getElementById('qrDownloadBtn').addEventListener('click', function(){
-        setTimeout(function(){
-          var canvas = qrContainer.querySelector('canvas');
-          if(!canvas) return;
-
-          var dl = document.createElement('canvas');
-          var pad = 40;
-          dl.width = canvas.width + pad * 2;
-          dl.height = canvas.height + pad * 2 + 80;
-          var ctx = dl.getContext('2d');
-
-          ctx.fillStyle = '#ffffff';
-          ctx.fillRect(0, 0, dl.width, dl.height);
-
-          ctx.drawImage(canvas, pad, pad);
-
-          ctx.fillStyle = '#0e2418';
-          ctx.font = 'bold 16px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText(gName, dl.width / 2, canvas.height + pad + 30);
-
-          ctx.fillStyle = '#8baa98';
-          ctx.font = '12px sans-serif';
-          ctx.fillText('Angelica & Jordan | Nov 27, 2026', dl.width / 2, canvas.height + pad + 52);
-
-          if(guestRow && guestRow.table_number){
-            ctx.fillStyle = '#c9a84c';
-            ctx.font = 'bold 13px sans-serif';
-            ctx.fillText('Table ' + guestRow.table_number, dl.width / 2, canvas.height + pad + 72);
-          }
-
-          var link = document.createElement('a');
-          link.download = 'wedding-pass-' + (guestId || 'guest') + '.png';
-          link.href = dl.toDataURL('image/png');
-          link.click();
-        }, 100);
-      });
+      document.getElementById('confirmedName').textContent = gName;
+      var tableEl = document.getElementById('confirmedTable');
+      if(guestRow && guestRow.table_number){
+        tableEl.textContent = 'Table ' + guestRow.table_number;
+        tableEl.style.display = 'inline-block';
+      }
+      document.getElementById('rsvpConfirmed').style.display = 'block';
     }
   } catch(err) {
     console.error('RSVP error:', err);
