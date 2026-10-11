@@ -2607,7 +2607,10 @@ document.querySelectorAll('.faq-q').forEach(function(q){
     }
     allSpots.sort(function(a,b){ return b.dist - a.dist; });
 
-    var delay = isMobile ? 0.015 : 0.02;
+    var delay = isMobile ? 0.012 : 0.018;
+    var cx = sw / 2;
+    var cy = sh / 2;
+    var maxDist = Math.sqrt(cx * cx + cy * cy);
     allSpots.forEach(function(spot, i){
       var sticker = document.createElement('div');
       sticker.className = 'sticker';
@@ -2620,8 +2623,10 @@ document.querySelectorAll('.faq-q').forEach(function(q){
       var rot = (Math.random() - 0.5) * 30;
       var scx = endX + size / 2;
       var scy = endY + size / 2;
-      var offX = scx <= sw / 2 ? -size * 1.5 : sw + size * 0.5;
-      var offY = scy <= sh / 2 ? -size * 1.5 : sh + size * 0.5;
+      var dx = scx - cx;
+      var dy = scy - cy;
+      var angle = Math.atan2(dy, dx);
+      var flyDist = maxDist + size;
 
       sticker.style.left = endX + 'px';
       sticker.style.top = endY + 'px';
@@ -2629,8 +2634,8 @@ document.querySelectorAll('.faq-q').forEach(function(q){
       bomb.appendChild(sticker);
 
       gsap.fromTo(sticker,
-        {x: offX - endX, y: offY - endY, rotation: rot},
-        {x: 0, y: 0, rotation: rot, duration: 0.35, delay: i * delay, ease: 'power2.out'}
+        {x: Math.cos(angle) * flyDist, y: Math.sin(angle) * flyDist, rotation: rot},
+        {x: 0, y: 0, rotation: rot, duration: 0.4, delay: i * delay, ease: 'power2.out'}
       );
     });
 
@@ -2645,11 +2650,13 @@ document.querySelectorAll('.faq-q').forEach(function(q){
       allStickers.reverse().forEach(function(s, i){
         var left = parseFloat(s.style.left);
         var top = parseFloat(s.style.top);
-        var exitX = (left + size/2) < sw/2 ? -size * 1.5 - left : sw + size * 0.5 - left;
-        var exitY = (top + size/2) < sh/2 ? -size * 1.5 - top : sh + size * 0.5 - top;
+        var dx = (left + size/2) - cx;
+        var dy = (top + size/2) - cy;
+        var angle = Math.atan2(dy, dx);
+        var flyDist = maxDist + size;
         gsap.to(s, {
-          x: exitX, y: exitY,
-          duration: 0.3, delay: i * 0.02,
+          x: Math.cos(angle) * flyDist, y: Math.sin(angle) * flyDist,
+          duration: 0.3, delay: i * 0.015,
           ease: 'power2.in'
         });
       });
