@@ -2457,6 +2457,14 @@ var supabaseClient = supabase.createClient(
   'sb_publishable_FAwCKHnzhIFI2_at0KubEw_msQfc6yF'
 );
 
+if(guestId && !sessionStorage.getItem('viewed_'+guestId)){
+  supabaseClient.from('guests').select('id').eq('guest_id',guestId).single().then(function(r){
+    if(r.data) supabaseClient.from('views').insert({guest_id:r.data.id}).then(function(){
+      sessionStorage.setItem('viewed_'+guestId,'1');
+    });
+  });
+}
+
 document.getElementById('rsvpForm').addEventListener('submit', async function(e){
   e.preventDefault();
   var btn = this.querySelector('.rsvp-btn');

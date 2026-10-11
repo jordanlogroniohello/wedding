@@ -46,14 +46,20 @@ tailwind.config = {
         <p class="font-serif text-xs sm:text-sm tracking-[3px] uppercase text-white/90 mt-1">November 27, 2026</p>
       </div>
     </div>
-    <div class="font-serif text-[10px] sm:text-xs tracking-[2px] uppercase text-white/90">Wedding Guest List</div>
+    <div class="text-right">
+      <div class="font-serif text-[10px] sm:text-xs tracking-[2px] uppercase text-white/90">Wedding Guest List</div>
+      <div id="syncStatus" class="flex items-center justify-end gap-1.5 mt-1.5">
+        <span id="syncDot" class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span id="syncLabel" class="text-[9px] text-white/60 uppercase tracking-wider">Synced</span>
+      </div>
+    </div>
   </div>
 </header>
 
 <main class="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
 
   <!-- ═══ STATS ═══ -->
-  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6" id="stats">
+  <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6" id="stats">
     <div class="bg-white rounded-2xl p-5 shadow-sm text-center">
       <div class="text-3xl font-bold text-gray-800" id="sT">—</div>
       <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">Total</div>
@@ -69,6 +75,10 @@ tailwind.config = {
     <div class="bg-white rounded-2xl p-5 shadow-sm text-center">
       <div class="text-3xl font-bold text-amber-500" id="sP">—</div>
       <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">Pending</div>
+    </div>
+    <div class="bg-white rounded-2xl p-5 shadow-sm text-center">
+      <div class="text-3xl font-bold text-violet-500" id="sV">—</div>
+      <div class="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mt-1">Viewed</div>
     </div>
   </div>
 
@@ -142,26 +152,73 @@ var catActive={
 };
 var avatarBg={ps:'bg-slate-600',e:'bg-emerald-600',f:'bg-amber-800',g:'bg-gray-400'};
 
+// ─── Offline sync ───
+var CACHE_KEY='wed_guests';
+var QUEUE_KEY='wed_checkin_queue';
+
+function getQueue(){try{return JSON.parse(localStorage.getItem(QUEUE_KEY))||[];}catch(e){return[];}}
+function saveQueue(q){try{localStorage.setItem(QUEUE_KEY,JSON.stringify(q));}catch(e){}}
+function cacheGuests(){try{localStorage.setItem(CACHE_KEY,JSON.stringify(guests));}catch(e){}}
+function getCachedGuests(){try{return JSON.parse(localStorage.getItem(CACHE_KEY))||[];}catch(e){return[];}}
+
+function setSyncStatus(state){
+  var dot=document.getElementById('syncDot');
+  var label=document.getElementById('syncLabel');
+  if(state==='synced'){dot.className='w-2 h-2 rounded-full bg-emerald-400';label.textContent='Synced';}
+  else if(state==='pending'){dot.className='w-2 h-2 rounded-full bg-amber-400 animate-pulse';label.textContent=getQueue().length+' pending';}
+  else{dot.className='w-2 h-2 rounded-full bg-red-400';label.textContent='Offline';}
+}
+
+async function flushQueue(){
+  var q=getQueue();
+  if(!q.length)return;
+  var remaining=[];
+  for(var i=0;i<q.length;i++){
+    var r=await sb.from('checkins').insert({guest_id:q[i].guest_id,checked_in_by:'dashboard'}).select().single();
+    if(r.error)remaining.push(q[i]);
+  }
+  saveQueue(remaining);
+  setSyncStatus(remaining.length?'pending':'synced');
+  if(!remaining.length)load();
+}
+
 async function load(){
-  var g=await sb.from('guests').select('*');
-  if(g.error)return;
-  var r=await sb.from('rsvps').select('guest_id,attending,message,submitted_at');
-  var c=await sb.from('checkins').select('guest_id,checked_in_at');
-  var rm={};(r.data||[]).forEach(function(x){
-    if(!rm[x.guest_id]||x.submitted_at>rm[x.guest_id].submitted_at)rm[x.guest_id]=x;
-  });
-  var cm={};(c.data||[]).forEach(function(x){cm[x.guest_id]=x;});
-  guests=(g.data||[]).map(function(g){
-    var rv=rm[g.id]||null,ci=cm[g.id]||null;
-    var st=ci?'checkedin':rv?(rv.attending?'confirmed':'declined'):'pending';
-    return{id:g.id,name:g.full_name,display:g.display_name,cat:g.category,
-      table:g.table_number,status:st,msg:rv?rv.message:null};
-  });
+  try{
+    var g=await sb.from('guests').select('*');
+    if(g.error)throw g.error;
+    var r=await sb.from('rsvps').select('guest_id,attending,message,submitted_at');
+    var c=await sb.from('checkins').select('guest_id,checked_in_at');
+    var v=await sb.from('views').select('guest_id,viewed_at');
+    var rm={};(r.data||[]).forEach(function(x){
+      if(!rm[x.guest_id]||x.submitted_at>rm[x.guest_id].submitted_at)rm[x.guest_id]=x;
+    });
+    var cm={};(c.data||[]).forEach(function(x){cm[x.guest_id]=x;});
+    var vm={};(v.data||[]).forEach(function(x){if(!vm[x.guest_id])vm[x.guest_id]=x;});
+    var localQueue=getQueue();
+    var queueIds={};localQueue.forEach(function(x){queueIds[x.guest_id]=true;});
+    guests=(g.data||[]).map(function(g){
+      var rv=rm[g.id]||null,ci=cm[g.id]||null;
+      var st=ci||queueIds[g.id]?'checkedin':rv?(rv.attending?'confirmed':'declined'):'pending';
+      return{id:g.id,name:g.full_name,display:g.display_name,cat:g.category,
+        table:g.table_number,status:st,msg:rv?rv.message:null,viewed:!!vm[g.id]};
+    });
+    sortGuests();
+    cacheGuests();
+    setSyncStatus(localQueue.length?'pending':'synced');
+    if(localQueue.length)flushQueue();
+  }catch(e){
+    guests=getCachedGuests();
+    if(!guests.length){document.getElementById('tbody').innerHTML='<tr><td colspan="6" class="px-5 py-16 text-center text-red-400">Offline — no cached data</td></tr>';setSyncStatus('offline');return;}
+    setSyncStatus(getQueue().length?'pending':'offline');
+  }
+  stats();render();
+}
+
+function sortGuests(){
   guests.sort(function(a,b){
     var co=catOrder[a.cat]-catOrder[b.cat];
     return co!==0?co:a.name.localeCompare(b.name);
   });
-  stats();render();
 }
 
 function stats(){
@@ -170,6 +227,7 @@ function stats(){
   document.getElementById('sC').textContent=co;
   document.getElementById('sD').textContent=guests.filter(function(g){return g.status==='declined'}).length;
   document.getElementById('sP').textContent=guests.filter(function(g){return g.status==='pending'}).length;
+  document.getElementById('sV').textContent=guests.filter(function(g){return g.viewed}).length;
 }
 
 function render(){
@@ -200,10 +258,12 @@ function render(){
       secRow='<tr><td colspan="6" class="px-5 pt-6 pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-[2px] bg-warm-50">'+secNames[g.cat]+' &middot; '+count+'</td></tr>';
     }
 
+    var viewedBadge=g.viewed?'<span class="ml-1.5 text-[9px] text-emerald-500" title="Opened invitation">&#128065;</span>':'';
+
     return secRow+'<tr class="hover:bg-warm-50/50 transition-colors">'+
       '<td class="px-5 py-3"><div class="flex items-center gap-3">'+
         '<div class="w-8 h-8 rounded-lg '+avatarBg[g.cat]+' flex items-center justify-center text-white text-[11px] font-bold shrink-0">'+ini+'</div>'+
-        '<span class="font-medium">'+esc(g.name)+'</span></div></td>'+
+        '<span class="font-medium">'+esc(g.name)+viewedBadge+'</span></div></td>'+
       '<td class="px-5 py-3 text-gray-400 text-xs hidden sm:table-cell">'+catLabel[g.cat]+'</td>'+
       '<td class="px-5 py-3 text-gray-500 text-xs">'+(g.table?'Table '+g.table:'—')+'</td>'+
       '<td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide '+sc+'">'+labels[g.status]+'</span></td>'+
@@ -218,14 +278,25 @@ function render(){
 
 async function checkin(id,b){
   b.disabled=true;b.textContent='...';
-  var r=await sb.from('checkins').insert({guest_id:id,checked_in_by:'dashboard'}).select().single();
-  if(r.error){b.disabled=false;b.innerHTML='&#10003; Check In';return;}
   var g=guests.find(function(x){return x.id===id});
+  try{
+    var r=await sb.from('checkins').insert({guest_id:id,checked_in_by:'dashboard'}).select().single();
+    if(r.error)throw r.error;
+  }catch(e){
+    var q=getQueue();
+    q.push({guest_id:id,ts:Date.now()});
+    saveQueue(q);
+    setSyncStatus('pending');
+  }
   if(g)g.status='checkedin';
+  cacheGuests();
   stats();render();
 }
 
 function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+window.addEventListener('online',function(){setSyncStatus('synced');flushQueue();});
+window.addEventListener('offline',function(){setSyncStatus('offline');});
 
 document.getElementById('q').addEventListener('input',function(){query=this.value.toLowerCase().trim();render();});
 
