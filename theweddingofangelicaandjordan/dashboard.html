@@ -199,7 +199,7 @@ async function load(){
     guests=(g.data||[]).map(function(g){
       var rv=rm[g.id]||null,ci=cm[g.id]||null;
       var st=ci||queueIds[g.id]?'checkedin':rv?(rv.attending?'confirmed':'declined'):'pending';
-      return{id:g.id,name:g.full_name,display:g.display_name,cat:g.category,
+      return{id:g.id,gid:g.guest_id,name:g.full_name,display:g.display_name,cat:g.category,
         table:g.table_number,status:st,msg:rv?rv.message:null,viewed:!!vm[g.id]};
     });
     sortGuests();
@@ -249,6 +249,7 @@ function render(){
     if(g.status==='confirmed')btn='<button class="ci inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 active:scale-95 transition" data-id="'+g.id+'">&#10003; Check In</button>';
     else if(g.status==='checkedin')btn='<span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-500 text-xs font-semibold">&#10003; Done</span>';
     else btn='<span class="text-gray-300">—</span>';
+    var copyBtn='<button class="cplink ml-1.5 inline-flex items-center gap-1 px-2 py-1.5 rounded-lg bg-warm-100 text-gray-400 text-[10px] font-semibold hover:bg-wed-50 hover:text-wed-500 active:scale-95 transition" data-gid="'+g.gid+'" title="Copy invitation link">&#128279;</button>';
 
     var secRow='';
     if(g.cat!==lastCat){
@@ -268,11 +269,21 @@ function render(){
       '<td class="px-5 py-3 text-gray-500 text-xs">'+(g.table?'Table '+g.table:'—')+'</td>'+
       '<td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide '+sc+'">'+labels[g.status]+'</span></td>'+
       '<td class="px-5 py-3 text-gray-400 text-xs max-w-[200px] truncate hidden md:table-cell">'+(g.msg?'&ldquo;'+esc(g.msg)+'&rdquo;':'—')+'</td>'+
-      '<td class="px-5 py-3 text-right">'+btn+'</td></tr>';
+      '<td class="px-5 py-3 text-right whitespace-nowrap">'+btn+copyBtn+'</td></tr>';
   }).join('');
 
   tb.querySelectorAll('.ci').forEach(function(b){
     b.addEventListener('click',function(){checkin(this.dataset.id,this)});
+  });
+  tb.querySelectorAll('.cplink').forEach(function(b){
+    b.addEventListener('click',function(){
+      var link='https://gzdev.app/theweddingofangelicaandjordan/invitation/'+this.dataset.gid;
+      navigator.clipboard.writeText(link).then(function(){
+        b.innerHTML='&#10003;';b.classList.add('bg-emerald-50','text-emerald-600');
+        b.classList.remove('bg-warm-100','text-gray-400');
+        setTimeout(function(){b.innerHTML='&#128279;';b.classList.remove('bg-emerald-50','text-emerald-600');b.classList.add('bg-warm-100','text-gray-400');},1500);
+      });
+    });
   });
 }
 
