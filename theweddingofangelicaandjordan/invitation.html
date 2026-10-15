@@ -1403,6 +1403,30 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   .cta-duo{grid-template-columns:1fr;max-width:340px}
 }
 
+.video-overlay{
+  position:fixed;inset:0;z-index:10000;
+  background:rgba(0,0,0,.92);
+  display:none;align-items:center;justify-content:center;
+  flex-direction:column;
+}
+.video-overlay.active{display:flex}
+.video-overlay video{
+  width:min(92vw,960px);
+  max-height:80vh;
+  border-radius:8px;
+  outline:none;
+}
+.video-close{
+  position:absolute;top:16px;right:20px;
+  width:40px;height:40px;
+  background:rgba(255,255,255,.12);
+  border:none;border-radius:50%;
+  color:#fff;font-size:20px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  z-index:1;
+}
+.video-close:hover{background:rgba(255,255,255,.25)}
+
 /* ══════════════════════════════════════
    MUSIC TOGGLE
    ══════════════════════════════════════ */
@@ -1710,6 +1734,12 @@ select.rsvp-input option{background:var(--beige);color:var(--dark-deep)}
   <div class="cover-loader" id="coverLoader">Preparing your invitation</div>
 </div>
 
+<div class="video-overlay" id="videoOverlay">
+  <button class="video-close" id="videoClose">&#10005;</button>
+  <video id="stdVideo" controls playsinline preload="none" poster="">
+    <source src="assets/save-the-date.mp4" type="video/mp4">
+  </video>
+</div>
 <div class="toast" id="toast">Coming Soon</div>
 <audio id="bgMusic" src="assets/bg-music.mp3" loop preload="auto"></audio>
 <button class="music-toggle" id="musicToggle" aria-label="Toggle music">
@@ -2542,9 +2572,33 @@ document.querySelectorAll('.faq-q').forEach(function(q){
   ];
 
   document.getElementById('stdVideoLink').addEventListener('click', function(){
-    var toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(function(){ toast.classList.remove('show'); }, 2000);
+    var ov=document.getElementById('videoOverlay');
+    var vid=document.getElementById('stdVideo');
+    var bgMusic=document.getElementById('bgMusic');
+    ov.classList.add('active');
+    document.body.style.overflow='hidden';
+    if(!bgMusic.paused){vid._wasMusicPlaying=true;bgMusic.pause();}
+    vid.play();
+    if(vid.requestFullscreen)vid.requestFullscreen().catch(function(){});
+    else if(vid.webkitEnterFullscreen)vid.webkitEnterFullscreen();
+  });
+  document.getElementById('videoClose').addEventListener('click', function(){
+    var ov=document.getElementById('videoOverlay');
+    var vid=document.getElementById('stdVideo');
+    var bgMusic=document.getElementById('bgMusic');
+    vid.pause();
+    ov.classList.remove('active');
+    document.body.style.overflow='';
+    if(vid._wasMusicPlaying){bgMusic.play();vid._wasMusicPlaying=false;}
+  });
+  document.getElementById('videoOverlay').addEventListener('click', function(e){
+    if(e.target===this){
+      document.getElementById('videoClose').click();
+    }
+  });
+  document.getElementById('stdVideo').addEventListener('ended', function(){
+    if(document.fullscreenElement)document.exitFullscreen();
+    document.getElementById('videoClose').click();
   });
 
   document.getElementById('prenupBtn').addEventListener('click', function(){
