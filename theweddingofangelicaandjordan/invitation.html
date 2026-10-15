@@ -2332,7 +2332,7 @@
     <div class="video-overlay" id="videoOverlay">
       <button class="video-close" id="videoClose">&#10005;</button>
       <video id="stdVideo" controls playsinline preload="none" poster="">
-        <source src="assets/save-the-date.mp4" type="video/mp4" />
+        <source src="assets/save-the-date.mp4?v=1" type="video/mp4" />
       </video>
     </div>
     <div class="toast" id="toast">Coming Soon</div>
@@ -3544,7 +3544,6 @@
           var vid = document.getElementById("stdVideo");
           var bgMusic = document.getElementById("bgMusic");
           ov.classList.add("active");
-          lockScroll();
           if (!bgMusic.paused) {
             vid._wasMusicPlaying = true;
             bgMusic.pause();
@@ -3559,7 +3558,6 @@
           var bgMusic = document.getElementById("bgMusic");
           vid.pause();
           ov.classList.remove("active");
-          unlockScroll();
           if (vid._wasMusicPlaying) {
             bgMusic.play();
             vid._wasMusicPlaying = false;
@@ -3579,7 +3577,6 @@
           var bomb = document.getElementById("stickerBomb");
           bomb.innerHTML = "";
           bomb.classList.add("active");
-          lockScroll();
           document.getElementById("nav").style.display = "none";
 
           var grid = document.getElementById("prenupGrid");
@@ -3710,7 +3707,6 @@
           document.getElementById("prenupGallery").classList.remove("active");
           document.getElementById("prenupClose").classList.remove("active");
           document.getElementById("nav").style.display = "";
-          unlockScroll();
           document.getElementById("prenupGallery").scrollTop = 0;
         });
 
