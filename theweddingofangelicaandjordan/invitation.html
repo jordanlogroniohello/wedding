@@ -3822,6 +3822,18 @@
         cardBg.classList.add("card-bg-entourage");
         if (!guestId) guestEl.style.display = "none";
 
+        var guestReady = false;
+        var imagesReady = false;
+
+        function tryRevealCard() {
+          if (guestReady && imagesReady) {
+            document.body.classList.add("loaded");
+            preloader.classList.add("done");
+            loader.classList.add("hidden");
+            card.classList.add("ready");
+          }
+        }
+
         if (guestId) {
           supabaseClient
             .from("guests")
@@ -3832,29 +3844,37 @@
               var g = res.data;
               if (!g) {
                 guestEl.textContent = "Our Beloved Guest";
-                return;
-              }
-              var bgMap = {
-                ps: g.display_name.indexOf("Ninong") === 0 ? "card-bg-ninong" : "card-bg-ninang",
-                e: "card-bg-entourage",
-                f: "card-bg-entourage",
-                g: "card-bg-guest",
-              };
-              cardBg.className = "invite-card-bg";
-              cardBg.classList.add(bgMap[g.category] || "card-bg-entourage");
-              guestEl.textContent = g.display_name;
+              } else {
+                var bgMap = {
+                  ps: g.display_name.indexOf("Ninong") === 0 ? "card-bg-ninong" : "card-bg-ninang",
+                  e: "card-bg-entourage",
+                  f: "card-bg-entourage",
+                  g: "card-bg-guest",
+                };
+                cardBg.className = "invite-card-bg";
+                cardBg.classList.add(bgMap[g.category] || "card-bg-entourage");
+                guestEl.textContent = g.display_name;
 
-              var rsvpNameInput = document.getElementById("rsvpName");
-              if (rsvpNameInput && g.full_name) {
-                rsvpNameInput.value = g.full_name;
-                rsvpNameInput.readOnly = true;
-                rsvpNameInput.style.opacity = "1";
-                rsvpNameInput.style.color = "var(--dark-deep)";
-                rsvpNameInput.style.fontWeight = "600";
-                rsvpNameInput.style.background = "rgba(201,168,76,.08)";
-                rsvpNameInput.style.cursor = "default";
+                var rsvpNameInput = document.getElementById("rsvpName");
+                if (rsvpNameInput && g.full_name) {
+                  rsvpNameInput.value = g.full_name;
+                  rsvpNameInput.readOnly = true;
+                  rsvpNameInput.style.opacity = "1";
+                  rsvpNameInput.style.color = "var(--dark-deep)";
+                  rsvpNameInput.style.fontWeight = "600";
+                  rsvpNameInput.style.background = "rgba(201,168,76,.08)";
+                  rsvpNameInput.style.cursor = "default";
+                }
               }
+              guestReady = true;
+              tryRevealCard();
+            })
+            .catch(function () {
+              guestReady = true;
+              tryRevealCard();
             });
+        } else {
+          guestReady = true;
         }
 
         var criticalImages = [
@@ -3873,10 +3893,8 @@
           loadedCount++;
           preloaderFill.style.width = (loadedCount / totalImages) * 100 + "%";
           if (loadedCount >= totalImages) {
-            document.body.classList.add("loaded");
-            preloader.classList.add("done");
-            loader.classList.add("hidden");
-            card.classList.add("ready");
+            imagesReady = true;
+            tryRevealCard();
           }
         }
         criticalImages.forEach(function (src) {
