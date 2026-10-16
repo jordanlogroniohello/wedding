@@ -3452,6 +3452,7 @@
           var rsvpData = {
             attending: isAttending,
             message: formData.message || null,
+            name: formData.name || null,
           };
           if (guestRow) rsvpData.guest_id = guestRow.id;
 
@@ -3468,11 +3469,7 @@
           if (isAttending) {
             var gName = guestRow ? guestRow.full_name : formData.name;
             document.getElementById("confirmedName").textContent = gName;
-            var tableEl = document.getElementById("confirmedTable");
-            if (guestRow && guestRow.table_number) {
-              tableEl.textContent = "Table " + guestRow.table_number;
-              tableEl.style.display = "inline-block";
-            }
+            /* table number hidden — not yet final */
             document.getElementById("rsvpConfirmed").style.display = "block";
           }
         } catch (err) {
