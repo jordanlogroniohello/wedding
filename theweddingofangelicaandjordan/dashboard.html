@@ -112,17 +112,31 @@ tailwind.config = {
           <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden sm:table-cell">Category</th>
           <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Table</th>
           <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Status</th>
-          <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest hidden md:table-cell">Message</th>
           <th class="px-5 py-3.5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Action</th>
         </tr>
       </thead>
       <tbody id="tbody" class="divide-y divide-warm-100">
-        <tr><td colspan="6" class="px-5 py-16 text-center text-gray-300">Loading...</td></tr>
+        <tr><td colspan="5" class="px-5 py-16 text-center text-gray-300">Loading...</td></tr>
       </tbody>
     </table>
   </div>
 
 </main>
+
+<!-- ═══ MESSAGES FAB + PANEL ═══ -->
+<button id="msgFab" class="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-wed-500 text-white shadow-lg hover:bg-wed-600 active:scale-95 transition flex items-center justify-center z-50" title="Guest Messages">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <span id="msgBadge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full items-center justify-center" style="display:none"></span>
+</button>
+
+<div id="msgOverlay" class="fixed inset-0 bg-black/30 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+<div id="msgDrawer" class="fixed top-0 right-0 h-full w-80 sm:w-96 bg-white shadow-2xl z-50 flex flex-col translate-x-full transition-transform duration-300 ease-in-out">
+  <div class="flex items-center justify-between px-5 py-4 border-b border-warm-200 bg-warm-50 shrink-0">
+    <span class="text-xs font-bold text-gray-600 uppercase tracking-[2px]">Guest Messages</span>
+    <button id="msgClose" class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-warm-200 text-gray-400 text-lg transition">&times;</button>
+  </div>
+  <div id="msgList" class="overflow-y-auto flex-1"></div>
+</div>
 
 <script>
 try{screen.orientation.lock('landscape').catch(function(){});}catch(e){}
@@ -208,10 +222,10 @@ async function load(){
     if(localQueue.length)flushQueue();
   }catch(e){
     guests=getCachedGuests();
-    if(!guests.length){document.getElementById('tbody').innerHTML='<tr><td colspan="6" class="px-5 py-16 text-center text-red-400">Offline — no cached data</td></tr>';setSyncStatus('offline');return;}
+    if(!guests.length){document.getElementById('tbody').innerHTML='<tr><td colspan="5" class="px-5 py-16 text-center text-red-400">Offline — no cached data</td></tr>';setSyncStatus('offline');return;}
     setSyncStatus(getQueue().length?'pending':'offline');
   }
-  stats();render();
+  stats();render();updateMsgBadge();
 }
 
 function sortGuests(){
@@ -238,7 +252,7 @@ function render(){
     if(query&&g.name.toLowerCase().indexOf(query)===-1)return false;
     return true;
   });
-  if(!f.length){tb.innerHTML='<tr><td colspan="6" class="px-5 py-16 text-center text-gray-300">No guests found</td></tr>';return;}
+  if(!f.length){tb.innerHTML='<tr><td colspan="5" class="px-5 py-16 text-center text-gray-300">No guests found</td></tr>';return;}
 
   var lastCat='';
   tb.innerHTML=f.map(function(g){
@@ -256,7 +270,7 @@ function render(){
       lastCat=g.cat;
       var secNames={ps:'VIP / Principal Sponsors',f:'Immediate Family',e:'Entourage',g:'Guests'};
       var count=f.filter(function(x){return x.cat===g.cat}).length;
-      secRow='<tr><td colspan="6" class="px-5 pt-6 pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-[2px] bg-warm-50">'+secNames[g.cat]+' &middot; '+count+'</td></tr>';
+      secRow='<tr><td colspan="5" class="px-5 pt-6 pb-2 text-[10px] font-bold text-gray-400 uppercase tracking-[2px] bg-warm-50">'+secNames[g.cat]+' &middot; '+count+'</td></tr>';
     }
 
     var viewedBadge=g.viewed?'<span class="ml-1.5 text-[9px] text-emerald-500" title="Opened invitation">&#128065;</span>':'';
@@ -268,7 +282,6 @@ function render(){
       '<td class="px-5 py-3 text-gray-400 text-xs hidden sm:table-cell">'+catLabel[g.cat]+'</td>'+
       '<td class="px-5 py-3 text-gray-500 text-xs">'+(g.table?'Table '+g.table:'—')+'</td>'+
       '<td class="px-5 py-3"><span class="inline-block px-2.5 py-1 rounded-md text-[10px] font-bold uppercase tracking-wide '+sc+'">'+labels[g.status]+'</span></td>'+
-      '<td class="px-5 py-3 text-gray-400 text-xs max-w-[200px] truncate hidden md:table-cell">'+(g.msg?'&ldquo;'+esc(g.msg)+'&rdquo;':'—')+'</td>'+
       '<td class="px-5 py-3 text-right whitespace-nowrap">'+btn+copyBtn+'</td></tr>';
   }).join('');
 
@@ -337,6 +350,48 @@ load();
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js');
 }
+
+function updateMsgBadge(){
+  var count=guests.filter(function(g){return g.msg}).length;
+  var badge=document.getElementById('msgBadge');
+  badge.textContent=count;
+  badge.style.display=count?'flex':'none';
+}
+
+function renderMessages(){
+  var list=document.getElementById('msgList');
+  var msgs=guests.filter(function(g){return g.msg});
+  updateMsgBadge();
+  if(!msgs.length){list.innerHTML='<p class="text-center text-gray-300 py-10">No messages yet</p>';return;}
+  list.innerHTML=msgs.map(function(g){
+    return '<div class="px-5 py-4 border-b border-warm-100">'+
+      '<div class="flex items-center gap-2.5 mb-1.5">'+
+        '<div class="w-7 h-7 rounded-lg '+avatarBg[g.cat]+' flex items-center justify-center text-white text-[10px] font-bold shrink-0">'+g.name.split(' ').map(function(w){return w[0]}).join('').substring(0,2).toUpperCase()+'</div>'+
+        '<span class="font-semibold text-sm text-gray-700">'+esc(g.name)+'</span>'+
+      '</div>'+
+      '<p class="text-sm text-gray-500 italic pl-9">&ldquo;'+esc(g.msg)+'&rdquo;</p>'+
+    '</div>';
+  }).join('');
+}
+
+function openDrawer(){
+  renderMessages();
+  document.getElementById('msgDrawer').classList.remove('translate-x-full');
+  var ov=document.getElementById('msgOverlay');
+  ov.classList.remove('opacity-0','pointer-events-none');
+  ov.classList.add('opacity-100');
+}
+function closeDrawer(){
+  document.getElementById('msgDrawer').classList.add('translate-x-full');
+  var ov=document.getElementById('msgOverlay');
+  ov.classList.add('opacity-0','pointer-events-none');
+  ov.classList.remove('opacity-100');
+}
+
+document.getElementById('msgFab').addEventListener('click',openDrawer);
+document.getElementById('msgClose').addEventListener('click',closeDrawer);
+document.getElementById('msgOverlay').addEventListener('click',closeDrawer);
 </script>
+
 </body>
 </html>

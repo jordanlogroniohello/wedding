@@ -1,4 +1,4 @@
-var CACHE = 'wedding-dash-v3';
+var CACHE = 'wedding-dash-v4';
 var ASSETS = [
   '/theweddingofangelicaandjordan/dashboard.html',
   '/theweddingofangelicaandjordan/monogram.png',
