@@ -1337,6 +1337,23 @@
         line-height: 1.8;
         margin-bottom: clamp(32px, 5vh, 56px);
       }
+      .rsvp-deadline {
+        display: inline-block;
+        background: linear-gradient(135deg, #7a5c10 0%, #c9a84c 100%);
+        color: #fff;
+        font-size: clamp(12px, 1.2vw, 15px);
+        font-weight: 600;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 10px 28px;
+        border-radius: 40px;
+        margin-bottom: clamp(28px, 4vh, 48px);
+        animation: deadlinePulse 2.5s ease-in-out infinite;
+      }
+      @keyframes deadlinePulse {
+        0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,.4)}
+        50%{box-shadow:0 0 0 10px rgba(201,168,76,0)}
+      }
       .rsvp-form {
         max-width: 640px;
         margin: 0 auto;
@@ -3084,6 +3101,8 @@
           We would be honored to have you celebrate with us.<br />Kindly let us know if you can make
           it.
         </p>
+
+        <p class="rsvp-deadline">Please respond on or before October 22</p>
 
         <form class="rsvp-form" id="rsvpForm">
           <div class="rsvp-row">
