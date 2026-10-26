@@ -257,18 +257,43 @@
         height: 3mm;
       }
       .qrs {
-        /* equal halves so the different-width cards stay balanced on the centre line */
         display: grid;
         grid-template-columns: 1fr 1fr;
         justify-items: center;
-        align-items: center;
         width: 100%;
       }
-      .qrs img {
-        height: 34mm;
+      .qr {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
-      .qrs .qr-gotyme {
-        border-radius: 3.2mm; /* clip the black corners baked into the screenshot */
+      .qr img {
+        /* QR Ph payloads re-encoded from the bank screenshots; 3mm side margins keep the quiet zone */
+        width: 28mm;
+        height: 28mm;
+        margin-bottom: 2.5mm;
+      }
+      .qr-bank {
+        font-size: 6pt;
+        font-weight: 700;
+        letter-spacing: 0.25em;
+        padding-left: 0.25em;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
+      .qr-name {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-weight: 600;
+        font-size: 9.5pt;
+        color: var(--green);
+        line-height: 1.2;
+      }
+      .qr-note {
+        margin-top: 3mm;
+        font-size: 5.5pt;
+        letter-spacing: 0.05em;
+        color: var(--gold);
       }
 
       /* ── Front panel ── */
@@ -466,9 +491,18 @@
           <div class="divider"></div>
           <p class="label">Or send via e-wallet &amp; bank</p>
           <div class="qrs">
-            <img class="qr-gotyme" src="assets/qr-gotyme.png" alt="GoTyme QR" />
-            <img src="assets/qr-maribank.png" alt="MariBank QR" />
+            <div class="qr">
+              <img src="assets/qr-gotyme.svg" alt="GoTyme QR" />
+              <span class="qr-bank">GoTyme</span>
+              <span class="qr-name">Jordan Logronio</span>
+            </div>
+            <div class="qr">
+              <img src="assets/qr-maribank.svg" alt="MariBank QR" />
+              <span class="qr-bank">MariBank</span>
+              <span class="qr-name">Angelica Dimanarig</span>
+            </div>
           </div>
+          <p class="qr-note">Scan with any InstaPay-enabled app</p>
         </div>
 
         <!-- Front -->
