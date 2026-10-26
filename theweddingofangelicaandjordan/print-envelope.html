@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Money Envelope — Print</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Great+Vibes&family=Raleway:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style id="page-size">
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+    </style>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      :root {
+        --green: #0e2418;
+        --gold: #7a5c10;
+        --gold-light: #c9a84c;
+        --paper: #f6f1e7;
+        /* finished envelope: 3.5in x 6.5in */
+        --pw: 88.9mm;
+        --ph: 165mm;
+        --top: 27mm;
+        --bottom: 14.5mm;
+        --tab: 19mm;
+      }
+      body {
+        font-family: "Raleway", sans-serif;
+        background: #e8e4dc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 24px;
+        -webkit-font-smoothing: antialiased;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      /* ── Screen toolbar ── */
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: var(--green);
+      }
+      .toolbar .group {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+      .toolbar button {
+        font: inherit;
+        padding: 6px 12px;
+        border: 1px solid var(--gold-light);
+        background: #fff;
+        color: var(--green);
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .toolbar button.active {
+        background: var(--green);
+        border-color: var(--green);
+        color: #fff;
+      }
+
+      /* ── Paper ── */
+      .sheet {
+        width: 210mm;
+        height: 297mm;
+        background: #fff;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 14mm;
+      }
+      body.letter .sheet {
+        width: 215.9mm;
+        height: 279.4mm;
+        padding-top: 10mm;
+      }
+
+      /* ── Dieline: 196.8 x 206.5 mm, origin at back panel top-left ── */
+      .dieline {
+        position: relative;
+        width: calc(var(--pw) * 2 + var(--tab));
+        height: calc(var(--top) + var(--ph) + var(--bottom));
+        flex-shrink: 0;
+      }
+      .dieline svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+      .shape-fill {
+        fill: var(--paper);
+        stroke: var(--paper);
+        stroke-width: 3; /* 1.5mm bleed outside the cut line */
+      }
+      .cut {
+        fill: none;
+        stroke: #555;
+        stroke-width: 0.25;
+      }
+      .fold {
+        stroke: var(--gold-light);
+        stroke-width: 0.3;
+        stroke-dasharray: 2 1.5;
+      }
+      body.no-fill .shape-fill {
+        fill: none;
+        stroke: none;
+      }
+      body.no-fill .panel-front::before {
+        display: none;
+      }
+
+      .panel {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        overflow: hidden;
+      }
+      .panel-back {
+        left: 0;
+        top: var(--top);
+        width: var(--pw);
+        height: var(--ph);
+        padding: 7mm 6mm 6mm;
+      }
+      .panel-front {
+        left: var(--pw);
+        top: var(--top);
+        width: var(--pw);
+        height: var(--ph);
+        padding: 19mm 6mm 0;
+      }
+      .panel-top {
+        left: var(--pw);
+        top: 0;
+        width: var(--pw);
+        height: var(--top);
+        justify-content: center;
+        /* folds over onto the back, so artwork is upside down on the sheet */
+        transform: rotate(180deg);
+      }
+      .panel-tab {
+        left: calc(var(--pw) * 2);
+        top: var(--top);
+        width: var(--tab);
+        height: var(--ph);
+        justify-content: center;
+      }
+      .panel-bottom {
+        left: var(--pw);
+        top: calc(var(--top) + var(--ph));
+        width: var(--pw);
+        height: var(--bottom);
+        justify-content: center;
+      }
+
+      /* ── Back panel ── */
+      .title {
+        font-family: "Great Vibes", cursive;
+        font-size: 17pt;
+        color: var(--green);
+        line-height: 1;
+        margin-bottom: 4mm;
+      }
+      .note {
+        width: 100%;
+        height: 36mm;
+        border: 0.3mm solid var(--gold-light);
+        border-radius: 2mm;
+        background: rgba(255, 255, 255, 0.7);
+        padding: 2mm 4mm 2.5mm;
+        display: flex;
+        flex-direction: column;
+      }
+      .note-line {
+        flex: 1;
+        border-bottom: 0.25mm solid rgba(201, 168, 76, 0.45);
+      }
+      .note-from {
+        padding-top: 2mm;
+        text-align: left;
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-size: 9pt;
+        color: var(--gold);
+        border-bottom: 0.25mm solid rgba(201, 168, 76, 0.6);
+      }
+      .divider {
+        width: 18mm;
+        height: 0.25mm;
+        background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+        margin: 4.5mm auto;
+        flex-shrink: 0;
+      }
+      .label {
+        font-family: "Cormorant Garamond", serif;
+        font-style: italic;
+        font-weight: 600;
+        font-size: 10pt;
+        color: var(--gold);
+        margin-bottom: 2.5mm;
+      }
+      .options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2mm 3mm;
+        width: 68mm;
+      }
+      .option-wide {
+        grid-column: 1 / -1;
+      }
+      .option {
+        display: flex;
+        align-items: center;
+        gap: 2.5mm;
+        font-size: 7.5pt;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        color: var(--green);
+        text-align: left;
+      }
+      .option .box {
+        width: 3.4mm;
+        height: 3.4mm;
+        border: 0.3mm solid var(--gold);
+        border-radius: 0.6mm;
+        background: #fff;
+        flex-shrink: 0;
+      }
+      .option .blank {
+        flex: 1;
+        border-bottom: 0.25mm solid var(--gold-light);
+        height: 3mm;
+      }
+      .qrs {
+        /* equal halves so the different-width cards stay balanced on the centre line */
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-items: center;
+        align-items: center;
+        width: 100%;
+      }
+      .qrs img {
+        height: 34mm;
+      }
+      .qrs .qr-gotyme {
+        border-radius: 3.2mm; /* clip the black corners baked into the screenshot */
+      }
+
+      /* ── Front panel ── */
+      .panel-front::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: url("watercolor-bg.png") center / cover no-repeat;
+        opacity: 0.35;
+      }
+      .panel-front > * {
+        position: relative;
+      }
+      .floral {
+        position: absolute !important;
+        width: 52mm;
+        pointer-events: none;
+      }
+      .floral-tl {
+        top: -3mm;
+        left: -7mm;
+        transform: rotate(180deg);
+      }
+      .floral-tr {
+        top: -3mm;
+        right: -7mm;
+        transform: rotate(180deg) scaleX(-1);
+      }
+      .eyebrow {
+        font-size: 6pt;
+        font-weight: 700;
+        letter-spacing: 0.32em;
+        padding-left: 0.32em; /* balance trailing letter-spacing so it centres */
+        text-transform: uppercase;
+        color: var(--gold);
+        margin-bottom: 3mm;
+      }
+      .monogram {
+        width: 50mm;
+        filter: url(#gold);
+      }
+      .names {
+        font-family: "Great Vibes", cursive;
+        font-size: 21pt;
+        color: var(--green);
+        line-height: 1;
+        margin-top: 3mm;
+      }
+      .date {
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 600;
+        font-size: 11pt;
+        letter-spacing: 0.22em;
+        padding-left: 0.22em;
+        font-variant-numeric: lining-nums;
+        color: var(--gold);
+        margin-top: 2.5mm;
+      }
+      .couple {
+        position: absolute !important;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        height: 76mm; /* couple-selfie.png has its cropped edges faded out in the file itself */
+      }
+
+      /* ── Flaps ── */
+      .flap-monogram {
+        width: 22mm;
+        filter: url(#gold);
+        opacity: 0.8;
+      }
+      .glue {
+        font-size: 6pt;
+        font-weight: 600;
+        letter-spacing: 0.3em;
+        padding-left: 0.3em;
+        text-transform: uppercase;
+        color: var(--gold-light);
+      }
+      .panel-tab .glue {
+        writing-mode: vertical-rl;
+        padding-left: 0;
+        padding-top: 0.3em;
+      }
+
+      /* ── Instructions below the dieline ── */
+      .notes {
+        width: 196.8mm;
+        margin-top: 8mm;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 10mm;
+        font-size: 7.5pt;
+        line-height: 1.55;
+        color: #666;
+      }
+      .notes ol {
+        padding-left: 4mm;
+      }
+      .notes strong {
+        color: var(--green);
+        font-weight: 600;
+      }
+      .scale {
+        flex-shrink: 0;
+        text-align: center;
+        font-size: 6.5pt;
+      }
+      .scale .bar {
+        width: 50mm;
+        height: 2mm;
+        border: 0.25mm solid #666;
+        border-top: none;
+        margin-bottom: 1mm;
+      }
+
+      @media print {
+        body {
+          background: none;
+          padding: 0;
+          display: block;
+        }
+        .toolbar {
+          display: none;
+        }
+        .sheet {
+          box-shadow: none;
+          margin: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <div class="group">
+        Paper:
+        <button data-paper="a4" class="active">A4</button>
+        <button data-paper="letter">Letter</button>
+      </div>
+      <div class="group">
+        Background:
+        <button data-fill="cream" class="active">Cream</button>
+        <button data-fill="none">None (coloured cardstock)</button>
+      </div>
+      <button onclick="window.print()">Print</button>
+    </div>
+
+    <div class="sheet">
+      <div class="dieline">
+        <!-- Layout traced from reference with OpenCV + potrace; 1 unit = 1 mm.
+             Back 0→88.9, front 88.9→177.8, glue tab 177.8→196.8; flaps above/below the front. -->
+        <svg viewBox="0 -27 196.8 206.5" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="gold" color-interpolation-filters="sRGB">
+              <feColorMatrix values="0 0 0 0 0.69  0 0 0 0 0.55  0 0 0 0 0.24  0 0 0 1 0" />
+            </filter>
+            <path
+              id="outline"
+              d="M0,0 H88.9 L95.4,-21.5 Q96.9,-27 101.9,-27 H164.8 Q169.8,-27 171.3,-21.5 L177.8,0
+                 L196.8,5 V160 L177.8,165
+                 L170.8,179.5 H95.9 L88.9,165
+                 H0 Z"
+            />
+          </defs>
+          <use href="#outline" class="shape-fill" />
+          <line class="fold" x1="88.9" y1="0" x2="88.9" y2="165" />
+          <line class="fold" x1="177.8" y1="0" x2="177.8" y2="165" />
+          <line class="fold" x1="88.9" y1="0" x2="177.8" y2="0" />
+          <line class="fold" x1="88.9" y1="165" x2="177.8" y2="165" />
+        </svg>
+
+        <!-- Back: message + gift options + QR -->
+        <div class="panel panel-back">
+          <h2 class="title">Message to the Newlyweds</h2>
+          <div class="note">
+            <div class="note-line"></div>
+            <div class="note-line"></div>
+            <div class="note-line"></div>
+            <div class="note-line"></div>
+            <div class="note-from">From:</div>
+          </div>
+          <div class="divider"></div>
+          <p class="label">A little gift to support their…</p>
+          <div class="options">
+            <div class="option"><span class="box"></span>Honeymoon</div>
+            <div class="option"><span class="box"></span>Future Home</div>
+            <div class="option"><span class="box"></span>Home Essentials</div>
+            <div class="option"><span class="box"></span>Future Kids</div>
+            <div class="option"><span class="box"></span>Savings</div>
+            <div class="option"><span class="box"></span>Emergency Fund</div>
+            <div class="option option-wide"><span class="box"></span>Others:<span class="blank"></span></div>
+          </div>
+          <div class="divider"></div>
+          <p class="label">Or send via e-wallet &amp; bank</p>
+          <div class="qrs">
+            <img class="qr-gotyme" src="assets/qr-gotyme.png" alt="GoTyme QR" />
+            <img src="assets/qr-maribank.png" alt="MariBank QR" />
+          </div>
+        </div>
+
+        <!-- Front -->
+        <div class="panel panel-front">
+          <img class="floral floral-tl" src="floral-hero.png" alt="" />
+          <img class="floral floral-tr" src="floral-hero.png" alt="" />
+          <p class="eyebrow">The Wedding of</p>
+          <img class="monogram" src="monogram.png" alt="A &amp; J monogram" />
+          <h1 class="names">Angelica &amp; Jordan</h1>
+          <p class="date">11 · 27 · 2026</p>
+          <img class="couple" src="assets/couple-selfie.png" alt="Angelica and Jordan" />
+        </div>
+
+        <div class="panel panel-top">
+          <img class="flap-monogram" src="monogram.png" alt="" />
+        </div>
+        <div class="panel panel-tab"><span class="glue">Glue here</span></div>
+        <div class="panel panel-bottom"><span class="glue">Glue here</span></div>
+
+        <!-- cut line drawn last so it sits on top of the artwork -->
+        <svg viewBox="0 -27 196.8 206.5" xmlns="http://www.w3.org/2000/svg">
+          <use href="#outline" class="cut" />
+        </svg>
+      </div>
+
+      <div class="notes">
+        <ol>
+          <li>Print at <strong>100% / Actual size</strong>, margins <strong>None</strong>. Check the 5 cm bar.</li>
+          <li><strong>Cut</strong> along the solid outline.</li>
+          <li><strong>Score &amp; fold</strong> along the dashed lines.</li>
+          <li>Fold the side tab and bottom flap back, then glue on <strong>“Glue here”</strong>.</li>
+          <li>Fold the message panel back over them and press flat.</li>
+          <li>Write your message, tuck in your gift, close the top flap.</li>
+        </ol>
+        <div class="scale">
+          <div class="bar"></div>
+          5 cm
+          <br />
+          Finished size 8.89 × 16.5 cm (3.5 × 6.5 in)
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const pageSize = document.getElementById("page-size");
+      document.querySelectorAll("[data-paper]").forEach((btn) =>
+        btn.addEventListener("click", () => {
+          const letter = btn.dataset.paper === "letter";
+          document.body.classList.toggle("letter", letter);
+          pageSize.textContent = `@page { size: ${letter ? "letter" : "A4"} portrait; margin: 0; }`;
+          document.querySelectorAll("[data-paper]").forEach((b) => b.classList.toggle("active", b === btn));
+        })
+      );
+      document.querySelectorAll("[data-fill]").forEach((btn) =>
+        btn.addEventListener("click", () => {
+          document.body.classList.toggle("no-fill", btn.dataset.fill === "none");
+          document.querySelectorAll("[data-fill]").forEach((b) => b.classList.toggle("active", b === btn));
+        })
+      );
+    </script>
+  </body>
+</html>
