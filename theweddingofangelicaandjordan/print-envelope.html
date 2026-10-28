@@ -119,6 +119,9 @@
         stroke: #555;
         stroke-width: 0.25;
       }
+      .slit {
+        stroke-width: 0.35;
+      }
       .fold {
         stroke: var(--gold-light);
         stroke-width: 0.3;
@@ -525,13 +528,15 @@
         <!-- cut line drawn last so it sits on top of the artwork -->
         <svg viewBox="0 -27 196.8 206.5" xmlns="http://www.w3.org/2000/svg">
           <use href="#outline" class="cut" />
+          <!-- ribbon slit: 1.1in (27.94mm) centred on the front, 7mm below the top fold -->
+          <path class="cut slit" d="M119.38,7 H147.32" />
         </svg>
       </div>
 
       <div class="notes">
         <ol>
           <li>Print at <strong>100% / Actual size</strong>, margins <strong>None</strong>. Check the 5 cm bar.</li>
-          <li><strong>Cut</strong> along the solid outline.</li>
+          <li><strong>Cut</strong> along the solid outline, plus the 1.1 in <strong>ribbon slit</strong> near the top of the front.</li>
           <li><strong>Score &amp; fold</strong> along the dashed lines.</li>
           <li>Fold the side tab and bottom flap back, then glue on <strong>“Glue here”</strong>.</li>
           <li>Fold the message panel back over them and press flat.</li>
