@@ -695,7 +695,7 @@
         // monogram: 6–23% of the height, centred
         const monoH = BOARD_H * (0.229 - 0.06);
         const M = window.WB_MONOGRAM;
-        drawMonogram(ctx, cx, BOARD_H * 0.1445, (monoH * M.w) / M.h, C.green); // centred, dark green like the 5R invitation
+        drawMonogram(ctx, cx, BOARD_H * 0.1445, (monoH * M.w) / M.h, "#2d5a43"); // centred; the 5R invite's green (#1a3c2c), lifted so it doesn't read black at 24x36
 
         const sw = (str, em, size) =>
           [...str].reduce((a, ch) => a + ctx.measureText(ch).width, 0) + em * size * PT * ([...str].length - 1);
