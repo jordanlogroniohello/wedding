@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Welcome Board — 24 x 36</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Cormorant+Infant:wght@500&family=Herr+Von+Muellerhoff&family=Monsieur+La+Doulaise&family=Raleway:wght@200;300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Raleway", sans-serif;
+        background: #e8e4dc;
+        color: #0e2418;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+        gap: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+      }
+      .toolbar button {
+        font: inherit;
+        font-weight: 600;
+        padding: 8px 14px;
+        border: 1px solid #c9a84c;
+        background: #fff;
+        color: #0e2418;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .toolbar button.primary {
+        background: #0e2418;
+        border-color: #0e2418;
+        color: #fff;
+      }
+      .toolbar button:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      .status {
+        color: #7a5c10;
+        min-width: 140px;
+      }
+      .boards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .card h2 {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: #7a5c10;
+      }
+      .card canvas {
+        display: block;
+        background: #fff;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="boards">
+      <section class="card" data-board="plain">
+        <h2>Version 0 · These Kids (plain)</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="150" data-type="png">Download PNG · 24×36 · 150 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="kids">
+        <h2>Version 1 · These Kids (florals)</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="150" data-type="png">Download PNG · 24×36 · 150 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="photo">
+        <h2>Version 2 · Welcome Photo</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="150" data-type="png">Download PNG · 24×36 · 150 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="hug">
+        <h2>Version 3 · Split</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="150" data-type="png">Download PNG · 24×36 · 150 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="clean">
+        <h2>Version 4 · Clean Photo</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="150" data-type="png">Download PNG · 24×36 · 150 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="forever">
+        <h2>Version 5 · Our Wedding (childhood photo)</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="150" data-type="png">Download PNG · 24×36 · 150 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="forever2">
+        <h2>Version 6 · Our Wedding (hug photo)</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="150" data-type="png">Download PNG · 24×36 · 150 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="floral">
+        <h2>Version 7 · Floral Monogram</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="150" data-type="png">Download PNG · 24×36 · 150 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+    </div>
+
+    <script src="assets/welcome-board-photos.js"></script>
+    <script src="assets/welcome-board-fonts.js"></script>
+    <script src="assets/welcome-board-monogram.js"></script>
+    <script>
+      /* ── Board spec: 24in x 36in, every measurement below is in inches ── */
+      const BOARD_W = 24;
+      const BOARD_H = 36;
+      const C = {
+        paper: "#f8f4ec",
+        green: "#0e2418",
+        gold: "#7a5c10",
+        goldLight: "#c9a84c",
+      };
+      const F = {
+        script: '"Quadrian", cursive',
+        and: '"Herr Von Muellerhoff", cursive', // thin signature script for "and" + v5 script lines
+        amp: '"Monsieur La Doulaise", cursive', // tall classic ampersand (v5)
+        figures: '"Cormorant Infant", serif', // Cormorant with lining numerals (v5 date)
+        serif: '"Cormorant Garamond", serif',
+        sans: '"Raleway", sans-serif',
+      };
+      const PT = 1 / 72; // 1pt in inches
+
+      const loadImg = (src) =>
+        new Promise((res, rej) => {
+          const i = new Image();
+          i.onload = () => res(i);
+          i.onerror = rej;
+          i.src = src;
+        });
+
+      async function loadAssets() {
+        const quadrian = new FontFace("Quadrian", `url(${window.WB_FONTS.quadrian})`);
+        document.fonts.add(await quadrian.load());
+        await Promise.all(
+          [
+            `300 60pt ${F.serif}`,
+            `italic 300 60pt ${F.serif}`,
+            `300 30pt ${F.sans}`,
+            `300 104pt ${F.sans}`,
+            `200 104pt ${F.sans}`,
+            `120pt ${F.and}`,
+            `120pt ${F.amp}`,
+            `500 60pt ${F.figures}`,
+            `500 60pt ${F.serif}`,
+            `600 60pt ${F.serif}`,
+            `400 30pt ${F.sans}`,
+            `500 30pt ${F.sans}`,
+          ].map((f) => document.fonts.load(f, "Angelica & Jordan 0123456789"))
+        );
+        const names = ["angelica", "jordan", "couple", "hug", "watercolor", "floral"];
+        const imgs = await Promise.all(names.map((n) => loadImg(window.WB_PHOTOS[n])));
+        return Object.fromEntries(names.map((n, i) => [n, imgs[i]]));
+      }
+
+      /* ── Drawing helpers (inches; ctx is pre-scaled to dpi) ── */
+      function setFont(ctx, { style = "", weight = 400, size, family }) {
+        ctx.font = `${style} ${weight} ${size * PT}px ${family}`;
+      }
+
+      // Text with manual letter-spacing (em), centred on cx
+      function spaced(ctx, str, cx, y, spacingEm, size, colorFor) {
+        const sp = spacingEm * size * PT;
+        const chars = [...str];
+        const widths = chars.map((ch) => ctx.measureText(ch).width);
+        const total = widths.reduce((a, b) => a + b, 0) + sp * (chars.length - 1);
+        let x = cx - total / 2;
+        ctx.textAlign = "left";
+        chars.forEach((ch, i) => {
+          ctx.fillStyle = colorFor ? colorFor(ch, i) : ctx.fillStyle;
+          ctx.fillText(ch, x, y);
+          x += widths[i] + sp;
+        });
+        return total;
+      }
+
+      function heart(ctx, cx, cy, w, color) {
+        const h = w * 0.9;
+        ctx.save();
+        ctx.translate(cx, cy - h / 2);
+        ctx.beginPath();
+        ctx.moveTo(0, h * 0.3);
+        ctx.bezierCurveTo(0, 0, -w / 2, 0, -w / 2, h * 0.3);
+        ctx.bezierCurveTo(-w / 2, h * 0.6, 0, h * 0.78, 0, h);
+        ctx.bezierCurveTo(0, h * 0.78, w / 2, h * 0.6, w / 2, h * 0.3);
+        ctx.bezierCurveTo(w / 2, 0, 0, 0, 0, h * 0.3);
+        ctx.strokeStyle = color;
+        ctx.lineWidth = w * 0.07;
+        ctx.lineJoin = "round";
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      function hairline(ctx, x1, x2, y, fadeToward) {
+        const g = ctx.createLinearGradient(x1, 0, x2, 0);
+        const solid = C.goldLight;
+        const clear = "rgba(201,168,76,0)";
+        g.addColorStop(0, fadeToward === "left" ? clear : solid);
+        g.addColorStop(1, fadeToward === "left" ? solid : clear);
+        ctx.fillStyle = g;
+        ctx.fillRect(x1, y - 0.008, x2 - x1, 0.016);
+      }
+
+      function coverImage(ctx, img, x, y, w, h) {
+        const s = Math.max(w / img.width, h / img.height);
+        const sw = w / s;
+        const sh = h / s;
+        ctx.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, x, y, w, h);
+      }
+
+      /* ── Version 1: these kids are getting married ── */
+      function drawKids(ctx, dpi, photos, decor = true) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        ctx.textBaseline = "alphabetic";
+        const cx = BOARD_W / 2;
+
+        ctx.fillStyle = C.paper;
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+
+        // Watercolor wash + green florals (same as the 5R invitation), softened
+        if (decor) {
+        ctx.globalAlpha = 0.75;
+        coverImage(ctx, photos.watercolor, 0, 0, BOARD_W, BOARD_H);
+        const fl = photos.floral;
+        const fw = 12;
+        const fh = (fw * fl.height) / fl.width;
+        ctx.globalAlpha = 0.5;
+        ctx.save(); // top-left: rotated 180° like the invitation
+        ctx.translate(-1.6 + fw, -1.2 + fh);
+        ctx.rotate(Math.PI);
+        ctx.drawImage(fl, 0, 0, fw, fh);
+        ctx.restore();
+        ctx.drawImage(fl, BOARD_W - fw + 1.6, BOARD_H - fh + 1.2, fw, fh); // bottom-right
+        ctx.globalAlpha = 1;
+        }
+
+        // "these ♥ kids"
+        const scriptBig = 230;
+        setFont(ctx, { size: scriptBig, family: F.script });
+        ctx.fillStyle = C.green;
+        const wThese = ctx.measureText("these").width;
+        const wKids = ctx.measureText("kids").width;
+        const heartW = 0.78;
+        const gap = 0.42;
+        const lineW = wThese + gap + heartW + gap + wKids;
+        const x0 = cx - lineW / 2;
+        const yKids = 6.55;
+        ctx.textAlign = "left";
+        ctx.fillText("these", x0, yKids);
+        ctx.fillText("kids", x0 + wThese + gap + heartW + gap, yKids);
+        heart(ctx, x0 + wThese + gap + heartW / 2, yKids - 0.68, heartW, C.gold);
+
+        // ARE GETTING MARRIED
+        setFont(ctx, { weight: 300, size: 60, family: F.serif });
+        ctx.fillStyle = C.green;
+        spaced(ctx, "ARE GETTING MARRIED", cx, 8.4, 0.34, 60);
+
+        // Childhood photos — Angelica left, Jordan right (matches name order)
+        const side = 1.5;
+        const pGap = 0.5;
+        const pW = (BOARD_W - side * 2 - pGap) / 2;
+        const pH = 14.0;
+        const pY = 9.4;
+        coverImage(ctx, photos.angelica, side, pY, pW, pH);
+        coverImage(ctx, photos.jordan, side + pW + pGap, pY, pW, pH);
+
+        // welcome to
+        const yBelow = pY + pH;
+        setFont(ctx, { style: "italic", weight: 300, size: 54, family: F.serif });
+        ctx.fillStyle = C.gold;
+        ctx.textAlign = "center";
+        ctx.fillText("welcome to", cx, yBelow + 1.5);
+
+        // the wedding of — with hairlines either side
+        setFont(ctx, { size: 170, family: F.script });
+        ctx.fillStyle = C.green;
+        const yWed = yBelow + 4.05;
+        ctx.fillText("the wedding of", cx, yWed);
+        const wWed = ctx.measureText("the wedding of").width;
+        const lineY = yWed - 0.62;
+        hairline(ctx, side, cx - wWed / 2 - 0.45, lineY, "left");
+        hairline(ctx, cx + wWed / 2 + 0.45, BOARD_W - side, lineY, "right");
+
+        // ANGELICA & JORDAN
+        setFont(ctx, { weight: 300, size: 80, family: F.serif });
+        spaced(ctx, "ANGELICA & JORDAN", cx, yWed + 2.35, 0.3, 80, (ch) =>
+          ch === "&" ? C.gold : C.green
+        );
+
+        // November 27, 2026  |  Maharlika Events Tagaytay
+        setFont(ctx, { weight: 400, size: 28, family: F.sans });
+        ctx.fillStyle = C.gold;
+        const yDate = yWed + 3.75;
+        const left = "NOVEMBER 27, 2026";
+        const right = "MAHARLIKA EVENTS TAGAYTAY";
+        const sep = 0.55;
+        const mw = (s) =>
+          [...s].reduce((a, ch) => a + ctx.measureText(ch).width, 0) +
+          0.42 * 28 * PT * (s.length - 1);
+        const wl = mw(left);
+        const wr = mw(right);
+        const start = cx - (wl + sep * 2 + wr) / 2;
+        spaced(ctx, left, start + wl / 2, yDate, 0.42, 28);
+        spaced(ctx, right, start + wl + sep * 2 + wr / 2, yDate, 0.42, 28);
+        ctx.fillStyle = C.goldLight;
+        ctx.fillRect(start + wl + sep - 0.006, yDate - 0.34, 0.012, 0.42);
+
+        ctx.restore();
+      }
+
+      /* ── Version 2: full photo with a white fade from the top ── */
+      function drawPhoto(ctx, dpi, photos) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        ctx.imageSmoothingQuality = "high";
+        const cx = BOARD_W / 2;
+        const white = "#fdfbf7";
+
+        ctx.fillStyle = white;
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+
+        // Photo fills the lower 26in, cropped around the couple + childhood photos
+        const img = photos.couple;
+        const phY = 8.5;
+        const phH = BOARD_H - phY;
+        const scale = phH / img.height; // inches per source px
+        const srcW = BOARD_W / scale;
+        const focusX = img.width * 0.57; // centre between the two of you
+        const sx = Math.min(Math.max(focusX - srcW / 2, 0), img.width - srcW);
+        ctx.drawImage(img, sx, 0, srcW, img.height, 0, phY, BOARD_W, phH);
+
+        // White fade: fully white where the photo starts, melting down into it
+        const fadeTop = phY - 0.3; // start above the photo edge so no seam shows
+        const fadeEnd = 18.8;
+        const fade = ctx.createLinearGradient(0, fadeTop, 0, fadeEnd);
+        [
+          [0, 1],
+          [0.3, 0.96],
+          [0.5, 0.84],
+          [0.7, 0.55],
+          [0.86, 0.22],
+          [1, 0],
+        ].forEach(([t, a]) => fade.addColorStop(t, `rgba(253,251,247,${a})`));
+        ctx.fillStyle = fade;
+        ctx.fillRect(0, fadeTop, BOARD_W, fadeEnd - fadeTop);
+
+        // "Welcome" — thin script with long swash lines out to the edges
+        setFont(ctx, { size: 330, family: F.script });
+        ctx.fillStyle = C.green;
+        ctx.textAlign = "center";
+        const yWel = 6.3;
+        ctx.fillText("Welcome", cx, yWel);
+        const wWel = ctx.measureText("Welcome").width;
+        ctx.strokeStyle = C.green;
+        ctx.lineWidth = 0.035;
+        ctx.lineCap = "round";
+        ctx.beginPath(); // left swash rises into the W
+        ctx.moveTo(1.1, yWel - 1.05);
+        ctx.quadraticCurveTo(cx - wWel / 2 - 1.2, yWel - 1.35, cx - wWel / 2 + 0.35, yWel - 2.25);
+        ctx.stroke();
+        ctx.beginPath(); // right swash trails off the final e
+        ctx.moveTo(cx + wWel / 2 - 0.15, yWel - 0.45);
+        ctx.quadraticCurveTo(cx + wWel / 2 + 1.2, yWel - 0.55, BOARD_W - 1.1, yWel - 0.62);
+        ctx.stroke();
+
+        // TO THE WEDDING OF
+        setFont(ctx, { weight: 400, size: 36, family: F.sans });
+        ctx.fillStyle = C.green;
+        spaced(ctx, "TO THE WEDDING OF", cx, yWel + 1.45, 0.42, 36);
+
+        // ANGELICA & JORDAN
+        setFont(ctx, { weight: 300, size: 84, family: F.serif });
+        spaced(ctx, "ANGELICA & JORDAN", cx, yWel + 3.0, 0.3, 84, (ch) =>
+          ch === "&" ? C.gold : C.green
+        );
+
+        // 11 · 27 · 2026
+        setFont(ctx, { weight: 400, size: 36, family: F.sans });
+        ctx.fillStyle = C.gold;
+        spaced(ctx, "11 · 27 · 2026", cx, yWel + 4.3, 0.42, 36);
+
+        ctx.restore();
+      }
+
+      /* ── Shared helpers for the minimal photo boards ── */
+      function leftType(ctx, x) {
+        const spacedWidth = (str, em, size) =>
+          [...str].reduce((a, ch) => a + ctx.measureText(ch).width, 0) + em * size * PT * ([...str].length - 1);
+        const put = (str, y, em, size) => {
+          const sp = em * size * PT;
+          let cx = x;
+          ctx.textAlign = "left";
+          for (const ch of str) {
+            ctx.fillText(ch, cx, y);
+            cx += ctx.measureText(ch).width + sp;
+          }
+          return cx - sp - x;
+        };
+        return { spacedWidth, put };
+      }
+
+            // "and" in signature script, on its own (no trailing line)
+      function andWord(ctx, x, y, size, color) {
+        setFont(ctx, { size, family: F.and });
+        ctx.fillStyle = color;
+        ctx.textAlign = "left";
+        ctx.fillText("and", x, y);
+      }
+
+      /* ── Version 3: photo on top, fading into a white band with the Kate & James type ── */
+      function drawHug(ctx, dpi, photos) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        ctx.imageSmoothingQuality = "high";
+        const white = "#fdfbf7";
+        ctx.fillStyle = white;
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+
+        // full-width photo, top-anchored; only the top ~21in is shown before it melts into white
+        const img = photos.hug;
+        ctx.drawImage(img, 0, -0.6, BOARD_W, (BOARD_W * img.height) / img.width);
+        const f0 = 17.5;
+        const f1 = 21.5;
+        const fade = ctx.createLinearGradient(0, f0, 0, f1);
+        fade.addColorStop(0, "rgba(253,251,247,0)");
+        fade.addColorStop(0.55, "rgba(253,251,247,0.75)");
+        fade.addColorStop(1, "rgba(253,251,247,1)");
+        ctx.fillStyle = fade;
+        ctx.fillRect(0, f0, BOARD_W, f1 - f0);
+        ctx.fillStyle = white;
+        ctx.fillRect(0, f1, BOARD_W, BOARD_H - f1);
+
+        const x = 2.6;
+        const t = leftType(ctx, x);
+        ctx.fillStyle = C.green;
+        setFont(ctx, { weight: 400, size: 30, family: F.sans });
+        t.put("WELCOME TO THE WEDDING OF", 23.2, 0.34, 30);
+
+        setFont(ctx, { weight: 300, size: 118, family: F.sans });
+        t.put("ANGELICA", 26.3, 0.24, 118);
+        andWord(ctx, x + 0.1, 27.8, 130, C.gold);
+        ctx.fillStyle = C.green;
+        setFont(ctx, { weight: 300, size: 118, family: F.sans });
+        t.put("JORDAN", 29.5, 0.24, 118);
+        ctx.fillRect(x, 30.35, 3.4, 0.016);
+
+        setFont(ctx, { weight: 400, size: 26, family: F.sans });
+        t.put("27 NOVEMBER 2026", 32.3, 0.34, 26);
+        t.put("MAHARLIKA EVENTS TAGAYTAY", 32.95, 0.34, 26);
+
+        ctx.restore();
+      }
+
+      /* ── Version 4: the photo untouched, small white type only in the quiet areas ── */
+      function drawHugClean(ctx, dpi, photos) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        ctx.imageSmoothingQuality = "high";
+        const img = photos.hug;
+        ctx.drawImage(img, 0, 0, BOARD_W, BOARD_H);
+
+        // barely-there shade at top and bottom so white type holds up
+        const top = ctx.createLinearGradient(0, 0, 0, 11);
+        top.addColorStop(0, "rgba(14,36,24,0.32)");
+        top.addColorStop(1, "rgba(14,36,24,0)");
+        ctx.fillStyle = top;
+        ctx.fillRect(0, 0, BOARD_W, 11);
+        const bot = ctx.createLinearGradient(0, 28, 0, BOARD_H);
+        bot.addColorStop(0, "rgba(14,36,24,0)");
+        bot.addColorStop(1, "rgba(14,36,24,0.45)");
+        ctx.fillStyle = bot;
+        ctx.fillRect(0, 28, BOARD_W, BOARD_H - 28);
+
+        const x = 2.2;
+        const t = leftType(ctx, x);
+        ctx.fillStyle = "#fff";
+        setFont(ctx, { weight: 400, size: 26, family: F.sans });
+        t.put("WELCOME TO THE WEDDING OF", 2.6, 0.34, 26);
+
+        setFont(ctx, { weight: 300, size: 84, family: F.sans });
+        t.put("ANGELICA", 4.65, 0.24, 84);
+        andWord(ctx, x + 0.08, 5.75, 94, "#fff");
+        ctx.fillStyle = "#fff";
+        setFont(ctx, { weight: 300, size: 84, family: F.sans });
+        t.put("JORDAN", 6.95, 0.24, 84);
+
+        // just the date, bottom-left over the road
+        setFont(ctx, { weight: 400, size: 28, family: F.sans });
+        t.put("27 · 11 · 2026", 33.6, 0.34, 28);
+
+        ctx.restore();
+      }
+
+      /* ── Versions 5 & 6: "Welcome to our wedding" — layout traced from the Sophie & Charlie sign ──
+         Positions below are the reference's measured fractions × the 24x36 board. */
+      function drawForever(ctx, dpi, photos, { photo, focusX = 0.5, tint = 0.4 } = {}) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        ctx.imageSmoothingQuality = "high";
+        ctx.fillStyle = "#fdfbf7";
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+        let ink = C.green;
+        let ampInk = "rgba(122,92,16,0.16)";
+        if (photo) {
+          // photo covers the board, cropped around focusX; an even green tint lets white type read anywhere
+          const img = photos[photo];
+          const s = Math.max(BOARD_W / img.width, BOARD_H / img.height);
+          const sw = BOARD_W / s;
+          const sh = BOARD_H / s;
+          const sx = Math.min(Math.max(img.width * focusX - sw / 2, 0), img.width - sw);
+          ctx.drawImage(img, sx, (img.height - sh) / 2, sw, sh, 0, 0, BOARD_W, BOARD_H);
+          ctx.fillStyle = `rgba(14,36,24,${tint})`;
+          ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+          ink = "#fff";
+          ampInk = "rgba(255,255,255,0.22)";
+        }
+        const sw = (str, em, size) =>
+          [...str].reduce((a, ch) => a + ctx.measureText(ch).width, 0) + em * size * PT * ([...str].length - 1);
+        const putSpaced = (str, x, y, em, size) => {
+          const sp = em * size * PT;
+          ctx.textAlign = "left";
+          for (const ch of str) {
+            ctx.fillText(ch, x, y);
+            x += ctx.measureText(ch).width + sp;
+          }
+          return x - sp;
+        };
+        // big initial + small caps, like "SOPHIE"
+        const smallCaps = (str, x, y, big, small, em) => {
+          setFont(ctx, { weight: 500, size: big, family: F.serif });
+          ctx.textAlign = "left";
+          ctx.fillText(str[0], x, y);
+          const nx = x + ctx.measureText(str[0]).width + em * small * PT;
+          setFont(ctx, { weight: 500, size: small, family: F.serif });
+          return putSpaced(str.slice(1), nx, y, em, small);
+        };
+        const smallCapsWidth = (str, big, small, em) => {
+          setFont(ctx, { weight: 500, size: big, family: F.serif });
+          const w0 = ctx.measureText(str[0]).width + em * small * PT;
+          setFont(ctx, { weight: 500, size: small, family: F.serif });
+          return w0 + sw(str.slice(1), em, small);
+        };
+
+        // WELCOME — x 5.8%, width 54.5%, baseline 15%
+        ctx.fillStyle = ink;
+        setFont(ctx, { weight: 600, size: 100, family: F.serif });
+        const welSize = (100 * BOARD_W * 0.545) / sw("WELCOME", 0.06, 100);
+        setFont(ctx, { weight: 600, size: welSize, family: F.serif });
+        putSpaced("WELCOME", BOARD_W * 0.058, BOARD_H * 0.15, 0.06, welSize);
+
+        // to our forever — script, x 30.8% → 84.2%, baseline ~23.8%
+        setFont(ctx, { size: 100, family: F.and });
+        const tofSize = (100 * BOARD_W * 0.5) / ctx.measureText("to our wedding").width;
+        setFont(ctx, { size: tofSize, family: F.and });
+        ctx.textAlign = "left";
+        ctx.fillText("to our wedding", BOARD_W * 0.315, BOARD_H * 0.238);
+
+        // names — initial cap 7.7% of height, small caps 5.6% (ratio 0.73); scaled so ANGELICA fits to ~80%
+        const nx = BOARD_W * 0.093;
+        const em = 0.13;
+        let big = 316;
+        const fit = (BOARD_W * 0.8 - nx) / smallCapsWidth("ANGELICA", big, big * 0.73, em);
+        big = Math.min(big, big * fit);
+        const small = big * 0.73;
+
+        // faint script ampersand tucked between the names (drawn first so it sits behind)
+        setFont(ctx, { size: 470, family: F.amp });
+        ctx.fillStyle = ampInk;
+        ctx.textAlign = "center";
+        ctx.fillText("&", BOARD_W * 0.3, BOARD_H * 0.585);
+
+        ctx.fillStyle = ink;
+        smallCaps("ANGELICA", nx, BOARD_H * 0.486, big, small, em);
+        smallCaps("JORDAN", nx, BOARD_H * 0.63, big, small, em);
+
+        // venue in script + date, centred on ~69% / 70% (bottom-right block)
+        setFont(ctx, { size: 100, family: F.and });
+        const venue = "Maharlika Events Tagaytay";
+        const vSize = Math.min((100 * BOARD_W * 0.4) / ctx.measureText(venue).width, 150);
+        setFont(ctx, { size: vSize, family: F.and });
+        ctx.textAlign = "center";
+        const bx = BOARD_W * 0.69;
+        ctx.fillText(venue, bx, BOARD_H * 0.825);
+
+        setFont(ctx, { weight: 500, size: 112, family: F.figures });
+        const date = "27.11.26";
+        const dW = sw(date, 0.2, 112);
+        putSpaced(date, bx - dW / 2 + BOARD_W * 0.01, BOARD_H * 0.88, 0.2, 112);
+
+        ctx.restore();
+      }
+
+      /* ── Version 7: watercolor + florals, monogram and type placed like the Niamh & Michael sign ──
+         Vertical positions are the reference's measured fractions × 36in. */
+      function drawMonogram(ctx, cx, cy, width, color) {
+        const M = window.WB_MONOGRAM;
+        const s = width / M.w;
+        ctx.save();
+        ctx.translate(cx - width / 2, cy - (M.h * s) / 2);
+        ctx.scale(s, s);
+        ctx.translate(0, M.h);
+        ctx.scale(0.1, -0.1); // potrace coordinate space
+        ctx.fillStyle = color;
+        M.paths.forEach((d) => ctx.fill(new Path2D(d)));
+        ctx.restore();
+      }
+
+      function drawFloral(ctx, dpi, photos) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        const cx = BOARD_W / 2;
+        const gold = "#a8842a";
+        const sage = "#6f8f7a";
+
+        ctx.fillStyle = C.paper;
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+        ctx.globalAlpha = 0.6;
+        coverImage(ctx, photos.watercolor, 0, 0, BOARD_W, BOARD_H);
+
+        // florals top-left (flipped) and bottom-right, like the reference corners
+        const fl = photos.floral;
+        const fw = 13.5;
+        const fh = (fw * fl.height) / fl.width;
+        ctx.globalAlpha = 0.85;
+        ctx.save();
+        ctx.translate(-1.6 + fw, -1.0 + fh);
+        ctx.rotate(Math.PI);
+        ctx.drawImage(fl, 0, 0, fw, fh);
+        ctx.restore();
+        ctx.drawImage(fl, BOARD_W - fw + 1.6, BOARD_H - fh + 1.0, fw, fh);
+        ctx.globalAlpha = 1;
+
+        // monogram: 6–23% of the height, centred
+        const monoH = BOARD_H * (0.229 - 0.06);
+        const M = window.WB_MONOGRAM;
+        drawMonogram(ctx, cx, BOARD_H * 0.1445, (monoH * M.w) / M.h, C.green); // centred, dark green like the 5R invitation
+
+        const sw = (str, em, size) =>
+          [...str].reduce((a, ch) => a + ctx.measureText(ch).width, 0) + em * size * PT * ([...str].length - 1);
+        const fit = (str, em, width, weight) => {
+          setFont(ctx, { weight, size: 100, family: F.sans });
+          return (100 * width) / sw(str, em, 100);
+        };
+
+        // WELCOME TO THE WEDDING OF — sage, baseline 32.7%
+        ctx.fillStyle = sage;
+        const wSize = fit("WELCOME TO THE WEDDING OF", 0.36, BOARD_W * 0.56, 300);
+        setFont(ctx, { weight: 300, size: wSize, family: F.sans });
+        spaced(ctx, "WELCOME TO THE WEDDING OF", cx, BOARD_H * 0.327, 0.36, wSize);
+
+        // ANGELICA — gold caps, centred in the reference's two-line bride block (37.7–49.8%)
+        const nSize = fit("ANGELICA", 0.32, BOARD_W * 0.58, 200);
+        const capH = nSize * PT * 0.71;
+        ctx.fillStyle = gold;
+        setFont(ctx, { weight: 200, size: nSize, family: F.sans });
+        spaced(ctx, "ANGELICA", cx, BOARD_H * 0.4375 + capH / 2, 0.32, nSize);
+
+        // and — sage script, 51.8–64.8%
+        setFont(ctx, { size: 250, family: F.and });
+        ctx.fillStyle = sage;
+        ctx.textAlign = "center";
+        ctx.fillText("and", cx, BOARD_H * 0.59);
+
+        // JORDAN — gold caps, baseline 72%
+        ctx.fillStyle = gold;
+        setFont(ctx, { weight: 200, size: nSize, family: F.sans });
+        spaced(ctx, "JORDAN", cx, BOARD_H * 0.72, 0.32, nSize);
+
+        // date — sage, baseline 85.1%
+        ctx.fillStyle = sage;
+        const dSize = fit("27 NOVEMBER 2026", 0.36, BOARD_W * 0.34, 300);
+        setFont(ctx, { weight: 300, size: dSize, family: F.sans });
+        spaced(ctx, "27 NOVEMBER 2026", cx, BOARD_H * 0.851, 0.36, dSize);
+
+        ctx.restore();
+      }
+
+      const BOARDS = {
+        plain: { draw: (c, d, p) => drawKids(c, d, p, false), file: "these-kids-plain" },
+        kids: { draw: drawKids, file: "these-kids" },
+        photo: { draw: drawPhoto, file: "welcome-photo" },
+        hug: { draw: drawHug, file: "split-photo" },
+        clean: { draw: drawHugClean, file: "clean-photo" },
+        forever: {
+          draw: (c, d, p) => drawForever(c, d, p, { photo: "couple", focusX: 0.55, tint: 0.38 }),
+          file: "our-wedding-childhood-photo",
+        },
+        forever2: {
+          draw: (c, d, p) => drawForever(c, d, p, { photo: "hug", tint: 0.42 }),
+          file: "our-wedding-hug-photo",
+        },
+        floral: { draw: drawFloral, file: "floral-monogram" },
+      };
+
+      /* ── Previews ── */
+      let photos;
+
+      function renderPreviews() {
+        const cards = document.querySelectorAll(".card");
+        // size to the window height; cards sit side by side and wrap below when they run out of width
+        const availH = innerHeight - 130;
+        const availW = innerWidth - 32;
+        const cssH = Math.max(300, Math.min(availH, (availW * BOARD_H) / BOARD_W));
+        const cssW = (cssH * BOARD_W) / BOARD_H;
+        const dpr = devicePixelRatio || 1;
+        cards.forEach((card) => {
+          const cv = card.querySelector("canvas");
+          cv.style.width = cssW + "px";
+          cv.style.height = cssH + "px";
+          cv.width = Math.round(cssW * dpr);
+          cv.height = Math.round(cssH * dpr);
+          BOARDS[card.dataset.board].draw(cv.getContext("2d"), cv.width / BOARD_W, photos);
+        });
+      }
+
+      /* ── Download: full 24x36in canvas with DPI written into the file ── */
+      const CRC_TABLE = (() => {
+        const t = new Uint32Array(256);
+        for (let n = 0; n < 256; n++) {
+          let c = n;
+          for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+          t[n] = c >>> 0;
+        }
+        return t;
+      })();
+      const crc32 = (bytes) => {
+        let c = 0xffffffff;
+        for (const b of bytes) c = CRC_TABLE[(c ^ b) & 0xff] ^ (c >>> 8);
+        return (c ^ 0xffffffff) >>> 0;
+      };
+
+      // PNG: insert a pHYs chunk right after IHDR
+      function pngWithDpi(buf, dpi) {
+        const src = new Uint8Array(buf);
+        const ppm = Math.round(dpi / 0.0254);
+        const chunk = new Uint8Array(21);
+        const dv = new DataView(chunk.buffer);
+        dv.setUint32(0, 9);
+        chunk.set([0x70, 0x48, 0x59, 0x73], 4); // "pHYs"
+        dv.setUint32(8, ppm);
+        dv.setUint32(12, ppm);
+        chunk[16] = 1; // unit: metre
+        dv.setUint32(17, crc32(chunk.subarray(4, 17)));
+        const at = 8 + 25; // signature + IHDR
+        const out = new Uint8Array(src.length + chunk.length);
+        out.set(src.subarray(0, at), 0);
+        out.set(chunk, at);
+        out.set(src.subarray(at), at + chunk.length);
+        return out;
+      }
+
+      // JPG: set density in the JFIF APP0 header
+      function jpgWithDpi(buf, dpi) {
+        const b = new Uint8Array(buf);
+        const isJfif = b[2] === 0xff && b[3] === 0xe0 && String.fromCharCode(...b.subarray(6, 10)) === "JFIF";
+        if (isJfif) {
+          b[13] = 1; // dots per inch
+          b[14] = dpi >> 8;
+          b[15] = dpi & 0xff;
+          b[16] = dpi >> 8;
+          b[17] = dpi & 0xff;
+        }
+        return b;
+      }
+
+      async function download(board, dpi, type) {
+        const canvas = document.createElement("canvas");
+        canvas.width = BOARD_W * dpi;
+        canvas.height = BOARD_H * dpi;
+        BOARDS[board].draw(canvas.getContext("2d"), dpi, photos);
+        const mime = type === "png" ? "image/png" : "image/jpeg";
+        const blob = await new Promise((res) => canvas.toBlob(res, mime, 0.95));
+        if (!blob) throw new Error("This browser can't make an image this large — try Chrome.");
+        const buf = await blob.arrayBuffer();
+        const bytes = type === "png" ? pngWithDpi(buf, dpi) : jpgWithDpi(buf, dpi);
+        const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `welcome-board-${BOARDS[board].file}-24x36-${dpi}dpi.${type}`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+        canvas.width = canvas.height = 0;
+      }
+
+      document.querySelectorAll("[data-dpi]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          const dpi = +btn.dataset.dpi;
+          const card = btn.closest(".card");
+          const status = card.querySelector(".status");
+          const buttons = document.querySelectorAll("[data-dpi]");
+          buttons.forEach((b) => (b.disabled = true));
+          status.textContent = `Rendering ${BOARD_W * dpi}×${BOARD_H * dpi}px…`;
+          await new Promise((r) => setTimeout(r, 30));
+          try {
+            await download(card.dataset.board, dpi, btn.dataset.type);
+            status.textContent = "Downloaded ✓";
+          } catch (e) {
+            status.textContent = e.message;
+          } finally {
+            buttons.forEach((b) => (b.disabled = false));
+          }
+        })
+      );
+
+      loadAssets().then((p) => {
+        photos = p;
+        renderPreviews();
+        addEventListener("resize", renderPreviews);
+      });
+    </script>
+  </body>
+</html>
