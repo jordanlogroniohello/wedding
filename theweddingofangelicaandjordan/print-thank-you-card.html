@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Thank You Cards — Souvenir</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Infant:wght@400;500&family=Herr+Von+Muellerhoff&family=Monsieur+La+Doulaise&family=Raleway:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Raleway", sans-serif;
+        background: #e8e4dc;
+        color: #0e2418;
+        min-height: 100vh;
+        padding: 16px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+      }
+      h1 {
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 500;
+        font-size: 26px;
+        text-align: center;
+      }
+      .panel {
+        background: #fbf9f4;
+        border: 1px solid #ddd3bd;
+        border-radius: 6px;
+        padding: 14px 16px;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+        gap: 16px;
+        font-size: 13px;
+      }
+      @media (max-width: 760px) {
+        .panel {
+          grid-template-columns: 1fr;
+        }
+      }
+      .panel label {
+        display: block;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        font-size: 11px;
+        color: #7a5c10;
+        margin-bottom: 6px;
+      }
+      .panel select,
+      .panel textarea {
+        width: 100%;
+        font: inherit;
+        padding: 8px;
+        border: 1px solid #c9bfa6;
+        border-radius: 4px;
+        background: #fff;
+        color: #0e2418;
+      }
+      .panel textarea {
+        min-height: 150px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+      .hint {
+        color: #6b6658;
+        margin-top: 6px;
+        line-height: 1.45;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        align-items: center;
+      }
+      button {
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        padding: 8px 14px;
+        border: 1px solid #c9a84c;
+        background: #fff;
+        color: #0e2418;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button.primary {
+        background: #0e2418;
+        border-color: #0e2418;
+        color: #fff;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      .status {
+        color: #7a5c10;
+        font-size: 13px;
+        min-height: 1em;
+        text-align: center;
+      }
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 22px;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .card h2 {
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #7a5c10;
+        max-width: 240px;
+        text-align: center;
+      }
+      .card canvas {
+        display: block;
+        background: #fff;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.16);
+      }
+      .card button {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>Thank You Cards · Souvenir</h1>
+
+      <div class="panel">
+        <div>
+          <label for="size">Card size</label>
+          <select id="size">
+            <option value="6x9">6 × 9 cm · for a thick souvenir</option>
+            <option value="6.5x10" selected>6.5 × 10 cm · recommended</option>
+            <option value="7x10.5">7 × 10.5 cm · for a thin souvenir</option>
+          </select>
+          <p class="hint">
+            Your plastic is 8 × 12 cm. The clicker fidget is thick, so it takes up some of the bag's width and height. The card
+            is kept smaller so it slides in flat beside it. Try one printed card in the bag before printing them all.
+          </p>
+          <label for="opacity" style="margin-top: 12px">Centre floral opacity · <span id="opacityVal">30%</span></label>
+          <input type="range" id="opacity" min="5" max="80" step="5" value="30" style="width: 100%" />
+        </div>
+        <div>
+          <label for="names">Ninong &amp; Ninang names · one per line</label>
+          <textarea id="names" spellcheck="false" placeholder="Ninong Juan Dela Cruz&#10;Ninang Maria Santos"></textarea>
+          <p class="hint">
+            One person per line, with <b>Ninong</b> or <b>Ninang</b> at the start or the end of the line. The default
+            card (no name) is always included. Edits are saved in this browser; clear the box to bring back the full list.
+          </p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="sheetAll">A4 print sheets · all named cards</button>
+        <button id="sheetDefault">A4 print sheet · default card (full page)</button>
+      </div>
+      <div class="status" id="status"></div>
+
+      <div class="cards" id="cards"></div>
+    </div>
+
+    <script src="assets/welcome-board-photos.js"></script>
+    <script>
+      /* ── All measurements in centimetres ── */
+      const DPI = 300;
+      const PX_PER_CM = DPI / 2.54;
+      const PT = 2.54 / 72; // 1pt in cm
+      const C = {
+        paper: "#f8f4ec",
+        green: "#2d5a43",
+        ink: "#1f3a2c",
+        gold: "#a8842a",
+        goldLight: "#c9a84c",
+        sage: "#6f8f7a",
+      };
+      const F = {
+        script: '"Herr Von Muellerhoff", cursive',
+        amp: '"Monsieur La Doulaise", cursive',
+        serif: '"Cormorant Garamond", serif',
+        figures: '"Cormorant Infant", serif',
+        sans: '"Raleway", sans-serif',
+      };
+
+      let CARD = { w: 6.5, h: 10 };
+      let OPACITY = 0.3;
+      let photos;
+
+      const loadImg = (src) =>
+        new Promise((res, rej) => {
+          const i = new Image();
+          i.onload = () => res(i);
+          i.onerror = rej;
+          i.src = src;
+        });
+
+      async function loadAssets() {
+        await Promise.all(
+          [
+            `40pt ${F.script}`,
+            `40pt ${F.amp}`,
+            `500 20pt ${F.serif}`,
+            `italic 400 20pt ${F.serif}`,
+            `400 20pt ${F.figures}`,
+            `300 20pt ${F.sans}`,
+            `400 20pt ${F.sans}`,
+          ].map((f) => document.fonts.load(f, "Thank you for celebrating with us! Ninong Ninang 0123456789"))
+        );
+        const names = ["watercolor", "floral"];
+        const imgs = await Promise.all(names.map((n) => loadImg(window.WB_PHOTOS[n])));
+        return Object.fromEntries(names.map((n, i) => [n, imgs[i]]));
+      }
+
+      /* ── helpers (cm) ── */
+      function setFont(ctx, { style = "", weight = 400, size, family }) {
+        ctx.font = `${style} ${weight} ${size * PT}px ${family}`;
+      }
+      const spacedWidth = (ctx, str, em, size) =>
+        [...str].reduce((a, ch) => a + ctx.measureText(ch).width, 0) + em * size * PT * ([...str].length - 1);
+      function spaced(ctx, str, cx, y, em, size) {
+        const sp = em * size * PT;
+        let x = cx - spacedWidth(ctx, str, em, size) / 2;
+        ctx.textAlign = "left";
+        [...str].forEach((ch) => {
+          ctx.fillText(ch, x, y);
+          x += ctx.measureText(ch).width + sp;
+        });
+      }
+      function coverImage(ctx, img, x, y, w, h) {
+        const s = Math.max(w / img.width, h / img.height);
+        const sw = w / s;
+        const sh = h / s;
+        ctx.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, x, y, w, h);
+      }
+      function hairline(ctx, cx, y, w) {
+        const g = ctx.createLinearGradient(cx - w / 2, 0, cx + w / 2, 0);
+        g.addColorStop(0, "rgba(201,168,76,0)");
+        g.addColorStop(0.5, "rgba(201,168,76,1)");
+        g.addColorStop(1, "rgba(201,168,76,0)");
+        ctx.fillStyle = g;
+        ctx.fillRect(cx - w / 2, y - 0.006, w, 0.012);
+      }
+      // largest size ≤ max that keeps the text within width
+      function fitText(ctx, str, width, font, max, em = 0) {
+        setFont(ctx, { ...font, size: 100 });
+        const w100 = em ? spacedWidth(ctx, str, em, 100) : ctx.measureText(str).width;
+        return Math.min(max, (100 * width) / w100);
+      }
+
+      /* "Ninong Juan Dela Cruz" → { role: "Ninong", name: "Juan Dela Cruz" } */
+      /* "Ninong Juan Dela Cruz" or "Mr. Juan Dela Cruz    Ninong" → { role, name } */
+      function parseLine(line) {
+        const cap = (r) => r[0].toUpperCase() + r.slice(1).toLowerCase();
+        const t = line.trim();
+        let m = t.match(/^(ninong|ninang)\s+(.+)$/i);
+        if (m) return { role: cap(m[1]), name: m[2].trim() };
+        m = t.match(/^(.+?)\s+(ninong|ninang)$/i);
+        if (m) return { role: cap(m[2]), name: m[1].trim() };
+        return { role: "", name: t };
+      }
+
+      // principal sponsors — pre-filled list
+      const DEFAULT_NAMES = [
+        "Mr. Lorenzo David    Ninong",
+        "Ms. Olivia Logronio    Ninang",
+        "Mr. Richard Patiño    Ninong",
+        "Mrs. Amelia Dimanarig    Ninang",
+        "Atty. Celestino Caingat, Jr.    Ninong",
+        "Dr. Ma. Rovil Caingat    Ninang",
+        "Mr. Domingo Dimanarig    Ninong",
+        "Mrs. Rosemarie Opone    Ninang",
+        "Mr. Jonatan Gonzales    Ninong",
+        "Mrs. Lina Fullo    Ninang",
+        "Mr. Erwin Luceña    Ninong",
+        "Ms. Joy Murillo    Ninang",
+        "Mr. Pedro Victorino Andrada Jr.    Ninong",
+        "Mrs. Adelina Andrada    Ninang",
+        "Mr. Philip Bagsio    Ninong",
+        "Mrs. Cyrel Bagsio    Ninang",
+        "Mr. Roderick Nogales    Ninong",
+        "Mrs. Jojie Olea    Ninang",
+        "Mr. Jim Azur Cederia    Ninong",
+        "Mrs. Aby Joy Cederia    Ninang",
+        "Mr. Clemente Cedelis    Ninong",
+        "Ms. Marilou Delos Santos    Ninang",
+        "Mr. Ronald Closa    Ninong",
+        "Mrs. Irene Closa    Ninang",
+      ].join("\n");
+
+      /* ── The card: watercolor, florals top-left + bottom-right, everything centred ── */
+      function drawCard(ctx, x0, y0, card) {
+        const { w: W, h: H } = CARD;
+        const cx = x0 + W / 2;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x0, y0, W, H);
+        ctx.clip();
+
+        ctx.fillStyle = C.paper;
+        ctx.fillRect(x0, y0, W, H);
+        ctx.globalAlpha = 0.6;
+        coverImage(ctx, photos.watercolor, x0, y0, W, H);
+
+        const fl = photos.floral; // only used around the centre text — no corner florals
+
+        const named = !!card.name;
+        // block is centred: named cards carry two more lines, so they start higher
+        let y = y0 + H * (named ? 0.44 : 0.5);
+
+        // soft floral behind the centre text
+        const bw = W * 0.95;
+        const bh = (bw * fl.height) / fl.width;
+        const midY = y - H * 0.035; // centred on "Thank you" only, clear of the lines below
+        ctx.globalAlpha = OPACITY;
+        ctx.drawImage(fl, cx - bw * 0.6, midY - bh / 2, bw, bh);
+        ctx.globalAlpha = 1;
+
+        // Thank you — thin script
+        const tSize = fitText(ctx, "Thank you", W * 0.62, { family: F.script }, 72);
+        setFont(ctx, { size: tSize, family: F.script });
+        ctx.fillStyle = C.green;
+        ctx.textAlign = "center";
+        ctx.fillText("Thank you", cx, y);
+
+        // FOR CELEBRATING WITH US!
+        y += H * 0.075;
+        const cSize = fitText(ctx, "FOR CELEBRATING WITH US!", W * 0.72, { weight: 400, family: F.sans }, 10, 0.2);
+        setFont(ctx, { weight: 400, size: cSize, family: F.sans });
+        ctx.fillStyle = C.gold;
+        spaced(ctx, "FOR CELEBRATING WITH US!", cx, y, 0.2, cSize);
+
+        if (named) {
+          y += H * 0.065;
+          hairline(ctx, cx, y, W * 0.32);
+
+          // NINONG / NINANG — small spaced caps
+          if (card.role) {
+            y += H * 0.06;
+            setFont(ctx, { weight: 400, size: 6.5, family: F.sans });
+            ctx.fillStyle = C.sage;
+            spaced(ctx, card.role.toUpperCase(), cx, y, 0.32, 6.5);
+          }
+
+          // the name — serif, shrinks for long names
+          y += H * (card.role ? 0.065 : 0.075);
+          const nSize = fitText(ctx, card.name, W * 0.84, { weight: 500, family: F.serif }, 17);
+          setFont(ctx, { weight: 500, size: nSize, family: F.serif });
+          ctx.fillStyle = C.ink;
+          ctx.textAlign = "center";
+          ctx.fillText(card.name, cx, y);
+        }
+
+        // sign-off near the bottom, two lines: names, then date
+        setFont(ctx, { weight: 400, size: 7.5, family: F.figures });
+        ctx.fillStyle = C.sage;
+        spaced(ctx, "ANGELICA & JORDAN", cx, y0 + H * 0.86, 0.16, 7.5);
+        setFont(ctx, { weight: 400, size: 7.5, family: F.figures });
+        ctx.fillStyle = C.gold;
+        spaced(ctx, "11 . 27 . 2026", cx, y0 + H * 0.9, 0.16, 7.5);
+
+        ctx.restore();
+      }
+
+      /* ── Card list ── */
+      const namesBox = document.getElementById("names");
+      const sizeBox = document.getElementById("size");
+      const opacityBox = document.getElementById("opacity");
+      try {
+        namesBox.value = localStorage.getItem("thankyou-names-v2") || DEFAULT_NAMES;
+        sizeBox.value = localStorage.getItem("thankyou-size") ?? sizeBox.value;
+        opacityBox.value = localStorage.getItem("thankyou-floral-opacity") ?? opacityBox.value;
+      } catch {}
+
+      function cardList() {
+        const named = namesBox.value
+          .split("\n")
+          .map((l) => l.trim())
+          .filter(Boolean)
+          .map(parseLine);
+        return [{ role: "", name: "", label: "Default · no name" }, ...named.map((c) => ({ ...c, label: `${c.role} ${c.name}`.trim() }))];
+      }
+
+      const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "default";
+
+      function renderPreviews() {
+        const [w, h] = sizeBox.value.split("x").map(Number);
+        CARD = { w, h };
+        OPACITY = opacityBox.value / 100;
+        document.getElementById("opacityVal").textContent = opacityBox.value + "%";
+        const host = document.getElementById("cards");
+        host.innerHTML = "";
+        const cssH = 330;
+        const cssW = (cssH * w) / h;
+        const dpr = devicePixelRatio || 1;
+        cardList().forEach((card) => {
+          const sec = document.createElement("section");
+          sec.className = "card";
+          sec.innerHTML = `<h2></h2><canvas></canvas><button>PNG · ${w} × ${h} cm · 300 dpi</button>`;
+          sec.querySelector("h2").textContent = card.label;
+          const cv = sec.querySelector("canvas");
+          cv.style.width = cssW + "px";
+          cv.style.height = cssH + "px";
+          cv.width = Math.round(cssW * dpr);
+          cv.height = Math.round(cssH * dpr);
+          const ctx = cv.getContext("2d");
+          ctx.scale(cv.width / w, cv.width / w);
+          drawCard(ctx, 0, 0, card);
+          sec.querySelector("button").onclick = () => downloadCard(card);
+          host.appendChild(sec);
+        });
+      }
+
+      /* ── Downloads (300 dpi written into the PNG) ── */
+      const CRC_TABLE = (() => {
+        const t = new Uint32Array(256);
+        for (let n = 0; n < 256; n++) {
+          let c = n;
+          for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+          t[n] = c >>> 0;
+        }
+        return t;
+      })();
+      const crc32 = (bytes) => {
+        let c = 0xffffffff;
+        for (const b of bytes) c = CRC_TABLE[(c ^ b) & 0xff] ^ (c >>> 8);
+        return (c ^ 0xffffffff) >>> 0;
+      };
+      function pngWithDpi(buf, dpi) {
+        const src = new Uint8Array(buf);
+        const ppm = Math.round(dpi / 0.0254);
+        const chunk = new Uint8Array(21);
+        const dv = new DataView(chunk.buffer);
+        dv.setUint32(0, 9);
+        chunk.set([0x70, 0x48, 0x59, 0x73], 4); // "pHYs"
+        dv.setUint32(8, ppm);
+        dv.setUint32(12, ppm);
+        chunk[16] = 1;
+        dv.setUint32(17, crc32(chunk.subarray(4, 17)));
+        const at = 8 + 25;
+        const out = new Uint8Array(src.length + chunk.length);
+        out.set(src.subarray(0, at), 0);
+        out.set(chunk, at);
+        out.set(src.subarray(at), at + chunk.length);
+        return out;
+      }
+      async function savePng(canvas, filename) {
+        const blob = await new Promise((res) => canvas.toBlob(res, "image/png"));
+        const bytes = pngWithDpi(await blob.arrayBuffer(), DPI);
+        const url = URL.createObjectURL(new Blob([bytes], { type: "image/png" }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+      }
+
+      async function downloadCard(card) {
+        const cv = document.createElement("canvas");
+        cv.width = Math.round(CARD.w * PX_PER_CM);
+        cv.height = Math.round(CARD.h * PX_PER_CM);
+        const ctx = cv.getContext("2d");
+        ctx.scale(PX_PER_CM, PX_PER_CM);
+        drawCard(ctx, 0, 0, card);
+        await savePng(cv, `thank-you-${slug(card.label)}-${CARD.w}x${CARD.h}cm-300dpi.png`);
+      }
+
+      /* A4 sheets: cards butted together in a grid, centred, with crop marks in the margin */
+      const A4 = { w: 21, h: 29.7 };
+      function sheetGrid() {
+        const margin = 0.5; // 6.5 cm cards fit 3 across
+        const cols = Math.floor((A4.w - 2 * margin) / CARD.w);
+        const rows = Math.floor((A4.h - 2 * margin) / CARD.h);
+        const x0 = (A4.w - cols * CARD.w) / 2;
+        const y0 = (A4.h - rows * CARD.h) / 2;
+        return { cols, rows, x0, y0, per: cols * rows };
+      }
+      function drawSheet(ctx, cards) {
+        const g = sheetGrid();
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, A4.w, A4.h);
+        cards.forEach((card, i) => {
+          const c = i % g.cols;
+          const r = Math.floor(i / g.cols);
+          drawCard(ctx, g.x0 + c * CARD.w, g.y0 + r * CARD.h, card);
+        });
+        // crop marks on every cut line, outside the cards
+        ctx.strokeStyle = "#888";
+        ctx.lineWidth = 0.02;
+        const L = 0.4;
+        const gap = 0.15;
+        ctx.beginPath();
+        for (let c = 0; c <= g.cols; c++) {
+          const x = g.x0 + c * CARD.w;
+          ctx.moveTo(x, g.y0 - gap);
+          ctx.lineTo(x, g.y0 - gap - L);
+          ctx.moveTo(x, g.y0 + g.rows * CARD.h + gap);
+          ctx.lineTo(x, g.y0 + g.rows * CARD.h + gap + L);
+        }
+        for (let r = 0; r <= g.rows; r++) {
+          const y = g.y0 + r * CARD.h;
+          ctx.moveTo(g.x0 - gap, y);
+          ctx.lineTo(g.x0 - gap - L, y);
+          ctx.moveTo(g.x0 + g.cols * CARD.w + gap, y);
+          ctx.lineTo(g.x0 + g.cols * CARD.w + gap + L, y);
+        }
+        ctx.stroke();
+      }
+      async function downloadSheets(cards, name) {
+        const g = sheetGrid();
+        const pages = Math.ceil(cards.length / g.per);
+        for (let p = 0; p < pages; p++) {
+          const cv = document.createElement("canvas");
+          cv.width = Math.round(A4.w * PX_PER_CM);
+          cv.height = Math.round(A4.h * PX_PER_CM);
+          const ctx = cv.getContext("2d");
+          ctx.scale(PX_PER_CM, PX_PER_CM);
+          drawSheet(ctx, cards.slice(p * g.per, (p + 1) * g.per));
+          await savePng(cv, `thank-you-${name}-A4-${CARD.w}x${CARD.h}cm-page${p + 1}of${pages}.png`);
+          await new Promise((r) => setTimeout(r, 400));
+        }
+        return { pages, per: g.per };
+      }
+
+      const status = document.getElementById("status");
+      async function run(btn, fn) {
+        document.querySelectorAll("button").forEach((b) => (b.disabled = true));
+        status.textContent = "Rendering…";
+        await new Promise((r) => setTimeout(r, 30));
+        try {
+          status.textContent = await fn();
+        } catch (e) {
+          status.textContent = e.message;
+        } finally {
+          document.querySelectorAll("button").forEach((b) => (b.disabled = false));
+        }
+      }
+      document.getElementById("sheetAll").onclick = (e) =>
+        run(e.target, async () => {
+          const named = cardList().slice(1);
+          if (!named.length) return "Add Ninong / Ninang names first.";
+          const { pages, per } = await downloadSheets(named, "ninong-ninang");
+          return `Downloaded ${pages} A4 sheet(s) · ${named.length} cards · ${per} per sheet`;
+        });
+      document.getElementById("sheetDefault").onclick = (e) =>
+        run(e.target, async () => {
+          const { per } = sheetGrid();
+          await downloadSheets(Array(per).fill(cardList()[0]), "default");
+          return `Downloaded 1 A4 sheet · ${per} default cards · print as many copies as you need`;
+        });
+
+      let t;
+      const rerender = () => {
+        try {
+          localStorage.setItem("thankyou-names-v2", namesBox.value);
+          localStorage.setItem("thankyou-size", sizeBox.value);
+          localStorage.setItem("thankyou-floral-opacity", opacityBox.value);
+        } catch {}
+        clearTimeout(t);
+        t = setTimeout(renderPreviews, 200);
+      };
+      namesBox.addEventListener("input", rerender);
+      sizeBox.addEventListener("change", rerender);
+      opacityBox.addEventListener("input", rerender);
+
+      loadAssets().then((p) => {
+        photos = p;
+        renderPreviews();
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Reserved Chair Sign — 11 x 20</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Cormorant+Infant:wght@400;500&family=Herr+Von+Muellerhoff&family=Raleway:wght@200;300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Raleway", sans-serif;
+        background: #e8e4dc;
+        color: #0e2418;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+        gap: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+      }
+      .toolbar button {
+        font: inherit;
+        font-weight: 600;
+        padding: 8px 14px;
+        border: 1px solid #c9a84c;
+        background: #fff;
+        color: #0e2418;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .toolbar button.primary {
+        background: #0e2418;
+        border-color: #0e2418;
+        color: #fff;
+      }
+      .toolbar button:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      .status {
+        color: #7a5c10;
+        min-width: 140px;
+        min-height: 1em;
+      }
+      .boards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .card h2 {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: #7a5c10;
+      }
+      .card canvas {
+        display: block;
+        background: #fff;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="boards">
+      <section class="card" data-board="floral">
+        <h2>Version 1 · Floral</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="300" data-type="png">Download PNG · 11×20 · 300 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="cream">
+        <h2>Version 2 · Clean Cream</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="300" data-type="png">Download PNG · 11×20 · 300 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="green">
+        <h2>Version 3 · Deep Green</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="300" data-type="png">Download PNG · 11×20 · 300 dpi</button>
+          <button data-dpi="300" data-type="jpg">JPG · 300 dpi</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+    </div>
+
+    <script src="assets/welcome-board-photos.js"></script>
+    <script src="assets/welcome-board-monogram.js"></script>
+    <script>
+      /* ── Sign spec: 11in x 20in, every measurement below is in inches ── */
+      const BOARD_W = 11;
+      const BOARD_H = 20;
+      const PT = 1 / 72; // 1pt in inches
+      const C = {
+        paper: "#f8f4ec",
+        green: "#0e2418",
+        deep: "#183a2a",
+        gold: "#a8842a",
+        goldLight: "#c9a84c",
+        sage: "#6f8f7a",
+        mono: "#2d5a43",
+      };
+      const F = {
+        script: '"Herr Von Muellerhoff", cursive', // thin signature script
+        serif: '"Cormorant Garamond", serif',
+        figures: '"Cormorant Infant", serif', // lining numerals for the date
+        sans: '"Raleway", sans-serif',
+      };
+
+      // Wording — kept warm and celebratory, a seat saved at the wedding
+      const COPY = {
+        role: "FATHER OF THE GROOM",
+        couple: "ANGELICA & JORDAN",
+        date: "11 . 27 . 2026",
+      };
+
+      const loadImg = (src) =>
+        new Promise((res, rej) => {
+          const i = new Image();
+          i.onload = () => res(i);
+          i.onerror = rej;
+          i.src = src;
+        });
+
+      async function loadAssets() {
+        await Promise.all(
+          [
+            `300 60pt ${F.serif}`,
+            `italic 300 60pt ${F.serif}`,
+            `italic 400 60pt ${F.serif}`,
+            `200 60pt ${F.sans}`,
+            `300 60pt ${F.sans}`,
+            `400 60pt ${F.sans}`,
+            `120pt ${F.script}`,
+            `400 60pt ${F.figures}`,
+          ].map((f) => document.fonts.load(f, "Reserved Father Groom & 0123456789"))
+        );
+        const names = ["watercolor", "floral"];
+        const imgs = await Promise.all(names.map((n) => loadImg(window.WB_PHOTOS[n])));
+        return Object.fromEntries(names.map((n, i) => [n, imgs[i]]));
+      }
+
+      /* ── Drawing helpers (inches; ctx is pre-scaled to dpi) ── */
+      function setFont(ctx, { style = "", weight = 400, size, family }) {
+        ctx.font = `${style} ${weight} ${size * PT}px ${family}`;
+      }
+
+      const spacedWidth = (ctx, str, em, size) =>
+        [...str].reduce((a, ch) => a + ctx.measureText(ch).width, 0) + em * size * PT * ([...str].length - 1);
+
+      // Text with manual letter-spacing (em), centred on cx
+      function spaced(ctx, str, cx, y, em, size) {
+        const sp = em * size * PT;
+        const chars = [...str];
+        let x = cx - spacedWidth(ctx, str, em, size) / 2;
+        ctx.textAlign = "left";
+        chars.forEach((ch) => {
+          ctx.fillText(ch, x, y);
+          x += ctx.measureText(ch).width + sp;
+        });
+      }
+
+      // font size (pt) that makes a spaced string exactly `width` inches wide
+      function fitSize(ctx, str, em, width, font) {
+        setFont(ctx, { ...font, size: 100 });
+        return (100 * width) / spacedWidth(ctx, str, em, 100);
+      }
+
+      function hairline(ctx, cx, y, w, rgb) {
+        const g = ctx.createLinearGradient(cx - w / 2, 0, cx + w / 2, 0);
+        g.addColorStop(0, `rgba(${rgb},0)`);
+        g.addColorStop(0.5, `rgba(${rgb},1)`);
+        g.addColorStop(1, `rgba(${rgb},0)`);
+        ctx.fillStyle = g;
+        ctx.fillRect(cx - w / 2, y - 0.006, w, 0.012);
+      }
+
+      function coverImage(ctx, img, x, y, w, h) {
+        const s = Math.max(w / img.width, h / img.height);
+        const sw = w / s;
+        const sh = h / s;
+        ctx.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, x, y, w, h);
+      }
+
+      function drawMonogram(ctx, cx, cy, width, color) {
+        const M = window.WB_MONOGRAM;
+        const s = width / M.w;
+        ctx.save();
+        ctx.translate(cx - width / 2, cy - (M.h * s) / 2);
+        ctx.scale(s, s);
+        ctx.translate(0, M.h);
+        ctx.scale(0.1, -0.1); // potrace coordinate space
+        ctx.fillStyle = color;
+        M.paths.forEach((d) => ctx.fill(new Path2D(d)));
+        ctx.restore();
+      }
+
+      /* Shared type stack: RESERVED / for the / FATHER OF THE GROOM / line / note / couple + date
+         top = baseline of RESERVED; colours passed in so the dark version can reuse it */
+      function typeStack(ctx, { top, col, note, name }) {
+        const cx = BOARD_W / 2;
+
+        // RESERVED — thin spaced caps
+        const rSize = fitSize(ctx, "RESERVED", 0.42, BOARD_W * 0.66, { weight: 200, family: F.sans });
+        setFont(ctx, { weight: 200, size: rSize, family: F.sans });
+        ctx.fillStyle = col.big;
+        spaced(ctx, "RESERVED", cx, top, 0.42, rSize);
+
+        // for the — thin script
+        setFont(ctx, { size: 104, family: F.script });
+        ctx.fillStyle = col.script;
+        ctx.textAlign = "center";
+        ctx.fillText("for the", cx, top + 1.75);
+
+        // FATHER OF THE GROOM
+        const fSize = fitSize(ctx, COPY.role, 0.3, BOARD_W * 0.7, { weight: 300, family: F.sans });
+        setFont(ctx, { weight: 300, size: fSize, family: F.sans });
+        ctx.fillStyle = col.role;
+        spaced(ctx, COPY.role, cx, top + 2.85, 0.3, fSize);
+
+        // his name (optional) — spaced serif caps under the role
+        let dy = 0;
+        if (name) {
+          setFont(ctx, { weight: 400, size: 44, family: F.serif });
+          ctx.fillStyle = col.big;
+          spaced(ctx, name, cx, top + 4.05, 0.22, 42);
+          dy = 1.15;
+        }
+
+        hairline(ctx, cx, top + 3.75 + dy, 2.4, col.line);
+
+        // note — light italic serif, two lines
+        setFont(ctx, { style: "italic", weight: 300, size: 30, family: F.serif });
+        ctx.fillStyle = col.note;
+        ctx.textAlign = "center";
+        note.forEach((ln, i) => ctx.fillText(ln, cx, top + 4.75 + dy + i * 0.52));
+
+        return top + 4.75 + dy + (note.length - 1) * 0.52;
+      }
+
+      function signature(ctx, y, col) {
+        const cx = BOARD_W / 2;
+        setFont(ctx, { weight: 400, size: 15, family: F.sans });
+        ctx.fillStyle = col.role;
+        spaced(ctx, COPY.couple, cx, y, 0.34, 15);
+        setFont(ctx, { weight: 400, size: 19, family: F.figures });
+        ctx.fillStyle = col.script;
+        spaced(ctx, COPY.date, cx, y + 0.42, 0.18, 19);
+      }
+
+      /* ── Version 1: watercolor + florals, like the 5R invitation and the v7 welcome board ── */
+      function drawFloralSign(ctx, dpi, photos) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        const cx = BOARD_W / 2;
+
+        ctx.fillStyle = C.paper;
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+        ctx.globalAlpha = 0.6;
+        coverImage(ctx, photos.watercolor, 0, 0, BOARD_W, BOARD_H);
+
+        // florals top-left (flipped) and bottom-right
+        const fl = photos.floral;
+        const fw = 6.6;
+        const fh = (fw * fl.height) / fl.width;
+        ctx.globalAlpha = 0.85;
+        ctx.save();
+        ctx.translate(-0.9 + fw, -0.6 + fh);
+        ctx.rotate(Math.PI);
+        ctx.drawImage(fl, 0, 0, fw, fh);
+        ctx.restore();
+        ctx.drawImage(fl, BOARD_W - fw + 0.9, BOARD_H - fh + 0.6, fw, fh);
+        ctx.globalAlpha = 1;
+
+        // no monogram — the type block sits in the open middle between the florals
+        const noteEnd = typeStack(ctx, {
+          top: 6.15,
+          col: { big: C.gold, script: C.sage, role: C.mono, line: "201,168,76", note: C.green },
+          name: "GERARDO LOGRONIO",
+          note: ["We saved you the best seat,", "two reasons to celebrate today"],
+        });
+
+        // his birthday falls on the wedding day
+        setFont(ctx, { size: 92, family: F.script });
+        ctx.fillStyle = C.gold;
+        ctx.textAlign = "center";
+        ctx.fillText("Happy Birthday, Dad", cx, noteEnd + 1.75);
+
+        signature(ctx, noteEnd + 3.3, { role: C.sage, script: C.gold });
+        ctx.restore();
+      }
+
+      /* ── Version 2: plain cream with a fine gold frame ── */
+      function drawCreamSign(ctx, dpi) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        const cx = BOARD_W / 2;
+
+        ctx.fillStyle = C.paper;
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+        ctx.strokeStyle = C.goldLight;
+        ctx.lineWidth = 0.016;
+        ctx.strokeRect(0.6, 0.6, BOARD_W - 1.2, BOARD_H - 1.2);
+        ctx.lineWidth = 0.008;
+        ctx.strokeRect(0.72, 0.72, BOARD_W - 1.44, BOARD_H - 1.44);
+
+        drawMonogram(ctx, cx, 4.7, 2.7, C.mono);
+
+        typeStack(ctx, {
+          top: 8.5,
+          col: { big: C.green, script: C.gold, role: C.mono, line: "201,168,76", note: C.green },
+          note: ["Thank you for raising", "the man of my dreams"],
+        });
+        signature(ctx, 16.2, { role: C.sage, script: C.gold });
+        ctx.restore();
+      }
+
+      /* ── Version 3: deep green with gold and cream ── */
+      function drawGreenSign(ctx, dpi) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        const cx = BOARD_W / 2;
+
+        ctx.fillStyle = C.deep;
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+        // soft lift in the middle so the green isn't flat
+        const g = ctx.createRadialGradient(cx, BOARD_H * 0.45, 0, cx, BOARD_H * 0.45, BOARD_H * 0.62);
+        g.addColorStop(0, "rgba(255,255,255,0.06)");
+        g.addColorStop(1, "rgba(0,0,0,0.12)");
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+        ctx.strokeStyle = "rgba(201,168,76,0.7)";
+        ctx.lineWidth = 0.012;
+        ctx.strokeRect(0.6, 0.6, BOARD_W - 1.2, BOARD_H - 1.2);
+
+        drawMonogram(ctx, cx, 4.7, 2.7, C.goldLight);
+
+        typeStack(ctx, {
+          top: 8.5,
+          col: { big: "#f3ecdc", script: C.goldLight, role: "#e6dcc4", line: "201,168,76", note: "#efe7d6" },
+          note: ["With all our love,", "today and always"],
+        });
+        signature(ctx, 16.2, { role: "#cfc4a8", script: C.goldLight });
+        ctx.restore();
+      }
+
+      const BOARDS = {
+        floral: { draw: drawFloralSign, file: "floral" },
+        cream: { draw: drawCreamSign, file: "cream" },
+        green: { draw: drawGreenSign, file: "green" },
+      };
+
+      /* ── Previews ── */
+      let photos;
+
+      function renderPreviews() {
+        const cards = document.querySelectorAll(".card");
+        const availH = innerHeight - 130;
+        const availW = innerWidth - 32;
+        const cssH = Math.max(300, Math.min(availH, (availW * BOARD_H) / BOARD_W));
+        const cssW = (cssH * BOARD_W) / BOARD_H;
+        const dpr = devicePixelRatio || 1;
+        cards.forEach((card) => {
+          const cv = card.querySelector("canvas");
+          cv.style.width = cssW + "px";
+          cv.style.height = cssH + "px";
+          cv.width = Math.round(cssW * dpr);
+          cv.height = Math.round(cssH * dpr);
+          BOARDS[card.dataset.board].draw(cv.getContext("2d"), cv.width / BOARD_W, photos);
+        });
+      }
+
+      /* ── Download: full 11x20in canvas with DPI written into the file ── */
+      const CRC_TABLE = (() => {
+        const t = new Uint32Array(256);
+        for (let n = 0; n < 256; n++) {
+          let c = n;
+          for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+          t[n] = c >>> 0;
+        }
+        return t;
+      })();
+      const crc32 = (bytes) => {
+        let c = 0xffffffff;
+        for (const b of bytes) c = CRC_TABLE[(c ^ b) & 0xff] ^ (c >>> 8);
+        return (c ^ 0xffffffff) >>> 0;
+      };
+
+      // PNG: insert a pHYs chunk right after IHDR
+      function pngWithDpi(buf, dpi) {
+        const src = new Uint8Array(buf);
+        const ppm = Math.round(dpi / 0.0254);
+        const chunk = new Uint8Array(21);
+        const dv = new DataView(chunk.buffer);
+        dv.setUint32(0, 9);
+        chunk.set([0x70, 0x48, 0x59, 0x73], 4); // "pHYs"
+        dv.setUint32(8, ppm);
+        dv.setUint32(12, ppm);
+        chunk[16] = 1; // unit: metre
+        dv.setUint32(17, crc32(chunk.subarray(4, 17)));
+        const at = 8 + 25; // signature + IHDR
+        const out = new Uint8Array(src.length + chunk.length);
+        out.set(src.subarray(0, at), 0);
+        out.set(chunk, at);
+        out.set(src.subarray(at), at + chunk.length);
+        return out;
+      }
+
+      // JPG: set density in the JFIF APP0 header
+      function jpgWithDpi(buf, dpi) {
+        const b = new Uint8Array(buf);
+        const isJfif = b[2] === 0xff && b[3] === 0xe0 && String.fromCharCode(...b.subarray(6, 10)) === "JFIF";
+        if (isJfif) {
+          b[13] = 1; // dots per inch
+          b[14] = dpi >> 8;
+          b[15] = dpi & 0xff;
+          b[16] = dpi >> 8;
+          b[17] = dpi & 0xff;
+        }
+        return b;
+      }
+
+      async function download(board, dpi, type) {
+        const canvas = document.createElement("canvas");
+        canvas.width = BOARD_W * dpi;
+        canvas.height = BOARD_H * dpi;
+        BOARDS[board].draw(canvas.getContext("2d"), dpi, photos);
+        const mime = type === "png" ? "image/png" : "image/jpeg";
+        const blob = await new Promise((res) => canvas.toBlob(res, mime, 0.95));
+        if (!blob) throw new Error("This browser can't make an image this large — try Chrome.");
+        const buf = await blob.arrayBuffer();
+        const bytes = type === "png" ? pngWithDpi(buf, dpi) : jpgWithDpi(buf, dpi);
+        const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `reserved-father-of-the-groom-${BOARDS[board].file}-11x20-${dpi}dpi.${type}`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+        canvas.width = canvas.height = 0;
+      }
+
+      document.querySelectorAll("[data-dpi]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          const dpi = +btn.dataset.dpi;
+          const card = btn.closest(".card");
+          const status = card.querySelector(".status");
+          const buttons = document.querySelectorAll("[data-dpi]");
+          buttons.forEach((b) => (b.disabled = true));
+          status.textContent = `Rendering ${BOARD_W * dpi}×${BOARD_H * dpi}px…`;
+          await new Promise((r) => setTimeout(r, 30));
+          try {
+            await download(card.dataset.board, dpi, btn.dataset.type);
+            status.textContent = "Downloaded ✓";
+          } catch (e) {
+            status.textContent = e.message;
+          } finally {
+            buttons.forEach((b) => (b.disabled = false));
+          }
+        })
+      );
+
+      loadAssets().then((p) => {
+        photos = p;
+        renderPreviews();
+        addEventListener("resize", renderPreviews);
+      });
+    </script>
+  </body>
+</html>

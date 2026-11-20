@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Photobooth Layout — 4 x 6</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Cormorant+Infant:wght@400;500&family=Herr+Von+Muellerhoff&family=Monsieur+La+Doulaise&family=Raleway:wght@300;400;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Raleway", sans-serif;
+        background: #e8e4dc;
+        color: #0e2418;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 16px;
+        gap: 14px;
+        -webkit-font-smoothing: antialiased;
+      }
+      .options {
+        font-size: 13px;
+        color: #0e2418;
+        display: flex;
+        gap: 6px;
+        align-items: center;
+      }
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        font-size: 13px;
+      }
+      .toolbar button {
+        font: inherit;
+        font-weight: 600;
+        padding: 8px 14px;
+        border: 1px solid #c9a84c;
+        background: #fff;
+        color: #0e2418;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .toolbar button.primary {
+        background: #0e2418;
+        border-color: #0e2418;
+        color: #fff;
+      }
+      .toolbar button:disabled {
+        opacity: 0.5;
+        cursor: wait;
+      }
+      .status {
+        color: #7a5c10;
+        min-width: 140px;
+        min-height: 1em;
+        font-size: 13px;
+      }
+      .boards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 32px;
+      }
+      .card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .card h2 {
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.25em;
+        text-transform: uppercase;
+        color: #7a5c10;
+      }
+      .card canvas {
+        display: block;
+        background: #fff;
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+      }
+      /* checkerboard so transparent slots are visible if guides are off */
+      .card canvas.see-through {
+        background: repeating-conic-gradient(#eee 0% 25%, #fff 0% 50%) 0 0 / 16px 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <label class="options">
+      <input type="checkbox" id="guides" checked />
+      Show dashed photo-slot guides on screen (never printed in downloads)
+    </label>
+    <div class="boards">
+      <section class="card" data-board="white">
+        <h2>Version 1 · Clean White</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="300" data-type="png">PNG · 4×6 · 300 dpi</button>
+          <button data-dpi="300" data-type="png" data-clear="1">PNG · transparent slots</button>
+          <button data-dpi="300" data-type="jpg">JPG</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+      <section class="card" data-board="floral">
+        <h2>Version 2 · Watercolor &amp; Florals</h2>
+        <div class="toolbar">
+          <button class="primary" data-dpi="300" data-type="png">PNG · 4×6 · 300 dpi</button>
+          <button data-dpi="300" data-type="png" data-clear="1">PNG · transparent slots</button>
+          <button data-dpi="300" data-type="jpg">JPG</button>
+        </div>
+        <canvas></canvas>
+        <span class="status"></span>
+      </section>
+    </div>
+
+    <script src="assets/welcome-board-photos.js"></script>
+    <script src="assets/welcome-board-monogram.js"></script>
+    <script>
+      /* ── Spec: 4in x 6in print, cut down the middle into two 2x6 strips.
+            Left strip = guest souvenir (3 photos). Right strip = album copy (1 photo + message).
+            Every measurement below is in inches. ── */
+      const BOARD_W = 4;
+      const BOARD_H = 6;
+      const STRIP_W = 2;
+      const PT = 1 / 72;
+      const C = {
+        paper: "#ffffff",
+        ink: "#1f2a24",
+        green: "#2d5a43",
+        gold: "#a8842a",
+        goldLight: "#c9a84c",
+        sage: "#6f8f7a",
+      };
+      const F = {
+        script: '"Herr Von Muellerhoff", cursive',
+        amp: '"Monsieur La Doulaise", cursive',
+        figures: '"Cormorant Infant", serif',
+        serif: '"Cormorant Garamond", serif',
+        sans: '"Raleway", sans-serif',
+      };
+
+      /* Photo slots — 4:3 landscape, same size on both strips so one camera setting fits all */
+      const SLOT = { w: 1.76, h: 1.32, top: 0.24, gap: 0.08 };
+      const slotX = (strip) => strip * STRIP_W + (STRIP_W - SLOT.w) / 2;
+      const SLOTS = [
+        ...[0, 1, 2].map((i) => ({ x: slotX(0), y: SLOT.top + i * (SLOT.h + SLOT.gap), w: SLOT.w, h: SLOT.h })),
+        { x: slotX(1), y: 1.02, w: SLOT.w, h: SLOT.h }, // right strip: monogram → photo → message
+      ];
+      const lastSlotBottom = SLOT.top + 3 * SLOT.h + 2 * SLOT.gap; // 4.36in
+      const MONO_TOP = { cx: STRIP_W * 1.5, cy: 0.6, h: 0.6 }; // centred above the right photo
+      const MSG_Y = 1.02 + SLOT.h + SLOT.gap;
+      const MSG = { x: slotX(1), y: MSG_Y, w: SLOT.w, h: lastSlotBottom - MSG_Y };
+
+      const loadImg = (src) =>
+        new Promise((res, rej) => {
+          const i = new Image();
+          i.onload = () => res(i);
+          i.onerror = rej;
+          i.src = src;
+        });
+
+      async function loadAssets() {
+        await Promise.all(
+          [
+            `40pt ${F.script}`,
+            `40pt ${F.amp}`,
+            `400 20pt ${F.figures}`,
+            `italic 300 20pt ${F.serif}`,
+            `300 20pt ${F.sans}`,
+          ].map((f) => document.fonts.load(f, "Angelica & Jordan leave us a message 0123456789"))
+        );
+        const names = ["watercolor", "floral"];
+        const imgs = await Promise.all(names.map((n) => loadImg(window.WB_PHOTOS[n])));
+        return Object.fromEntries(names.map((n, i) => [n, imgs[i]]));
+      }
+
+      /* ── helpers (inches) ── */
+      function setFont(ctx, { style = "", weight = 400, size, family }) {
+        ctx.font = `${style} ${weight} ${size * PT}px ${family}`;
+      }
+      const spacedWidth = (ctx, str, em, size) =>
+        [...str].reduce((a, ch) => a + ctx.measureText(ch).width, 0) + em * size * PT * ([...str].length - 1);
+      function spaced(ctx, str, cx, y, em, size) {
+        const sp = em * size * PT;
+        let x = cx - spacedWidth(ctx, str, em, size) / 2;
+        ctx.textAlign = "left";
+        [...str].forEach((ch) => {
+          ctx.fillText(ch, x, y);
+          x += ctx.measureText(ch).width + sp;
+        });
+      }
+      function coverImage(ctx, img, x, y, w, h) {
+        const s = Math.max(w / img.width, h / img.height);
+        const sw = w / s;
+        const sh = h / s;
+        ctx.drawImage(img, (img.width - sw) / 2, (img.height - sh) / 2, sw, sh, x, y, w, h);
+      }
+      function hairline(ctx, cx, y, w, rgb) {
+        const g = ctx.createLinearGradient(cx - w / 2, 0, cx + w / 2, 0);
+        g.addColorStop(0, `rgba(${rgb},0)`);
+        g.addColorStop(0.15, `rgba(${rgb},1)`);
+        g.addColorStop(0.85, `rgba(${rgb},1)`);
+        g.addColorStop(1, `rgba(${rgb},0)`);
+        ctx.fillStyle = g;
+        ctx.fillRect(cx - w / 2, y - 0.004, w, 0.008);
+      }
+
+      // "Angelica & Jordan" — thin script names, classic tall ampersand, centred
+      function names(ctx, cx, y, maxW, color, ampColor) {
+        // size the line so it fills maxW inches
+        let size = 40;
+        const measure = (sz) =>
+          [["Angelica", F.script, sz], [" & ", F.amp, sz * 0.82], ["Jordan", F.script, sz]].reduce((a, [t, f, s]) => {
+            setFont(ctx, { size: s, family: f });
+            return a + ctx.measureText(t).width;
+          }, 0);
+        size = (size * maxW) / measure(size);
+        const parts = [
+          { t: "Angelica", f: F.script, s: size },
+          { t: " & ", f: F.amp, s: size * 0.82 },
+          { t: "Jordan", f: F.script, s: size },
+        ];
+        const widths = parts.map((p) => {
+          setFont(ctx, { size: p.s, family: p.f });
+          return ctx.measureText(p.t).width;
+        });
+        let x = cx - widths.reduce((a, b) => a + b, 0) / 2;
+        ctx.textAlign = "left";
+        parts.forEach((p, i) => {
+          setFont(ctx, { size: p.s, family: p.f });
+          ctx.fillStyle = i === 1 ? ampColor : color;
+          ctx.fillText(p.t, x, y);
+          x += widths[i];
+        });
+      }
+
+      // names / short line / date, centred on one strip
+      // left strip sits higher to make room for the small monogram under the date
+      function footer(ctx, strip, col) {
+        const cx = strip * STRIP_W + STRIP_W / 2;
+        const dy = strip === 0 ? -0.2 : 0;
+        names(ctx, cx, 5.0 + dy, 1.62, col.names, col.amp);
+        hairline(ctx, cx, 5.24 + dy, 1.3, col.line);
+        setFont(ctx, { weight: 400, size: 9.5, family: F.figures });
+        ctx.fillStyle = col.date;
+        spaced(ctx, "11 . 27 . 2026", cx, 5.55 + dy, 0.22, 9.5);
+        if (strip === 0) monogram(ctx, col.mono, { cx, cy: 5.72, h: 0.34 });
+      }
+
+      function messageBox(ctx, col) {
+        ctx.strokeStyle = col.box;
+        ctx.lineWidth = 0.008;
+        ctx.strokeRect(MSG.x, MSG.y, MSG.w, MSG.h);
+        setFont(ctx, { size: 14, family: F.script });
+        ctx.fillStyle = col.names;
+        ctx.textAlign = "center";
+        ctx.fillText("leave us a message", MSG.x + MSG.w / 2, MSG.y + 0.24);
+      }
+
+      // A&J monogram (potrace paths), sized by height
+      function monogram(ctx, color, MONO = MONO_TOP) {
+        const M = window.WB_MONOGRAM;
+        const s = MONO.h / M.h;
+        ctx.save();
+        ctx.translate(MONO.cx - (M.w * s) / 2, MONO.cy - MONO.h / 2);
+        ctx.scale(s, s);
+        ctx.translate(0, M.h);
+        ctx.scale(0.1, -0.1);
+        ctx.fillStyle = color;
+        M.paths.forEach((d) => ctx.fill(new Path2D(d)));
+        ctx.restore();
+      }
+
+      // tiny cut ticks at the centre fold, top and bottom (like the sample)
+      function cutMarks(ctx, color) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 0.008;
+        ctx.beginPath();
+        ctx.moveTo(STRIP_W, 0);
+        ctx.lineTo(STRIP_W, 0.16);
+        ctx.moveTo(STRIP_W, BOARD_H - 0.16);
+        ctx.lineTo(STRIP_W, BOARD_H);
+        ctx.stroke();
+      }
+
+      // slots: blank white (default) or punched out for photobooth apps that put photos behind the frame
+      function finishSlots(ctx, { clear, guides }) {
+        SLOTS.forEach((s) => {
+          if (clear) {
+            ctx.clearRect(s.x, s.y, s.w, s.h);
+          } else {
+            ctx.fillStyle = "#fff";
+            ctx.fillRect(s.x, s.y, s.w, s.h);
+          }
+          if (guides) {
+            ctx.save();
+            ctx.setLineDash([0.05, 0.04]);
+            ctx.strokeStyle = "rgba(111,143,122,0.75)";
+            ctx.lineWidth = 0.01;
+            ctx.strokeRect(s.x, s.y, s.w, s.h);
+            ctx.setLineDash([]);
+            setFont(ctx, { weight: 300, size: 6, family: F.sans });
+            ctx.fillStyle = "rgba(111,143,122,0.9)";
+            spaced(ctx, "PHOTO", s.x + s.w / 2, s.y + s.h / 2 + 0.03, 0.3, 6);
+            ctx.restore();
+          }
+        });
+      }
+
+      /* ── Version 1: clean white, like the sample ── */
+      function drawWhite(ctx, dpi, photos, opts) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        ctx.fillStyle = C.paper;
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+        const col = { names: C.ink, amp: C.gold, line: "168,132,42", date: C.ink, box: C.ink, mono: C.ink };
+        monogram(ctx, C.ink);
+        messageBox(ctx, col);
+        footer(ctx, 0, col);
+        footer(ctx, 1, col);
+        cutMarks(ctx, "#9a9a9a");
+        finishSlots(ctx, opts);
+        ctx.restore();
+      }
+
+      /* ── Version 2: watercolor wash + a floral sprig under each name block ── */
+      function drawFloral(ctx, dpi, photos, opts) {
+        ctx.save();
+        ctx.scale(dpi, dpi);
+        ctx.fillStyle = "#f8f4ec";
+        ctx.fillRect(0, 0, BOARD_W, BOARD_H);
+        for (let s = 0; s < 2; s++) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(s * STRIP_W, 0, STRIP_W, BOARD_H);
+          ctx.clip();
+          ctx.globalAlpha = 0.55;
+          coverImage(ctx, photos.watercolor, s * STRIP_W, 0, STRIP_W, BOARD_H);
+          // florals top-left (flipped) and bottom-right of each strip, soft so they sit behind everything
+          const fl = photos.floral;
+          const fw = 1.7;
+          const fh = (fw * fl.height) / fl.width;
+          ctx.globalAlpha = 0.6;
+          ctx.save();
+          ctx.translate(s * STRIP_W - 0.22 + fw, -0.14 + fh);
+          ctx.rotate(Math.PI);
+          ctx.drawImage(fl, 0, 0, fw, fh);
+          ctx.restore();
+          ctx.drawImage(fl, (s + 1) * STRIP_W - fw * 0.85 + 0.2, BOARD_H - fh * 0.85 + 0.2, fw * 0.85, fh * 0.85); // tucked low so the date stays clear
+          ctx.restore();
+        }
+        const col = { names: C.green, amp: C.gold, line: "201,168,76", date: C.gold, box: C.sage, mono: C.green };
+        ctx.fillStyle = "rgba(255,255,255,0.75)";
+        ctx.fillRect(MSG.x, MSG.y, MSG.w, MSG.h);
+        monogram(ctx, C.green);
+        messageBox(ctx, col);
+        footer(ctx, 0, col);
+        footer(ctx, 1, col);
+        cutMarks(ctx, "#b9ae95");
+        finishSlots(ctx, opts);
+        ctx.restore();
+      }
+
+      const BOARDS = {
+        white: { draw: drawWhite, file: "white" },
+        floral: { draw: drawFloral, file: "floral" },
+      };
+
+      /* ── Previews ── */
+      let photos;
+      const guidesBox = document.getElementById("guides");
+
+      function renderPreviews() {
+        const availH = innerHeight - 160;
+        const availW = (innerWidth - 32 - 32) / 2;
+        const cssH = Math.max(360, Math.min(availH, (availW * BOARD_H) / BOARD_W));
+        const cssW = (cssH * BOARD_W) / BOARD_H;
+        const dpr = devicePixelRatio || 1;
+        document.querySelectorAll(".card").forEach((card) => {
+          const cv = card.querySelector("canvas");
+          cv.style.width = cssW + "px";
+          cv.style.height = cssH + "px";
+          cv.width = Math.round(cssW * dpr);
+          cv.height = Math.round(cssH * dpr);
+          BOARDS[card.dataset.board].draw(cv.getContext("2d"), cv.width / BOARD_W, photos, {
+            clear: false,
+            guides: guidesBox.checked,
+          });
+        });
+      }
+
+      /* ── Download with DPI written into the file ── */
+      const CRC_TABLE = (() => {
+        const t = new Uint32Array(256);
+        for (let n = 0; n < 256; n++) {
+          let c = n;
+          for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+          t[n] = c >>> 0;
+        }
+        return t;
+      })();
+      const crc32 = (bytes) => {
+        let c = 0xffffffff;
+        for (const b of bytes) c = CRC_TABLE[(c ^ b) & 0xff] ^ (c >>> 8);
+        return (c ^ 0xffffffff) >>> 0;
+      };
+      function pngWithDpi(buf, dpi) {
+        const src = new Uint8Array(buf);
+        const ppm = Math.round(dpi / 0.0254);
+        const chunk = new Uint8Array(21);
+        const dv = new DataView(chunk.buffer);
+        dv.setUint32(0, 9);
+        chunk.set([0x70, 0x48, 0x59, 0x73], 4); // "pHYs"
+        dv.setUint32(8, ppm);
+        dv.setUint32(12, ppm);
+        chunk[16] = 1;
+        dv.setUint32(17, crc32(chunk.subarray(4, 17)));
+        const at = 8 + 25;
+        const out = new Uint8Array(src.length + chunk.length);
+        out.set(src.subarray(0, at), 0);
+        out.set(chunk, at);
+        out.set(src.subarray(at), at + chunk.length);
+        return out;
+      }
+      function jpgWithDpi(buf, dpi) {
+        const b = new Uint8Array(buf);
+        const isJfif = b[2] === 0xff && b[3] === 0xe0 && String.fromCharCode(...b.subarray(6, 10)) === "JFIF";
+        if (isJfif) {
+          b[13] = 1;
+          b[14] = dpi >> 8;
+          b[15] = dpi & 0xff;
+          b[16] = dpi >> 8;
+          b[17] = dpi & 0xff;
+        }
+        return b;
+      }
+
+      async function download(board, dpi, type, clear) {
+        const canvas = document.createElement("canvas");
+        canvas.width = BOARD_W * dpi;
+        canvas.height = BOARD_H * dpi;
+        BOARDS[board].draw(canvas.getContext("2d"), dpi, photos, { clear, guides: false });
+        const mime = type === "png" ? "image/png" : "image/jpeg";
+        const blob = await new Promise((res) => canvas.toBlob(res, mime, 0.95));
+        const buf = await blob.arrayBuffer();
+        const bytes = type === "png" ? pngWithDpi(buf, dpi) : jpgWithDpi(buf, dpi);
+        const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `photobooth-${BOARDS[board].file}${clear ? "-transparent-slots" : ""}-4x6-${dpi}dpi.${type}`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+      }
+
+      document.querySelectorAll("[data-dpi]").forEach((btn) =>
+        btn.addEventListener("click", async () => {
+          const card = btn.closest(".card");
+          const status = card.querySelector(".status");
+          btn.disabled = true;
+          try {
+            await download(card.dataset.board, +btn.dataset.dpi, btn.dataset.type, !!btn.dataset.clear);
+            status.textContent = "Downloaded ✓";
+          } catch (e) {
+            status.textContent = e.message;
+          } finally {
+            btn.disabled = false;
+          }
+        })
+      );
+
+      loadAssets().then((p) => {
+        photos = p;
+        renderPreviews();
+        addEventListener("resize", renderPreviews);
+        guidesBox.addEventListener("change", renderPreviews);
+      });
+    </script>
+  </body>
+</html>
