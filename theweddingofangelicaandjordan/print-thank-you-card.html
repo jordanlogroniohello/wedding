@@ -153,14 +153,19 @@
         <div>
           <label for="size">Card size</label>
           <select id="size">
-            <option value="6x9">6 × 9 cm · for a thick souvenir</option>
-            <option value="6.5x10" selected>6.5 × 10 cm · recommended</option>
+            <option value="6x9" selected>6 × 9 cm · with allowance (9 per A4)</option>
+            <option value="6.5x10">6.5 × 10 cm</option>
             <option value="7x10.5">7 × 10.5 cm · for a thin souvenir</option>
           </select>
           <p class="hint">
             Your plastic is 8 × 12 cm. The clicker fidget is thick, so it takes up some of the bag's width and height. The card
             is kept smaller so it slides in flat beside it. Try one printed card in the bag before printing them all.
           </p>
+          <label for="layout" style="margin-top: 12px">Layout</label>
+          <select id="layout">
+            <option value="centre" selected>Centred · everything in the middle</option>
+            <option value="split">Top &amp; bottom · "Thank you" on top, name and date at the bottom</option>
+          </select>
           <label for="opacity" style="margin-top: 12px">Centre floral opacity · <span id="opacityVal">30%</span></label>
           <input type="range" id="opacity" min="5" max="80" step="5" value="30" style="width: 100%" />
         </div>
@@ -205,7 +210,8 @@
         sans: '"Raleway", sans-serif',
       };
 
-      let CARD = { w: 6.5, h: 10 };
+      let CARD = { w: 6, h: 9 };
+      let LAYOUT = "centre";
       let OPACITY = 0.3;
       let photos;
 
@@ -327,13 +333,14 @@
         const fl = photos.floral; // only used around the centre text — no corner florals
 
         const named = !!card.name;
-        // block is centred: named cards carry two more lines, so they start higher
-        let y = y0 + H * (named ? 0.44 : 0.5);
+        const split = LAYOUT === "split";
+        // centred: one block in the middle. split: "Thank you" up top, name + sign-off at the bottom
+        let y = y0 + H * (split ? 0.2 : named ? 0.44 : 0.5);
 
-        // soft floral behind the centre text
+        // soft floral behind "Thank you"
         const bw = W * 0.95;
         const bh = (bw * fl.height) / fl.width;
-        const midY = y - H * 0.035; // centred on "Thank you" only, clear of the lines below
+        const midY = y - H * 0.035;
         ctx.globalAlpha = OPACITY;
         ctx.drawImage(fl, cx - bw * 0.6, midY - bh / 2, bw, bh);
         ctx.globalAlpha = 1;
@@ -353,8 +360,12 @@
         spaced(ctx, "FOR CELEBRATING WITH US!", cx, y, 0.2, cSize);
 
         if (named) {
-          y += H * 0.065;
-          hairline(ctx, cx, y, W * 0.32);
+          if (split) {
+            y = y0 + H * (card.role ? 0.745 : 0.805) - H * (card.role ? 0.06 : 0.075);
+          } else {
+            y += H * 0.065;
+            hairline(ctx, cx, y, W * 0.32);
+          }
 
           // NINONG / NINANG — small spaced caps
           if (card.role) {
@@ -374,12 +385,13 @@
         }
 
         // sign-off near the bottom, two lines: names, then date
+        const sy = split ? 0.885 : 0.86;
         setFont(ctx, { weight: 400, size: 7.5, family: F.figures });
         ctx.fillStyle = C.sage;
-        spaced(ctx, "ANGELICA & JORDAN", cx, y0 + H * 0.86, 0.16, 7.5);
+        spaced(ctx, "ANGELICA & JORDAN", cx, y0 + H * sy, 0.16, 7.5);
         setFont(ctx, { weight: 400, size: 7.5, family: F.figures });
         ctx.fillStyle = C.gold;
-        spaced(ctx, "11 . 27 . 2026", cx, y0 + H * 0.9, 0.16, 7.5);
+        spaced(ctx, "11 . 27 . 2026", cx, y0 + H * (sy + 0.04), 0.16, 7.5);
 
         ctx.restore();
       }
@@ -387,10 +399,12 @@
       /* ── Card list ── */
       const namesBox = document.getElementById("names");
       const sizeBox = document.getElementById("size");
+      const layoutBox = document.getElementById("layout");
       const opacityBox = document.getElementById("opacity");
       try {
         namesBox.value = localStorage.getItem("thankyou-names-v2") || DEFAULT_NAMES;
-        sizeBox.value = localStorage.getItem("thankyou-size") ?? sizeBox.value;
+        sizeBox.value = localStorage.getItem("thankyou-size-v2") ?? sizeBox.value;
+        layoutBox.value = localStorage.getItem("thankyou-layout") ?? layoutBox.value;
         opacityBox.value = localStorage.getItem("thankyou-floral-opacity") ?? opacityBox.value;
       } catch {}
 
@@ -408,6 +422,7 @@
       function renderPreviews() {
         const [w, h] = sizeBox.value.split("x").map(Number);
         CARD = { w, h };
+        LAYOUT = layoutBox.value;
         OPACITY = opacityBox.value / 100;
         document.getElementById("opacityVal").textContent = opacityBox.value + "%";
         const host = document.getElementById("cards");
@@ -487,45 +502,57 @@
         await savePng(cv, `thank-you-${slug(card.label)}-${CARD.w}x${CARD.h}cm-300dpi.png`);
       }
 
-      /* A4 sheets: cards butted together in a grid, centred, with crop marks in the margin */
+      /* A4 sheets: grid centred on the page with a gap between cards, crop marks in the margin.
+         6 × 9 cm → 3 × 3 = 9 per sheet with 0.7 cm spacing. If spacing would cost a column or row
+         (e.g. 6.5 × 10 cm), the cards are butted together instead so nothing is lost. */
       const A4 = { w: 21, h: 29.7 };
       function sheetGrid() {
-        const margin = 0.5; // 6.5 cm cards fit 3 across
-        const cols = Math.floor((A4.w - 2 * margin) / CARD.w);
-        const rows = Math.floor((A4.h - 2 * margin) / CARD.h);
-        const x0 = (A4.w - cols * CARD.w) / 2;
-        const y0 = (A4.h - rows * CARD.h) / 2;
-        return { cols, rows, x0, y0, per: cols * rows };
+        const M = 0.55; // smallest page margin (room for crop marks)
+        const fit = (len, size, gap) => Math.floor((len - 2 * M + gap) / (size + gap));
+        const spaced = { cols: fit(A4.w, CARD.w, 0.4), rows: fit(A4.h, CARD.h, 0.4) };
+        const butted = { cols: fit(A4.w, CARD.w, 0), rows: fit(A4.h, CARD.h, 0) };
+        const useGap = spaced.cols * spaced.rows >= butted.cols * butted.rows;
+        const { cols, rows } = useGap ? spaced : butted;
+        const room = (len, size, n) => (n > 1 ? (len - 2 * M - n * size) / (n - 1) : Infinity);
+        const gap = useGap ? Math.min(0.7, room(A4.w, CARD.w, cols), room(A4.h, CARD.h, rows)) : 0;
+        const x0 = (A4.w - cols * CARD.w - (cols - 1) * gap) / 2;
+        const y0 = (A4.h - rows * CARD.h - (rows - 1) * gap) / 2;
+        return { cols, rows, gap, x0, y0, per: cols * rows };
       }
       function drawSheet(ctx, cards) {
         const g = sheetGrid();
+        const cellX = (c) => g.x0 + c * (CARD.w + g.gap);
+        const cellY = (r) => g.y0 + r * (CARD.h + g.gap);
         ctx.fillStyle = "#fff";
         ctx.fillRect(0, 0, A4.w, A4.h);
-        cards.forEach((card, i) => {
-          const c = i % g.cols;
-          const r = Math.floor(i / g.cols);
-          drawCard(ctx, g.x0 + c * CARD.w, g.y0 + r * CARD.h, card);
-        });
-        // crop marks on every cut line, outside the cards
+        cards.forEach((card, i) => drawCard(ctx, cellX(i % g.cols), cellY(Math.floor(i / g.cols)), card));
+
+        // crop marks at every card edge, outside the grid
+        const xs = new Set();
+        const ys = new Set();
+        for (let c = 0; c < g.cols; c++) xs.add(+cellX(c).toFixed(4)).add(+(cellX(c) + CARD.w).toFixed(4));
+        for (let r = 0; r < g.rows; r++) ys.add(+cellY(r).toFixed(4)).add(+(cellY(r) + CARD.h).toFixed(4));
+        const left = g.x0;
+        const right = cellX(g.cols - 1) + CARD.w;
+        const top = g.y0;
+        const bottom = cellY(g.rows - 1) + CARD.h;
         ctx.strokeStyle = "#888";
         ctx.lineWidth = 0.02;
-        const L = 0.4;
-        const gap = 0.15;
+        const L = 0.35;
+        const off = 0.1;
         ctx.beginPath();
-        for (let c = 0; c <= g.cols; c++) {
-          const x = g.x0 + c * CARD.w;
-          ctx.moveTo(x, g.y0 - gap);
-          ctx.lineTo(x, g.y0 - gap - L);
-          ctx.moveTo(x, g.y0 + g.rows * CARD.h + gap);
-          ctx.lineTo(x, g.y0 + g.rows * CARD.h + gap + L);
-        }
-        for (let r = 0; r <= g.rows; r++) {
-          const y = g.y0 + r * CARD.h;
-          ctx.moveTo(g.x0 - gap, y);
-          ctx.lineTo(g.x0 - gap - L, y);
-          ctx.moveTo(g.x0 + g.cols * CARD.w + gap, y);
-          ctx.lineTo(g.x0 + g.cols * CARD.w + gap + L, y);
-        }
+        xs.forEach((x) => {
+          ctx.moveTo(x, top - off);
+          ctx.lineTo(x, top - off - L);
+          ctx.moveTo(x, bottom + off);
+          ctx.lineTo(x, bottom + off + L);
+        });
+        ys.forEach((y) => {
+          ctx.moveTo(left - off, y);
+          ctx.lineTo(left - off - L, y);
+          ctx.moveTo(right + off, y);
+          ctx.lineTo(right + off + L, y);
+        });
         ctx.stroke();
       }
       async function downloadSheets(cards, name) {
@@ -575,7 +602,8 @@
       const rerender = () => {
         try {
           localStorage.setItem("thankyou-names-v2", namesBox.value);
-          localStorage.setItem("thankyou-size", sizeBox.value);
+          localStorage.setItem("thankyou-size-v2", sizeBox.value);
+          localStorage.setItem("thankyou-layout", layoutBox.value);
           localStorage.setItem("thankyou-floral-opacity", opacityBox.value);
         } catch {}
         clearTimeout(t);
@@ -583,6 +611,7 @@
       };
       namesBox.addEventListener("input", rerender);
       sizeBox.addEventListener("change", rerender);
+      layoutBox.addEventListener("change", rerender);
       opacityBox.addEventListener("input", rerender);
 
       loadAssets().then((p) => {
