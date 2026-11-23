@@ -151,15 +151,10 @@
 
       <div class="panel">
         <div>
-          <label for="size">Card size</label>
-          <select id="size">
-            <option value="6x9" selected>6 × 9 cm · with allowance (9 per A4)</option>
-            <option value="6.5x10">6.5 × 10 cm</option>
-            <option value="7x10.5">7 × 10.5 cm · for a thin souvenir</option>
-          </select>
-          <p class="hint">
-            Your plastic is 8 × 12 cm. The clicker fidget is thick, so it takes up some of the bag's width and height. The card
-            is kept smaller so it slides in flat beside it. Try one printed card in the bag before printing them all.
+          <label>Card size · 6 × 9 cm</label>
+          <p class="hint" style="margin-top: 0">
+            Sized for the 8 × 12 cm plastic with allowance for the clicker fidget. Prints 9 per A4 (3 × 3) with spacing
+            and cut marks.
           </p>
           <label for="layout" style="margin-top: 12px">Layout</label>
           <select id="layout">
@@ -210,7 +205,7 @@
         sans: '"Raleway", sans-serif',
       };
 
-      let CARD = { w: 6, h: 9 };
+      const CARD = { w: 6, h: 9 }; // fixed: fits the 8 × 12 cm souvenir bag
       let LAYOUT = "centre";
       let OPACITY = 0.3;
       let photos;
@@ -398,12 +393,10 @@
 
       /* ── Card list ── */
       const namesBox = document.getElementById("names");
-      const sizeBox = document.getElementById("size");
       const layoutBox = document.getElementById("layout");
       const opacityBox = document.getElementById("opacity");
       try {
         namesBox.value = localStorage.getItem("thankyou-names-v2") || DEFAULT_NAMES;
-        sizeBox.value = localStorage.getItem("thankyou-size-v2") ?? sizeBox.value;
         layoutBox.value = localStorage.getItem("thankyou-layout") ?? layoutBox.value;
         opacityBox.value = localStorage.getItem("thankyou-floral-opacity") ?? opacityBox.value;
       } catch {}
@@ -420,8 +413,7 @@
       const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "default";
 
       function renderPreviews() {
-        const [w, h] = sizeBox.value.split("x").map(Number);
-        CARD = { w, h };
+        const { w, h } = CARD;
         LAYOUT = layoutBox.value;
         OPACITY = opacityBox.value / 100;
         document.getElementById("opacityVal").textContent = opacityBox.value + "%";
@@ -602,7 +594,6 @@
       const rerender = () => {
         try {
           localStorage.setItem("thankyou-names-v2", namesBox.value);
-          localStorage.setItem("thankyou-size-v2", sizeBox.value);
           localStorage.setItem("thankyou-layout", layoutBox.value);
           localStorage.setItem("thankyou-floral-opacity", opacityBox.value);
         } catch {}
@@ -610,7 +601,6 @@
         t = setTimeout(renderPreviews, 200);
       };
       namesBox.addEventListener("input", rerender);
-      sizeBox.addEventListener("change", rerender);
       layoutBox.addEventListener("change", rerender);
       opacityBox.addEventListener("input", rerender);
 
