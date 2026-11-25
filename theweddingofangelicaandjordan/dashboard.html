@@ -96,8 +96,8 @@ tailwind.config = {
       <button id="addGuestBtn" class="hidden shrink-0 px-4 rounded-xl bg-wed-500 text-white text-xs font-semibold hover:bg-wed-600 active:scale-95 transition">+ Add guest</button>
     </div>
     <div class="flex gap-2 flex-wrap">
-      <button data-filter="status" data-v="all" class="active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-gray-800 text-white transition">All</button>
-      <button data-filter="status" data-v="confirmed" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-emerald-50 hover:text-emerald-600 transition">Going</button>
+      <button data-filter="status" data-v="all" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition">All</button>
+      <button data-filter="status" data-v="confirmed" class="active px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-600 text-white transition">Going</button>
       <button data-filter="status" data-v="declined" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-red-50 hover:text-red-500 transition">Declined</button>
       <button data-filter="status" data-v="pending" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-amber-50 hover:text-amber-600 transition">Pending</button>
       <button data-filter="status" data-v="checkedin" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-warm-100 text-gray-400 hover:bg-blue-50 hover:text-blue-600 transition">Checked In</button>
@@ -269,7 +269,7 @@ tailwind.config = {
 <script>
 try{screen.orientation.lock('landscape').catch(function(){});}catch(e){}
 var sb=supabase.createClient('https://twcynoszygedohyoqftu.supabase.co','sb_publishable_FAwCKHnzhIFI2_at0KubEw_msQfc6yF');
-var guests=[],sFilter='all',cFilter='all',query='',adminPw=null;
+var guests=[],sFilter='confirmed',cFilter='all',query='',adminPw=null;
 var catLabel={ps:'VIP / Sponsor',e:'Entourage',f:'Family',g:'Guest'};
 var catOrder={ps:0,f:1,e:2,g:3};
 var statusColors={
