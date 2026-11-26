@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A &amp; J · LED stage</title>
+<!-- the LED stage (gzdnimation src/wedding/stage/): the monogram page (~/wedding/monogram-golden.html) as the idle screen,
+     the number keys play Dan & Ange scenes over it. Built by build.mjs: the fonts are embedded (works offline, from file://) -->
+<style>/*FONTS*/</style>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#081a10;cursor:none}
+
+/* ── Background ── */
+.background{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 65% 60% at 50% 50%,#1a3a2a 0%,#13301f 35%,#0d2818 60%,#081a10 85%,#051208 100%);
+  opacity:0;
+  animation:bgIn 2.2s ease forwards;
+}
+
+/* ── Ambient warm glow behind monogram ── */
+.mono-ambient{
+  position:fixed;z-index:1;
+  top:var(--monoY);left:50%;
+  transform:translate(-50%,-50%);
+  width:80vw;height:75vh;
+  background:
+    radial-gradient(ellipse 45% 40% at 50% 50%,rgba(220,195,130,.14) 0%,rgba(190,165,100,.08) 25%,rgba(160,140,80,.03) 45%,transparent 65%);
+  pointer-events:none;
+  opacity:0;
+  animation:bgIn 3s ease 1s forwards;
+}
+
+/* ── Warm atmospheric haze ── */
+.atmos-haze{
+  position:fixed;inset:0;z-index:1;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg,rgba(200,175,110,.09) 0%,rgba(180,155,90,.04) 25%,transparent 50%),
+    radial-gradient(ellipse 80% 40% at 30% 15%,rgba(210,185,120,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 80% 40% at 75% 10%,rgba(210,185,120,.05) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 50% at 50% 85%,rgba(190,165,100,.04) 0%,transparent 50%);
+  opacity:0;
+  animation:bgIn 3s ease .5s forwards;
+}
+
+/* ── Vignette ── */
+.vignette{
+  position:fixed;inset:0;z-index:2;
+  pointer-events:none;
+  background:radial-gradient(ellipse 72% 68% at 50% 50%,transparent 35%,rgba(5,12,8,.55) 100%);
+}
+
+/* ── The light themes' grounds (round 32, S: theme.ts) ── over the green's background, glow, haze and vignette, under
+   the bokeh; each fades in when its theme is on. A soft lighter pool where the monogram sits, the edges a shade deeper */
+.bg-light{
+  position:fixed;inset:0;z-index:2;
+  pointer-events:none;
+  opacity:0;transition:opacity 1.2s ease;
+}
+.bg-light.beige{
+  background:
+    radial-gradient(ellipse 48% 44% at 50% 45%,rgba(255,253,247,.8) 0%,rgba(255,253,247,0) 72%),
+    radial-gradient(ellipse 78% 72% at 50% 48%,#F8F2E6 0%,#F2E9D8 48%,#EADFC8 78%,#E0D2B6 100%);
+}
+.bg-light.white{
+  background:
+    radial-gradient(ellipse 78% 72% at 50% 48%,#FFFFFF 0%,#FEFDFA 50%,#F7F5EF 82%,#EFECE3 100%);
+}
+body[data-theme=beige] .bg-light.beige,body[data-theme=white] .bg-light.white{opacity:1}
+
+/* ── Back particles canvas (behind florals & monogram) ── */
+canvas.particles-back{
+  position:fixed;inset:0;z-index:3;
+  pointer-events:none;
+  transition:opacity .9s ease;
+}
+/* a theme change: the bokeh + the monogram's glow fade out, change colour, and come back (main.tsx) */
+body.switching canvas.particles-back,body.switching canvas.particles-front{opacity:0;transition:opacity .35s ease}
+
+/* ── The couple peeking in (round 34, peek.ts): behind the florals, under the front bokeh; gone while a scene plays ── */
+.peeks{
+  position:fixed;inset:0;z-index:3;
+  pointer-events:none;overflow:hidden;
+  transition:opacity .6s ease;
+}
+body.playing .peeks{opacity:0}
+/* round 36: what the peeking couple sends OVER the monogram (the flying kiss's hearts + the BOOM's ring, the cupid's arrow
+   stuck in its heart): above the idle layer, under a scene */
+.peek-fx{
+  position:fixed;inset:0;z-index:6;
+  pointer-events:none;overflow:hidden;
+  transition:opacity .6s ease;
+}
+body.playing .peek-fx{opacity:0}
+
+/* ── Florals ── */
+.floral-top-left,
+.floral-bottom-right{
+  position:fixed;z-index:4;
+  pointer-events:none;
+  opacity:0;
+}
+.floral-top-left img,
+.floral-bottom-right img{
+  display:block;width:100%;height:auto;
+  transition:filter 1.2s ease;
+}
+/* on the light themes the florals' cream line art turns sage, by its own brightness (lighter lines lighter sage), lighter
+   than the monogram so it stays the hero (#sage, the SVG filter in the page) */
+body[data-theme=beige] .floral-top-left img,body[data-theme=beige] .floral-bottom-right img,
+body[data-theme=white] .floral-top-left img,body[data-theme=white] .floral-bottom-right img{filter:url(#sage)}
+
+.floral-top-left{
+  top:-5%;left:-4%;
+  width:clamp(180px,28vw,460px);
+  filter:drop-shadow(0 0 25px rgba(226,194,117,.2));
+  animation:floralTL 2.4s ease .5s forwards;
+}
+.floral-bottom-right{
+  bottom:-5%;right:-4%;
+  width:clamp(180px,28vw,460px);
+  transform:rotate(180deg) scale(.95);
+  filter:drop-shadow(0 0 25px rgba(226,194,117,.2));
+  animation:floralBR 2.4s ease .9s forwards;
+}
+
+/* ── Monogram ── (an SVG written on by monogram.ts; the <img> stays only when the script can't run)
+   round 30 (2026-11-25, the user: "make the monogram bigger please"): ~1.7x round 29's (42vw, at most 680px), sized by
+   the screen's width and height both so it fits the 4:3 wall and a 16:9 laptop; --mono = its width, the date sits under it.
+   round 31 (2026-11-25, "liitan mo ng konti yung monogram … make sure na fit sya sa 9x12 led wall"): 0.85x round 30's
+   (78vw/120vh), its centre --monoY up 2% so the monogram + the date sit as one block a hair above the middle; on the
+   9x12 ft wall (4:3) the ink is ~45% of the width, ~21% clear above it and ~23% below the date */
+:root{--mono:min(66vw,102vh);--monoY:43%}
+.monogram{
+  position:fixed;z-index:5;
+  top:var(--monoY);left:50%;
+  transform:translate(-50%,-50%);
+  width:var(--mono);
+}
+/* the glow (round 30): a canvas monogram.ts blurs once (.mono-glow, behind the SVG), only its opacity pulses; the SVG
+   keeps one light shadow of its own (re-blurred only while the pen writes or the light sweeps). Before: four animated
+   drop-shadows on .monogram, re-blurred every frame (a third of the frame rate at this size) */
+.monogram svg{position:relative;filter:drop-shadow(0 0 5px var(--svg-glow));transition:filter 1.2s ease}
+.mono-glow{position:absolute;pointer-events:none;opacity:0;transition:opacity 1.2s ease}
+.mono-glow canvas{display:block;width:100%;height:100%}
+body.written .mono-glow{opacity:1}
+body.written .mono-glow canvas{animation:glowPulse 7s ease-in-out infinite}
+body.playing .mono-glow canvas{animation-play-state:paused}
+body.switching .mono-glow{opacity:0;transition:opacity .35s ease}
+.monogram img{
+  display:block;width:100%;height:auto;
+  filter:brightness(1.12) drop-shadow(0 0 14px rgba(232,207,160,.3));
+}
+
+/* ── Typography ── (round 30: the names and the hashtag are gone, the user: "remove mo din yung names namin at yung
+   hashtag"; the date alone, just under the J). The J's foot is at --monoY + .28 x --mono; round 31 ("masyadong dikit
+   yung 11.27.26"): the gap under it 2.2vh (~25px) -> .065 x --mono (~62px on the wall), so it grows with the monogram */
+.typography{
+  position:fixed;z-index:6;
+  left:50%;top:calc(var(--monoY) + var(--mono) * .345);
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;
+  gap:clamp(5px,1vh,12px);
+  pointer-events:none;
+}
+
+/* the date, minimalist (round 30, "make the 11.27.26 minimalist ibang font"): Jost Light (a thin geometric sans, OFL,
+   embedded by build.mjs), wide tracking; the padding balances the space the tracking leaves after the last digit */
+.date{
+  font-family:'Jost',system-ui,sans-serif;
+  font-style:normal;
+  color:var(--date);
+  font-size:clamp(18px,3.1vh,46px);
+  font-weight:300;
+  letter-spacing:.46em;
+  padding-left:.46em;
+  white-space:nowrap;
+  text-shadow:0 0 14px var(--date-glow);
+}
+/* the theme's colours (round 32): gold on the green; sage on beige / white */
+body{--date:#E8CFA0;--date-glow:rgba(232,207,160,.28);--svg-glow:rgba(240,220,170,.32)}
+body[data-theme=beige],body[data-theme=white]{--date:#67825F;--date-glow:rgba(255,255,255,.7);--svg-glow:rgba(70,100,64,.16)}
+
+/* the date comes up once the monogram is written (body.written, set by monogram.ts), and fades out for a rewrite (R) */
+.date{opacity:0;transform:translateY(8px);transition:opacity .9s ease,transform .9s ease,color 1.2s ease,text-shadow 1.2s ease}
+body.written .date{opacity:1;transform:none;transition:opacity 1.4s ease .5s,transform 1.4s ease .5s,color 1.2s ease,text-shadow 1.2s ease}
+
+/* ── Stage: the idle layer dims while a scene plays (the scene sits over it, under the front bokeh) ── */
+.idle{
+  position:fixed;inset:0;z-index:5;
+  pointer-events:none;
+  transition:opacity 1s ease,transform 1.2s ease,filter 1s ease;
+}
+body.playing .idle{opacity:.14;transform:scale(.97);filter:blur(1.5px)}
+body.playing canvas.particles-front{opacity:.35}
+canvas.particles-front{transition:opacity 1s ease}
+#scene{
+  position:fixed;inset:0;z-index:7;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+#scene .frame{width:min(100vw,133.333vh);aspect-ratio:4/3}
+#help{
+  position:fixed;z-index:9;left:24px;bottom:24px;
+  padding:14px 18px;border-radius:12px;
+  background:rgba(5,18,10,.82);border:1px solid rgba(232,207,160,.35);
+  font-family:'Cormorant Garamond',Georgia,serif;color:#E8CFA0;font-size:18px;line-height:1.5;
+  display:none;
+}
+body.help #help{display:block}
+
+/* ── Front particles canvas (foreground bokeh, in front of everything) ── */
+canvas.particles-front{
+  position:fixed;inset:0;z-index:8;
+  pointer-events:none;
+}
+
+/* ── Keyframes ── */
+@keyframes bgIn{
+  to{opacity:1}
+}
+
+@keyframes floralTL{
+  0%{opacity:0;filter:drop-shadow(0 0 25px rgba(226,194,117,0)) blur(5px);transform:scale(.9)}
+  100%{opacity:.82;filter:drop-shadow(0 0 25px rgba(226,194,117,.2)) blur(0);transform:scale(1)}
+}
+
+@keyframes floralBR{
+  0%{opacity:0;filter:drop-shadow(0 0 25px rgba(226,194,117,0)) blur(5px);transform:rotate(180deg) scale(.88)}
+  100%{opacity:.82;filter:drop-shadow(0 0 25px rgba(226,194,117,.2)) blur(0);transform:rotate(180deg) scale(.95)}
+}
+
+@keyframes glowPulse{
+  0%,100%{opacity:.7}
+  50%{opacity:1}
+}
+
+@keyframes textFadeUp{
+  0%{opacity:0;transform:translateY(8px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .date{transition:none;opacity:1;transform:none}
+  .mono-glow canvas,body.written .mono-glow canvas{animation:none}
+  .floral-top-left,.floral-bottom-right{animation:none;opacity:.82}
+  .background,.mono-ambient{animation:none;opacity:1}
+}
+</style>
+</head>
+<body>
+
+<div class="background"></div>
+<div class="mono-ambient"></div>
+<div class="atmos-haze"></div>
+<div class="vignette"></div>
+<div class="bg-light beige"></div>
+<div class="bg-light white"></div>
+<!-- the light themes' floral colour: the line art's brightness mapped from deep sage (#5E7A58) to light sage (#AFC3A6) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="sage" color-interpolation-filters="sRGB">
+  <feColorMatrix type="matrix" values=".2265 .4454 .0830 0 -.0806  .2040 .4012 .0748 0 .0751  .2190 .4307 .0803 0 -.0811  0 0 0 1 0"/>
+</filter></svg>
+
+<canvas class="particles-back" id="pBack"></canvas>
+<div class="peeks" id="peeks"></div>
+
+<div class="floral-top-left">
+  <img src="floral-top-left.png" alt="">
+</div>
+<div class="floral-bottom-right">
+  <img src="floral-top-left.png" alt="">
+</div>
+
+<div class="idle">
+<div class="monogram">
+  <img src="monogram.png" alt="A &amp; J">
+</div>
+
+<div class="typography">
+  <div class="date">11.27.26</div>
+</div>
+</div>
+
+<div class="peek-fx" id="peekFx"></div>
+<div id="scene"></div>
+<div id="help"></div>
+
+<canvas class="particles-front" id="pFront"></canvas>
+
+<script>
+/* the canvas-2D bokeh, kept as the fallback: PixiJS draws it now (bokeh.ts in stage.js); main.tsx calls this only when
+   WebGL can't start. Fresh canvases first (a failed WebGL start may have claimed them). */
+window.startCanvasBokeh = function(){
+for (const id of ['pBack','pFront']) { const c = document.getElementById(id); const n = c.cloneNode(); c.replaceWith(n); }
+const cBack  = document.getElementById('pBack');
+const cFront = document.getElementById('pFront');
+const ctxB   = cBack.getContext('2d');
+const ctxF   = cFront.getContext('2d');
+const reduced = matchMedia('(prefers-reduced-motion:reduce)').matches;
+let W, H;
+
+/* ── Soft center attenuation ── */
+let zCx=0, zCy=0, zRx=0, zRy=0;
+
+function calcCenter(){
+  const mono = document.querySelector('.monogram [data-ink]') || document.querySelector('.monogram');
+  const typo = document.querySelector('.typography');
+  if(!mono||!typo) return;
+  const mr = mono.getBoundingClientRect();
+  const tr = typo.getBoundingClientRect();
+  const top = Math.min(mr.top, tr.top);
+  const bot = Math.max(mr.bottom, tr.bottom);
+  const lft = Math.min(mr.left, tr.left);
+  const rgt = Math.max(mr.right, tr.right);
+  zCx = (lft+rgt)/2;
+  zCy = (top+bot)/2;
+  zRx = (rgt-lft)/2 + W*.18;
+  zRy = (bot-top)/2 + H*.14;
+}
+
+function atten(px,py,minMul){
+  const dx = (px-zCx)/zRx;
+  const dy = (py-zCy)/zRy;
+  const d = dx*dx+dy*dy;
+  if(d >= 1) return 1;
+  const t = Math.sqrt(d);
+  const smooth = t*t*(3-2*t);
+  return minMul + (1-minMul)*smooth;
+}
+
+function resize(){
+  W = cBack.width = cFront.width = innerWidth;
+  H = cBack.height = cFront.height = innerHeight;
+  calcCenter();
+}
+addEventListener('resize', resize);
+resize();
+document.fonts.ready.then(()=> setTimeout(calcCenter, 100));
+
+const COL = [
+  [232,207,160],
+  [220,195,140],
+  [240,225,190],
+  [245,235,205],
+  [255,245,215],
+];
+const BOKEH_COL = [
+  [218,175,82],
+  [205,160,65],
+  [230,185,90],
+  [200,150,55],
+  [215,168,72],
+  [225,178,68],
+];
+function rCol(){ return COL[Math.random()*COL.length|0]; }
+function rBokeh(){ return BOKEH_COL[Math.random()*BOKEH_COL.length|0]; }
+
+/* Edge-biased X for bokeh: always in outer edges, never center */
+function edgeX(){
+  return Math.random()<.5
+    ? Math.random()*.28*W - 30
+    : W*.72 + Math.random()*.28*W + 30;
+}
+
+/* ═══ LAYER 1 — Background (many tiny, slow, minimal drift) ═══ */
+const BG_COUNT = 500;
+const bgParts = [];
+
+function spawnBG(randomY){
+  return {
+    x: Math.random()*W,
+    y: randomY ? Math.pow(Math.random(),.7)*H : -(Math.random()*40+5),
+    r: .4 + Math.random()*2.5,
+    a: .35 + Math.random()*.6,
+    vy: .12 + Math.random()*.3,
+    vx: (Math.random()-.5)*.015,
+    c: rCol()
+  };
+}
+for(let i=0;i<BG_COUNT;i++) bgParts.push(spawnBG(true));
+
+/* ═══ LAYER 2 — Midground (fewer, brighter, moderate speed) ═══ */
+const MID_COUNT = 120;
+const midParts = [];
+
+function spawnMID(randomY){
+  return {
+    x: Math.random()*W,
+    y: randomY ? Math.random()*H : -(Math.random()*30+5),
+    r: 1.5 + Math.random()*4,
+    a: .25 + Math.random()*.4,
+    vy: .3 + Math.random()*.45,
+    vx: (Math.random()-.5)*.06,
+    c: rCol()
+  };
+}
+for(let i=0;i<MID_COUNT;i++) midParts.push(spawnMID(true));
+
+/* ═══ LAYER 3 — Foreground bokeh (edge-biased, three size tiers) ═══ */
+const FG_VLARGE = 1;   // very large: 35-55px
+const FG_LARGE  = 8;   // large: 22-38px
+const FG_MED    = 15;  // medium: 12-26px
+const fgParts = [];
+
+function spawnFG(randomY, size){
+  const r = size==='vl' ? 35+Math.random()*20
+          : size==='lg' ? 22+Math.random()*16
+          :               12+Math.random()*14;
+  const a = size==='vl' ? .35 + Math.random()*.15
+          : size==='lg' ? .5 + Math.random()*.2
+          :               .85 + Math.random()*.15;
+  return {
+    x: edgeX(),
+    y: randomY ? Math.random()*H : -(r + Math.random()*80),
+    r: r, size: size,
+    a: a,
+    vy: .35 + Math.random()*.45,
+    vx: (Math.random()-.5)*.1,
+    c: rBokeh()
+  };
+}
+for(let i=0;i<FG_VLARGE;i++) fgParts.push(spawnFG(true,'vl'));
+for(let i=0;i<FG_LARGE;i++)  fgParts.push(spawnFG(true,'lg'));
+for(let i=0;i<FG_MED;i++)    fgParts.push(spawnFG(true,'md'));
+
+/* ═══ TWINKLES — stationary warm points ═══ */
+const TW_COUNT = 18;
+const twinkles = [];
+function ease(t){ return t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2; }
+
+for(let i=0;i<TW_COUNT;i++){
+  twinkles.push({
+    x: Math.random()*W, y: Math.random()*H,
+    r: .5+Math.random()*1.5,
+    base: .1+Math.random()*.12, peak: .45+Math.random()*.45,
+    a: .1+Math.random()*.12,
+    state:'idle', wait:Math.random()*5000+1500,
+    dur:2000+Math.random()*3000, elapsed:0,
+    c: rCol()
+  });
+}
+
+/* ── Drawing helpers ── */
+function drawDot(ctx,x,y,r,c,a){
+  ctx.beginPath();
+  ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},${a})`;
+  ctx.fill();
+}
+
+function drawGlow(ctx,x,y,r,c,a){
+  const g = ctx.createRadialGradient(x,y,0,x,y,r);
+  g.addColorStop(0,`rgba(${c[0]},${c[1]},${c[2]},${a})`);
+  g.addColorStop(.3,`rgba(${c[0]},${c[1]},${c[2]},${a*.6})`);
+  g.addColorStop(1,`rgba(${c[0]},${c[1]},${c[2]},0)`);
+  ctx.beginPath();
+  ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.fillStyle=g;
+  ctx.fill();
+}
+
+function drawBokeh(ctx,x,y,r,c,a){
+  const g = ctx.createRadialGradient(x,y,0,x,y,r);
+  g.addColorStop(0,`rgba(${c[0]},${c[1]},${c[2]},${a})`);
+  g.addColorStop(.65,`rgba(${c[0]},${c[1]},${c[2]},${a*.85})`);
+  g.addColorStop(.82,`rgba(${c[0]},${c[1]},${c[2]},${a*.4})`);
+  g.addColorStop(.93,`rgba(${c[0]},${c[1]},${c[2]},${a*.1})`);
+  g.addColorStop(1,`rgba(${c[0]},${c[1]},${c[2]},0)`);
+  ctx.beginPath();
+  ctx.arc(x,y,r,0,Math.PI*2);
+  ctx.fillStyle=g;
+  ctx.fill();
+}
+
+/* ── Main loop ── */
+let prev = 0;
+
+function frame(t){
+  if(reduced){ drawStatic(); return; }
+  const dt = Math.min(t-prev,50);
+  prev = t;
+  const s = dt/16.667;
+
+  ctxB.clearRect(0,0,W,H);
+  ctxF.clearRect(0,0,W,H);
+
+  /* Layer 1: Background — slow downward, minimal drift */
+  for(let i=0;i<bgParts.length;i++){
+    const p = bgParts[i];
+    p.y += p.vy*s;
+    p.x += p.vx*s;
+    if(p.y > H+5){ bgParts[i]=spawnBG(false); continue; }
+    const ba=atten(p.x,p.y,0); if(ba>0) drawDot(ctxB,p.x,p.y,p.r,p.c,p.a*ba);
+  }
+
+  /* Layer 2: Midground — moderate downward, slight drift */
+  for(let i=0;i<midParts.length;i++){
+    const p = midParts[i];
+    p.y += p.vy*s;
+    p.x += p.vx*s;
+    if(p.y > H+10){ midParts[i]=spawnMID(false); continue; }
+    const ma=atten(p.x,p.y,0); if(ma>0) drawGlow(ctxB,p.x,p.y,p.r*2,p.c,p.a*ma);
+  }
+
+  /* Twinkles */
+  let twA=0;
+  for(let i=0;i<twinkles.length;i++) if(twinkles[i].state!=='idle') twA++;
+  for(let i=0;i<twinkles.length;i++){
+    const tw=twinkles[i];
+    if(tw.state==='idle'){
+      tw.wait-=dt;
+      if(tw.wait<=0&&twA<6){tw.state='brighten';tw.elapsed=0;tw.dur=2500+Math.random()*3000;twA++;}
+      tw.a=tw.base;
+    } else if(tw.state==='brighten'){
+      tw.elapsed+=dt;
+      const p=Math.min(tw.elapsed/tw.dur,1);
+      tw.a=tw.base+(tw.peak-tw.base)*ease(p);
+      if(p>=1){tw.state='dim';tw.elapsed=0;tw.dur=2500+Math.random()*3000;}
+    } else {
+      tw.elapsed+=dt;
+      const p=Math.min(tw.elapsed/tw.dur,1);
+      tw.a=tw.peak-(tw.peak-tw.base)*ease(p);
+      if(p>=1){tw.state='idle';tw.wait=3000+Math.random()*6000;twA--;}
+    }
+    const ta=atten(tw.x,tw.y,0); if(ta>0) drawDot(ctxB,tw.x,tw.y,tw.r,tw.c,Math.max(0,Math.min(1,tw.a))*ta);
+  }
+
+  /* Layer 3: Foreground bokeh — slightly faster, gentle drift */
+  for(let i=0;i<fgParts.length;i++){
+    const p = fgParts[i];
+    p.y += p.vy*s;
+    p.x += p.vx*s;
+    if(p.y > H+p.r+20){ fgParts[i]=spawnFG(false,p.size); continue; }
+    const fa=atten(p.x,p.y,0); if(fa>0) drawBokeh(ctxF,p.x,p.y,p.r,p.c,p.a*fa);
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function drawStatic(){
+  ctxB.clearRect(0,0,W,H); ctxF.clearRect(0,0,W,H);
+  for(const p of bgParts) drawDot(ctxB,p.x,p.y,p.r,p.c,p.a*.4);
+  for(const p of midParts) drawGlow(ctxB,p.x,p.y,p.r*2,p.c,p.a*.4);
+  for(const tw of twinkles) drawDot(ctxB,tw.x,tw.y,tw.r,tw.c,tw.base);
+  for(const p of fgParts) drawBokeh(ctxF,p.x,p.y,p.r,p.c,p.a*.4);
+}
+
+requestAnimationFrame(frame);
+};
+/* if stage.js never starts (no file, a script error), show the date anyway */
+setTimeout(function(){ if(!window.__stageReady){ document.body.classList.add('written'); window.startCanvasBokeh(); } }, 4000);
+</script>
+<script src="stage.js"></script>
+
+</body>
+</html>
