@@ -116,6 +116,7 @@
   section { margin-top: 26px; }
   .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; padding: 0 2px; }
   .sec-head h2 { font-family: "Cormorant Garamond", serif; font-size: 28px; font-weight: 600; color: var(--ink-dark); }
+  .place { margin: -4px 2px 10px; font-size: 13px; color: var(--muted); }
   .sec-head .range { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .04em; white-space: nowrap; }
   .sec-head h2::before {
     content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 10px; vertical-align: 4px;
@@ -178,6 +179,7 @@
   .r-jimmy { --rc: #9a6a0c; --rbg: #f6ebcf; }
   .r-dj    { --rc: #2f6690; --rbg: #e2edf6; }
   .r-studio { --rc: #23736d; --rbg: #ddefed; }
+  .r-hmua  { --rc: #b24a3c; --rbg: #f8e4df; }
   .r-coor  { --rc: #4f6b5c; --rbg: #e8efe9; }
   .role {
     display: inline-flex; align-items: center; gap: 4px;
@@ -206,15 +208,18 @@
   body[data-role="host"] .item.has-host,
   body[data-role="jimmy"] .item.has-jimmy,
   body[data-role="dj"] .item.has-dj,
-  body[data-role="studio"] .item.has-studio { opacity: 1; background: var(--hl); box-shadow: inset 4px 0 0 var(--hc); }
+  body[data-role="studio"] .item.has-studio,
+  body[data-role="hmua"] .item.has-hmua { opacity: 1; background: var(--hl); box-shadow: inset 4px 0 0 var(--hc); }
   body[data-role="host"]  { --hc: #9b4d78; --hl: #fbf1f6; }
   body[data-role="jimmy"] { --hc: #9a6a0c; --hl: #fcf5e3; }
   body[data-role="dj"]    { --hc: #2f6690; --hl: #eef5fb; }
   body[data-role="studio"] { --hc: #23736d; --hl: #edf7f6; }
+  body[data-role="hmua"]   { --hc: #b24a3c; --hl: #fcf0ed; }
   body[data-role="jimmy"] .item.has-jimmy .song:not(.has-jimmy),
   body[data-role="dj"] .item.has-dj .song:not(.has-dj) { opacity: .3; }
   body[data-role="host"] .role.r-host,
   body[data-role="studio"] .role.r-studio,
+  body[data-role="hmua"] .role.r-hmua,
   body[data-role="jimmy"] .song .role.r-jimmy,
   body[data-role="dj"] .song .role.r-dj { background: var(--rc); color: #fff; }
 
@@ -271,6 +276,7 @@
     <button type="button" class="role r-jimmy" data-role="jimmy" aria-pressed="false">&#127927; Sir Jimmy</button>
     <button type="button" class="role r-dj" data-role="dj" aria-pressed="false">&#127911; DJ</button>
     <button type="button" class="role r-studio" data-role="studio" aria-pressed="false">&#128247; Smart Shot Studio</button>
+    <button type="button" class="role r-hmua" data-role="hmua" aria-pressed="false">&#128132; HMUA</button>
   </nav>
 
   <a id="now" href="#">
@@ -296,24 +302,30 @@
 // m = minutes after midnight, used to place items on the overview and to highlight "now".
 // key: true marks a main moment (gold dot).
 var PROGRAM = [
-  { id: 'preparation', title: 'Preparation', color: 'var(--prep)', range: '2:00 – 10:00 AM', items: [
+  { id: 'preparation', title: 'Preparation', color: 'var(--prep)', range: '2:00 – 10:00 AM', place: 'Tierra Montephine, Alfonso', items: [
     { t: '2:00 AM', m: 120, what: 'Bride & Groom wake up', note: 'Preparing HMUA accessories, eat breakfast' },
-    { t: '3:00 AM', m: 180, what: 'HMUA arrives' },
-    { t: '3:30 AM', m: 210, what: 'HMUA starts', note: 'Entourage' },
+    { t: '3:00 AM', end: 'to 3:30 AM', m: 180, what: 'HMUA ingress & setup', who: ['hmua'], note: '30 min' },
+    { t: '3:30 AM', end: 'to 5:30 AM', m: 210, what: "HMUA starts: Bride's prep look", who: ['hmua'], note: '2 hrs · Entourage' },
     { t: '5:00 AM', m: 300, what: 'Coordinators arrive', note: 'Endorsement of all necessary accessories' },
     { t: '5:00 AM', m: 300, what: 'Florist arrives', note: 'Endorsement of flowers' },
     { t: '5:00 AM', m: 300, what: 'Photo & video team arrives', who: ['studio'], note: 'Preparing cameras, eat breakfast' },
+    { t: '5:00 AM', end: 'to 5:30 AM', m: 300, what: "Groom's grooming", who: ['hmua'], note: '30 min' },
     { t: '5:30 AM', end: 'to 10:00 AM', m: 330, what: 'Photoshoot', who: ['studio'], list: [
       'Details',
       'Pogi shot of the Groom / Beauty shot of the Bride',
       'Groom with groomsmen · Bride with bridesmaids',
       'Groom with parents · Bride with parents'
     ] },
+    { t: '5:30 AM', end: 'to 6:30 AM', m: 330, what: "Groom's mother HMU", who: ['hmua', 'studio'], note: '1 hr · P/V shoot' },
+    { t: '6:30 AM', end: 'to 7:30 AM', m: 390, what: "Bride's mother HMU", who: ['hmua', 'studio'], note: '1 hr · P/V shoot' },
+    { t: '7:30 AM', end: 'to 8:00 AM', m: 450, what: "Bride's ceremony look", who: ['hmua', 'studio'], note: '30 min · P/V shoot' },
+    { t: '9:30 AM', m: 570, what: 'Retouch groom & mothers', who: ['hmua'] },
     { t: '9:30 AM', m: 570, what: 'Groom proceeds to the ceremony area', note: 'Everyone proceeds to the ceremony area', key: true },
     { t: '10:00 AM', m: 600, what: 'Bride proceeds to the ceremony area', key: true }
   ] },
-  { id: 'ceremony', title: 'Ceremony', color: 'var(--cere)', range: '10:00 AM – 1:00 PM', items: [
+  { id: 'ceremony', title: 'Ceremony', color: 'var(--cere)', range: '10:00 AM – 1:00 PM', place: 'St. John Nepomucene Parish, Alfonso', items: [
     { t: '10:00 AM', m: 600, what: 'Assembly of entourage' },
+    { t: '10:00 AM', m: 600, what: 'Retouch bride before the bridal march', who: ['hmua'] },
     { t: '10:30 AM', m: 630, what: 'Entourage & bridal march', key: true, music: [
       { label: 'Entourage march', songs: ['Pasilyo – SunKissed Lola'], how: 'Saxophone' },
       { label: 'Bridal walk', songs: ['Goodness of God – Jenn Johnson'], how: 'Saxophone' }
@@ -332,12 +344,14 @@ var PROGRAM = [
       'Friends & workmates',
       'Optional: other groups'
     ] },
+    { t: '12:30 PM', m: 750, what: 'Retouch bride & groom for the P/V shoot', who: ['hmua'] },
     { t: '12:30 PM', m: 750, what: 'Postnup', who: ['studio'], note: 'Groom with groomsmen · Bride with bridesmaids' }
   ] },
-  { id: 'reception', title: 'Reception', color: 'var(--recep)', range: '1:00 PM onwards', items: [
+  { id: 'reception', title: 'Reception', color: 'var(--recep)', range: '1:00 PM onwards', place: 'Maharlika Events, Tagaytay', items: [
     { t: '1:00 PM', m: 780, what: 'Cocktail', music: [
       { label: 'Cocktails', pick: true, how: 'Saxophone', sub: 'Instrumental, as guests arrive' }
     ] },
+    { t: '1:30 PM', end: 'to 2:00 PM', m: 810, what: "Bride's reception look · retouch groom", who: ['hmua'], note: '30 min' },
     { t: '2:00 PM', m: 840, what: 'Program proper', key: true, who: ['host', 'studio'], list: [
       'Pre-wedding video',
       'Introduction of the host: greetings, venue, purpose, self intro',
@@ -389,6 +403,7 @@ var PROGRAM = [
     ], music: [
       { label: 'Dinner set', pick: true, how: 'Saxophone', sub: 'Hired saxophonist: Jimmy Rozul' }
     ] },
+    { t: '3:00 PM', m: 900, what: 'HMUA pack up & egress', who: ['hmua'] },
     { t: '', m: null, what: 'Well wishers', who: ['host'], note: 'Mother of the groom · parents of the bride · ninongs & ninangs' },
     { t: '', m: null, what: 'Games (optional)', who: ['host'], list: [
       'Game 1: Dance competition with a twist. 6 male & 6 female, open to all, single or not. 2 prizes, props: surgical masks',
@@ -440,7 +455,8 @@ var ROLES = {
   host:  { label: 'Host Saiky', icon: '&#127908;' },
   jimmy: { label: 'Sir Jimmy',  icon: '&#127927;' },
   dj:    { label: 'DJ',         icon: '&#127911;' },
-  studio: { label: 'Smart Shot Studio', icon: '&#128247;' }
+  studio: { label: 'Smart Shot Studio', icon: '&#128247;' },
+  hmua:  { label: 'HMUA',       icon: '&#128132;' }
 };
 function rolePill(r, extra) {
   return '<span class="role r-' + r + '">' + ROLES[r].icon + ' ' + ROLES[r].label + (extra ? ' · ' + esc(extra) : '') + '</span>';
@@ -497,10 +513,11 @@ function itemRoles(it) {
   var out = '';
   PROGRAM.forEach(function (sec) {
     out += '<section id="' + sec.id + '" style="--c:' + sec.color + '">' +
-      '<div class="sec-head"><h2>' + sec.title + '</h2><span class="range">' + sec.range + '</span></div><div class="card">';
+      '<div class="sec-head"><h2>' + sec.title + '</h2><span class="range">' + sec.range + '</span></div>' +
+      (sec.place ? '<p class="place">&#128205; ' + esc(sec.place) + '</p>' : '') + '<div class="card">';
     var prevT = null;
     sec.items.forEach(function (it, i) {
-      var same = it.t && it.t === prevT;
+      var same = it.t && it.t === prevT && !it.end;
       prevT = it.t;
       var list = '';
       if (it.list) {
