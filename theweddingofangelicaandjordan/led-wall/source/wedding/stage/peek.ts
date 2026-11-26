@@ -503,7 +503,8 @@ export const startPeeks =(layer: HTMLElement, fxLayer: HTMLElement = layer, hook
   // (round 39: 0 = non-stop, every test key's every variant one after another, shuffled, no show twice in a row)
   let nonstop = false, queue: [(typeof TEST_KEYS)[number], Who | "both", Edge][] = [];
   let current: Show | null = null;
-  const ready = () => document.body.classList.contains("written") && !document.body.classList.contains("playing") && !document.hidden;
+  // (round 40: not while a scene plays, the piggyback run too (body.scene, main.tsx): the next one waits till it's over)
+  const ready = () => { const c = document.body.classList; return c.contains("written") && !c.contains("playing") && !c.contains("scene") && !document.hidden; };
   // both: side by side along the bottom or the top (Dan left + Ange right at the bottom, the other way round upside down)
   const pair = (edge: Edge = Math.random() < 0.5 ? "bottom" : "top") => [{ H: heads.dan, spot: spotFor("dan", edge) }, { H: heads.ange, spot: spotFor("ange", edge) }];
   const pickBeat = () => { const names = [...Object.keys(BEATS), "cupid", "sablay"].filter((n) => n !== last); const n = names[Math.floor(Math.random() * names.length)]; last = n; return n; };
@@ -1287,6 +1288,9 @@ export const startPeeks =(layer: HTMLElement, fxLayer: HTMLElement = layer, hook
     // P: off (any peek playing finishes) / on (one comes right away; the random ones, not non-stop)
     toggle: () => { on = !on; nonstop = false; if (on) schedule(0.6); else clearTimeout(timer); return on; },
     now: () => { on = true; clearTimeout(timer); peek(); },
+    // a scene starts (round 40): the peek playing goes (a finished one would have asked for the next: asked here
+    // instead), and the next waits till the scene is over (peek() → ready())
+    pause: () => { stop(); schedule(2); },
     // (for checking, from the console: stagePeek("ange", "right", "wink"), stagePeek("both", "bottom", "kissboom"),
     // stagePeek("dan", "right", "cupid"), "taguan", "stolen"; round 38: "bonk", "battle", "nakaw", "agawan", ("dan",
     // "right", "sablay"); round 39: ("ange", "left", "cupid" / "sablay"), ("ange", "top", "battle") = Ange first, from the

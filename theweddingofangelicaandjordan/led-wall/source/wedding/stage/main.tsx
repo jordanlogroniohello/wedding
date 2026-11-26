@@ -77,6 +77,8 @@ window.addEventListener("keydown", (e) => {
   else if (!e.metaKey && !e.ctrlKey && !e.altKey) peeks.hotkey(k);
 });
 
+const MODIFIERS = new Set(["shift", "control", "alt", "meta", "capslock", "fn", "os", "dead"]);
+
 // The LED stage: the monogram page (index.html) idles; a number key plays that scene over it (the monogram dims), then
 // it goes back to the monogram (a scene with `dim: false` plays over it undimmed). Esc stops a scene, F = full screen, H = the key list. A scene plays its rendered video
 // (transparent WebM, scenes/<id>.webm), or a runner runs its strip across the whole screen (Runner.tsx); without one it's
@@ -86,38 +88,63 @@ const Stage: React.FC = () => {
   const [run, setRun] = useState(0); // the same key again restarts the scene
   const [live, setLive] = useState<Record<string, boolean>>({}); // the scenes with no video
   const ref = useRef<PlayerRef>(null);
+  // (the scene on now, for the keys: a looping scene stops on any key)
+  const on = useRef<string | null>(null);
+  const go = (k: string | null) => {
+    on.current = k;
+    setScene(k);
+    if (k) setRun((r) => r + 1);
+  };
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const k = e.key.toLowerCase();
-      if (k === "escape") setScene(null);
-      else if (k === "f") {
+      if (e.repeat) return;
+      if (k === "f") {
         if (document.fullscreenElement) void document.exitFullscreen();
         else void document.documentElement.requestFullscreen();
-      } else if (k === "h" || k === "?") document.body.classList.toggle("help");
-      else if (SCENES[k]) {
-        setScene(k);
-        setRun((r) => r + 1);
+        return;
       }
+      if (k === "h" || k === "?") {
+        document.body.classList.toggle("help");
+        return;
+      }
+      // (a modifier on its own, or a shortcut like Cmd+Tab, isn't a key press for the stage)
+      if (MODIFIERS.has(k) || e.metaKey || e.ctrlKey || e.altKey) return;
+      // round 40 (the user: "non stop to unless pindutin ulit yung no.1 or other keys"): a looping scene (the piggyback
+      // run) runs until its own key again (stop) or any other key (stop, and that key does its own thing too: a peek's
+      // letter plays it, S changes the colours, ...); F and H only change the screen, so they leave it running
+      const cur = on.current;
+      if (cur && SCENES[cur].loop) {
+        go(null);
+        if (k === cur) return;
+      }
+      if (k === "escape") go(null);
+      else if (SCENES[k]) go(k);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
     document.body.classList.toggle("playing", scene !== null && SCENES[scene].dim);
+    // (no peeks while a scene plays: one playing stops, the next waits till the scene is over; peek.ts ready())
+    document.body.classList.toggle("scene", scene !== null);
+    if (scene) peeks.pause();
   }, [scene]);
   useEffect(() => {
     const p = ref.current;
     if (!p) return;
     // (the playing frame, for checking the playback speed from the console)
     (window as unknown as { stageFrame?: () => number }).stageFrame = () => p.getCurrentFrame();
-    const end = () => setScene(null);
+    const end = () => go(null);
     p.addEventListener("ended", end);
     return () => p.removeEventListener("ended", end);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene, run]);
   if (!scene) return null;
   const s = SCENES[scene];
   const fail = () => setLive((l) => ({ ...l, [s.id]: true }));
-  if (s.runner && !live[s.id]) return <Runner key={run} id={s.id} spec={s.runner} onEnd={() => setScene(null)} onFail={fail} />;
+  if (s.runner && !live[s.id]) return <Runner key={run} id={s.id} spec={s.runner} loop={s.loop} banner={s.banner} onEnd={() => go(null)} onFail={fail} />;
   // (a wide scene: the screen's whole width, along its bottom, not in the 4:3 box)
   const box: React.CSSProperties | undefined =
     s.fit === "bottom" ? { position: "absolute", left: 0, bottom: 0, width: "100vw", aspectRatio: `${s.width} / ${s.height}` } : undefined;
@@ -130,7 +157,7 @@ const Stage: React.FC = () => {
           autoPlay
           muted
           playsInline
-          onEnded={() => setScene(null)}
+          onEnded={() => go(null)}
           onError={fail}
           style={{ width: "100%", height: "100%", display: "block" }}
         />
@@ -170,7 +197,7 @@ const peekKeys = () => {
   return lines;
 };
 const fillHelp = () => {
-  if (help) help.innerHTML = [...Object.entries(SCENES).map(([k, s]) => `<b>${k}</b> &nbsp;${s.name}`), "<b>Esc</b> &nbsp;back to the monogram", "<b>R</b> &nbsp;write the monogram again", "<b>L</b> &nbsp;the look: bokeh / + sparkle + flare / sparkle + flare", "<b>S</b> &nbsp;the colours: gold on green / sage on beige / sage on white", "<b>P</b> &nbsp;the faces peeking in: on / off", ...peekKeys(), "<b>F</b> &nbsp;full screen", "<b>H</b> &nbsp;this list", screenLine()].join("<br>");
+  if (help) help.innerHTML = [...Object.entries(SCENES).map(([k, s]) => `<b>${k}</b> &nbsp;${s.name}${s.loop ? `, back and forth non-stop (${k} again or any key = stop)` : ""}`), "<b>Esc</b> &nbsp;back to the monogram", "<b>R</b> &nbsp;write the monogram again", "<b>L</b> &nbsp;the look: bokeh / + sparkle + flare / sparkle + flare", "<b>S</b> &nbsp;the colours: gold on green / sage on beige / sage on white", "<b>P</b> &nbsp;the faces peeking in: on / off", ...peekKeys(), "<b>F</b> &nbsp;full screen", "<b>H</b> &nbsp;this list", screenLine()].join("<br>");
 };
 fillHelp();
 addEventListener("resize", fillHelp);

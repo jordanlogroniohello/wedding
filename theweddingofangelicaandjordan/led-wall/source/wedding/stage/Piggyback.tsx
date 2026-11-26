@@ -1,7 +1,7 @@
 import { AbsoluteFill, useCurrentFrame } from "remotion";
-import { PIGGY_GROUND, PIGGY_SPEED, PIGGY_STRIDE, PiggyRun, piggyBob } from "../painted/PiggyRun";
+import { PIGGY_GROUND, PIGGY_SPEED, PIGGY_STRIDE, PiggyRun, piggyArmAt, piggyBob } from "../painted/PiggyRun";
 
-// The LED stage's key 2: the piggyback run (round 20; the user: "they running from left to right … no need to be super
+// The LED stage's key 1 (key 2 till round 40): the piggyback run (round 20; the user: "they running from left to right … no need to be super
 // big … 30% of the screen bottom … seamlessly entering and exit"). Dan runs across the bottom of the screen with Ange on
 // his back, in from past the screen's left edge, out past its right, at his feet's own speed (a planted foot stays put),
 // a soft shadow under them and a puff of dust where each foot lands; the monogram stays up under them.
@@ -9,7 +9,8 @@ import { PIGGY_GROUND, PIGGY_SPEED, PIGGY_STRIDE, PiggyRun, piggyBob } from "../
 // box, so on a wider screen they came in from the box's edge. The stage now draws the run itself, full screen
 // (Runner.tsx): one stride rendered in place (`PiggybackLoop`, packed into scenes/Piggyback.webp by build.mjs), moved
 // across the whole screen at the feet's speed, the dust drawn there too. `Piggyback` (the run across a 4:3 frame) stays for
-// the Studio and as the stage's fallback without the strip.
+// the Studio and as the stage's fallback without the strip. Round 40 (2026-11-26): on key 1, back and forth non-stop with
+// the thank-you banner on a string from Ange's fist (Runner.tsx + banner.ts; `hand` below)
 
 // (their widest reach, picture px: her hair and dress on the left, his fist on the right; the picture is 1391 px tall,
 // bouquet to soles)
@@ -18,6 +19,10 @@ const RIGHT = 1120;
 const FIGURE_H = 1391;
 // where each heel lands (picture px from the picture's left: the near leg, the far one), every half stride, near first
 const HEEL_X = [805, 787];
+// Ange's fist round the bouquet's stem, where the banner's string is tied (round 40; picture px, the arm at rest:
+// measured on the strip's frame 0 at [142, 128] strip px, the bottom of her fist on the ribbon wrap, and followed
+// through the stride with piggyArmAt: on the fist in frames 0 / 5 / 10 / 15)
+const HAND = [340.2, 282.5];
 // a puff of dust (picture px), t = 0..1 over DUST frames after a heel lands: kicked back and up from the heel, fading
 const DUST = 14;
 const dustAt = (t: number) =>
@@ -68,6 +73,8 @@ export type RunnerSpec = {
   scale: number;
   // a puff of dust where a heel lands (picture px, t = 0..1 over `frames`)
   dust: { frames: number; color: string; at: (t: number) => { dx: number; dy: number; r: number; o: number }[] };
+  // where the banner's string is held, every frame of the stride (strip px; round 40)
+  hand?: [number, number][];
 };
 export const PIGGY_RUNNER: RunnerSpec = {
   frames: PIGGY_STRIDE,
@@ -80,6 +87,10 @@ export const PIGGY_RUNNER: RunnerSpec = {
   heels: HEEL_X.map((h) => (OX + h) * RS),
   scale: RS,
   dust: { frames: DUST, color: DUST_COLOR, at: dustAt },
+  hand: Array.from({ length: PIGGY_STRIDE }, (_, f) => {
+    const [x, y] = piggyArmAt(f / PIGGY_STRIDE, HAND);
+    return [(OX + x) * RS, (OY + y) * RS] as [number, number];
+  }),
 };
 export const PiggybackLoop: React.FC = () => {
   const f = useCurrentFrame();

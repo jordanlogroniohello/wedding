@@ -127,7 +127,11 @@ if (process.argv.includes("--dj")) {
     "  letters  play one of the peeks right now, for testing (the list is in H). Not needed on the day",
     "  0      all the peeks non-stop, one after another (for testing)",
     "  9      stop all the peeks now (P or 0 turns them on again)",
-    ...SCENES.map((s) => `  ${s.key}      play "${s.name}", then back to the monogram`),
+    ...SCENES.map((s) =>
+      s.loop
+        ? `  ${s.key}      "${s.name}"${s.banner ? ` with the "${s.banner.join(" ")}" banner` : ""}: back and forth across the bottom, non-stop. Press ${s.key} again (or any other key) to stop it; F and H don't stop it`
+        : `  ${s.key}      play "${s.name}", then back to the monogram`,
+    ),
     "  Esc    stop a scene, back to the monogram",
     "  H      show / hide this list of keys on screen",
     "",

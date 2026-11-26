@@ -173,6 +173,15 @@ const baseAt = (p: number): MeshPlace => {
   };
 };
 
+// where a point of her bouquet arm (picture px, as in the picture) is at phase p: her ride a beat behind his dip, the
+// arm's swing round its shoulder, his dip (baseAt's moves, the arm's weights at 1). The stage's banner string is tied at
+// her fist with it (round 40)
+export const piggyArmAt = (p: number, pt: readonly number[]): V => {
+  const ride = piggyBob(p - 0.07) - piggyBob(p);
+  const [x, y] = turn([pt[0], pt[1] + ride], PIGGY.pivots.bouquet, rad(6 * Math.sin(2 * Math.PI * p - 0.8)));
+  return [x, y + piggyBob(p)];
+};
+
 // the stride's length in frames (two steps)
 export const PIGGY_STRIDE = 20;
 // how far the ground goes by in a frame while a foot is down (picture px), for a ground drawn under them
