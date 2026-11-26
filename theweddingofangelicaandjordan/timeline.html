@@ -180,7 +180,7 @@
   .r-dj     { --rc: #2f6690; --rbg: #e2edf6; }
   .r-studio { --rc: #23736d; --rbg: #ddefed; }
   .r-hmua   { --rc: #b24a3c; --rbg: #f8e4df; }
-  .r-coor   { --rc: #4f6b5c; --rbg: #e8efe9; }
+  .r-coor   { --rc: #56607a; --rbg: #e6e8ef; }
   .r-all    { --rc: #1a3c2c; --rbg: #dfe7e2; }
   .role {
     display: inline-flex; align-items: center; gap: 5px;
@@ -220,19 +220,22 @@
   body[data-role="jimmy"] .item.has-jimmy,
   body[data-role="dj"] .item.has-dj,
   body[data-role="studio"] .item.has-studio,
-  body[data-role="hmua"] .item.has-hmua { opacity: 1; background: var(--hl); box-shadow: inset 5px 0 0 var(--hc); }
+  body[data-role="hmua"] .item.has-hmua,
+  body[data-role="coor"] .item.has-coor { opacity: 1; background: var(--hl); box-shadow: inset 5px 0 0 var(--hc); }
   body[data-role="host"]   { --hc: #9b4d78; --hl: #fbf1f6; }
   body[data-role="jimmy"]  { --hc: #9a6a0c; --hl: #fcf5e3; }
   body[data-role="dj"]     { --hc: #2f6690; --hl: #eef5fb; }
   body[data-role="studio"] { --hc: #23736d; --hl: #edf7f6; }
   body[data-role="hmua"]   { --hc: #b24a3c; --hl: #fcf0ed; }
+  body[data-role="coor"]   { --hc: #56607a; --hl: #f1f2f7; }
   body[data-role="jimmy"] .item.has-jimmy .song:not(.has-jimmy),
   body[data-role="dj"] .item.has-dj .song:not(.has-dj) { opacity: .3; }
   body[data-role="host"] .body .role:not(.r-host),
   body[data-role="jimmy"] .body .role:not(.r-jimmy),
   body[data-role="dj"] .body .role:not(.r-dj),
   body[data-role="studio"] .body .role:not(.r-studio),
-  body[data-role="hmua"] .body .role:not(.r-hmua) { opacity: .35; box-shadow: none; }
+  body[data-role="hmua"] .body .role:not(.r-hmua),
+  body[data-role="coor"] .body .role:not(.r-coor) { opacity: .35; box-shadow: none; }
   /* Everyone: color bar per person on every item they're part of */
   body[data-role="all"] .item.has-any { box-shadow: var(--bars); background: #fffaf1; }
 
@@ -297,6 +300,7 @@
     <button type="button" class="role r-dj" data-role="dj" aria-pressed="false">&#127911; DJ</button>
     <button type="button" class="role r-studio" data-role="studio" aria-pressed="false">&#128247; Smart Shot Studio</button>
     <button type="button" class="role r-hmua" data-role="hmua" aria-pressed="false">&#128132; HMUA</button>
+    <button type="button" class="role r-coor" data-role="coor" aria-pressed="false">&#128203; Coordinators</button>
     <button type="button" class="role clear" id="clearRoles" disabled>&#10005; Clear</button>
   </nav>
 
@@ -324,7 +328,8 @@ var PROGRAM = [
     { t: '2:00 AM', m: 120, what: 'Bride & Groom wake up', note: 'Preparing HMUA accessories, eat breakfast' },
     { t: '3:00 AM', end: 'to 3:30 AM', m: 180, what: 'HMUA ingress & setup', who: ['hmua'], note: '30 min' },
     { t: '3:30 AM', end: 'to 5:30 AM', m: 210, what: "HMUA starts: Bride's prep look", who: ['hmua'], note: '2 hrs · Entourage' },
-    { t: '5:00 AM', m: 300, what: 'Coordinators arrive', note: 'Endorsement of all necessary accessories' },
+    { t: '4:00 AM', m: 240, what: 'Crew meal delivery', who: ['coor'], note: 'c/o Sir Dane' },
+    { t: '5:00 AM', m: 300, what: 'Coordinators arrive', who: ['coor'], note: 'Endorsement of all necessary accessories' },
     { t: '5:00 AM', m: 300, what: 'Florist arrives', note: 'Endorsement of flowers' },
     { t: '5:00 AM', m: 300, what: 'Photo & video team arrives', who: ['studio'], note: 'Preparing cameras, eat breakfast' },
     { t: '5:00 AM', end: 'to 5:30 AM', m: 300, what: "Groom's grooming", who: ['hmua'], note: '30 min' },
@@ -401,10 +406,14 @@ var PROGRAM = [
       { label: 'Mother & groom dance', songs: ['You Are the Reason – Calum Scott'], how: 'Saxophone' },
       { label: 'Father & bride dance', songs: ['Because You Loved Me – Celine Dion'], how: 'Saxophone' },
       { label: 'Sweet dance', songs: ['Risk It All – Bruno Mars'], how: 'Saxophone' },
-      { label: 'Prosperity dance', how: 'MP3', by: 'DJ', sub: 'Lace & envelopes · 2–3 songs · maid of honor & best man assist', songs: [
-        { text: 'Perfect – Ed Sheeran', url: 'https://www.youtube.com/watch?v=-E5ovOA9VM8' },
-        { text: 'Forevermore – Side A', url: 'https://www.youtube.com/watch?v=z36BoflLJYY' },
-        { text: 'Kay Tagal Kitang Hinintay – Sponge Cola', url: 'https://www.youtube.com/watch?v=aFAQ1wT4pAk' },
+      { label: 'Prosperity dance', how: 'MP3', by: 'DJ', sub: 'Lace & envelopes · maid of honor & best man assist', songs: [
+        'Kay Tagal Kitang Hinintay – Sponge Cola',
+        'Perfect – Ed Sheeran',
+        'Easy On Me – Adele',
+        'Forevermore – Side A',
+        "Can't Take My Eyes Off You – Frankie Valli",
+        'When I Met You – APO Hiking Society',
+        'A Thousand Years',
         { pick: 'DJ', text: 'More songs if needed' }
       ] }
     ] },
@@ -415,7 +424,7 @@ var PROGRAM = [
     ] },
     { t: '', m: null, what: 'Prayer for the meal', who: ['host'], note: 'Led by Marcela Logronio, grandmother of the groom' },
     { t: '', m: null, what: 'Guest vow / promise (Sharon thing)', who: ['host'], note: 'Approved' },
-    { t: '2:45 PM', m: 885, what: 'Meal time', who: ['studio'], list: [
+    { t: '2:45 PM', m: 885, what: 'Meal time', who: ['studio', 'coor'], list: [
       'Photo op: silent cueing c/o coordinators',
       'Photobooth by IPICSPROJECT'
     ], music: [
@@ -474,7 +483,8 @@ var ROLES = {
   jimmy:  { label: 'Sir Jimmy',         icon: '&#127927;', color: '#9a6a0c' },
   dj:     { label: 'DJ',                icon: '&#127911;', color: '#2f6690' },
   studio: { label: 'Smart Shot Studio', icon: '&#128247;', color: '#23736d' },
-  hmua:   { label: 'HMUA',              icon: '&#128132;', color: '#b24a3c' }
+  hmua:   { label: 'HMUA',              icon: '&#128132;', color: '#b24a3c' },
+  coor:   { label: 'Coordinators',      icon: '&#128203;', color: '#56607a' }
 };
 function rolePill(r, extra) {
   return '<span class="role r-' + r + '">' + ROLES[r].icon + ' ' + ROLES[r].label + (extra ? ' · ' + esc(extra) : '') + '</span>';
@@ -513,7 +523,7 @@ function musicHtml(music) {
 function cuesHtml(cues) {
   if (!cues) return '';
   return cues.map(function (c) {
-    var who = ROLES[c.who] ? rolePill(c.who) : '<span class="role r-coor">Coordinators</span>';
+    var who = rolePill(c.who);
     return '<p class="cue' + (ROLES[c.who] ? ' has-' + c.who : '') + '">' + who + ' ' + esc(c.text) + '</p>';
   }).join('');
 }
