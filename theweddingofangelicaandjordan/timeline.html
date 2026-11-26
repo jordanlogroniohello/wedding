@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wedding Day Timeline — Angelica & Jordan</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Great+Vibes&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a3c2c;
+    --ink-dark: #0e2418;
+    --green: #2d5a43;
+    --muted: #6f8f7a;
+    --line: #e4ddd0;
+    --paper: #fdfbf7;
+    --bg: #f5f0e6;
+    --gold: #c9a84c;
+    --gold-dark: #a8842a;
+    --prep: #8fb59d;
+    --cere: #2d5a43;
+    --recep: #c9a84c;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Raleway", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.45;
+  }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, var(--ink-dark), var(--ink) 60%, var(--green));
+    color: #f8efe0;
+    text-align: center;
+    padding: 36px 16px 30px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: "";
+    position: absolute; inset: 0;
+    background: url("floral-hero.png") center/cover no-repeat;
+    opacity: .08;
+  }
+  header > * { position: relative; }
+  .monogram { width: 92px; display: block; margin: 0 auto 6px; }
+  .names { font-family: "Great Vibes", cursive; font-size: clamp(38px, 8vw, 54px); line-height: 1.1; font-weight: 400; }
+  .kicker {
+    margin-top: 10px;
+    font-size: 11px; font-weight: 600; letter-spacing: .32em; text-transform: uppercase;
+    color: var(--gold);
+  }
+  .date { margin-top: 4px; font-family: "Cormorant Garamond", serif; font-size: 19px; letter-spacing: .04em; }
+
+  main { max-width: 760px; margin: 0 auto; padding: 0 16px 48px; }
+
+  /* ── Now banner (wedding day only) ── */
+  #now {
+    display: none;
+    margin-top: 16px;
+    background: var(--paper);
+    border: 1px solid var(--gold);
+    border-radius: 14px;
+    padding: 12px 16px;
+    gap: 6px 18px;
+    flex-wrap: wrap;
+    align-items: baseline;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 14px rgba(14, 36, 24, .08);
+  }
+  #now.show { display: flex; }
+  #now .lbl { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--gold-dark); }
+  #now .val { font-weight: 600; }
+  #now .next { color: var(--muted); font-size: 14px; }
+
+  /* ── Day overview plot ── */
+  .overview {
+    margin-top: 20px;
+    background: var(--paper);
+    border-radius: 16px;
+    padding: 18px 18px 14px;
+    box-shadow: 0 2px 10px rgba(14, 36, 24, .05);
+  }
+  .overview h2 {
+    font-size: 10px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
+    margin-bottom: 14px;
+  }
+  .plot { position: relative; height: 58px; }
+  .seg {
+    position: absolute; top: 0; height: 34px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 11px; font-weight: 600; letter-spacing: .06em;
+    text-decoration: none; white-space: nowrap; overflow: hidden;
+    transition: filter .15s;
+  }
+  .seg:hover { filter: brightness(1.08); }
+  .seg.prep { background: var(--prep); color: var(--ink-dark); }
+  .seg.cere { background: var(--cere); }
+  .seg.recep { background: var(--recep); color: var(--ink-dark); }
+  .seg.party { background: repeating-linear-gradient(135deg, #e9d9a6 0 6px, #f3e8c6 6px 12px); color: var(--gold-dark); border-radius: 8px 3px 3px 8px; }
+  .tick { position: absolute; top: 40px; transform: translateX(-50%); font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .tick::before { content: ""; position: absolute; left: 50%; top: -6px; width: 1px; height: 4px; background: var(--line); }
+  #nowLine { display: none; position: absolute; top: -6px; bottom: 10px; width: 2px; background: #d14b3a; z-index: 2; }
+  #nowLine::before {
+    content: "NOW"; position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    font-size: 9px; font-weight: 700; letter-spacing: .1em; color: #d14b3a;
+  }
+
+  /* ── Sections ── */
+  section { margin-top: 26px; }
+  .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 8px; padding: 0 2px; }
+  .sec-head h2 { font-family: "Cormorant Garamond", serif; font-size: 28px; font-weight: 600; color: var(--ink-dark); }
+  .sec-head .range { font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: .04em; white-space: nowrap; }
+  .sec-head h2::before {
+    content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 10px; vertical-align: 4px;
+    background: var(--c);
+  }
+
+  .card { background: var(--paper); border-radius: 16px; padding: 6px 0; box-shadow: 0 2px 10px rgba(14, 36, 24, .05); }
+
+  .item {
+    display: grid;
+    grid-template-columns: 96px 22px 1fr;
+    padding: 0 18px 0 12px;
+    position: relative;
+  }
+  .item .time {
+    text-align: right; padding: 13px 4px 13px 0;
+    font-size: 13px; font-weight: 600; color: var(--green); white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .item .time small { display: block; font-size: 11px; font-weight: 500; color: var(--muted); }
+  .item .time.same { color: transparent; }
+  .item .rail { position: relative; }
+  .item .rail::before { content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: var(--line); }
+  .item:first-child .rail::before { top: 20px; }
+  .item:last-child .rail::before { bottom: calc(100% - 20px); }
+  .item .rail::after {
+    content: ""; position: absolute; left: 50%; top: 17px; width: 10px; height: 10px; margin-left: -5px;
+    border-radius: 50%; background: var(--paper); border: 2px solid var(--c);
+  }
+  .item.key .rail::after { background: var(--gold); border-color: var(--gold); width: 12px; height: 12px; margin-left: -6px; top: 16px; }
+  .item .body { padding: 12px 0 12px 10px; border-bottom: 1px solid #f0ebe1; min-width: 0; }
+  .item:last-child .body { border-bottom: 0; }
+  .item .what { font-weight: 600; font-size: 15px; }
+  .item.key .what { color: var(--ink-dark); }
+  .item .note { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .item ol, .item ul { margin: 8px 0 2px; padding-left: 20px; font-size: 13px; color: #3f5d4c; }
+  .item li { margin: 3px 0; }
+  .item li::marker { color: var(--gold-dark); font-weight: 600; }
+  .item .list-title { font-size: 10px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--gold-dark); margin-top: 8px; }
+
+  /* Music */
+  .music { margin-top: 10px; border-left: 2px solid #efe4c4; padding-left: 12px; }
+  .music .list-title { margin-top: 0; margin-bottom: 4px; }
+  .song { display: grid; grid-template-columns: 150px 1fr; gap: 2px 12px; padding: 6px 0; border-top: 1px dashed #efe8da; font-size: 13px; }
+  .song:first-of-type { border-top: 0; }
+  .song .lbl { font-weight: 600; color: var(--green); }
+  .song .tune { color: #3f5d4c; min-width: 0; }
+  .song .tune ol { margin: 0; padding-left: 18px; }
+  .song .tune li { margin: 2px 0; }
+  .song .how { display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 6px; background: #f3ead2; color: var(--gold-dark); font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .song .sub { display: block; font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .song .pick { font-style: italic; font-weight: 600; color: var(--gold-dark); }
+
+  .song .tune a { color: inherit; text-decoration-color: #d8c48a; text-underline-offset: 2px; }
+  .song .tune a:hover { color: var(--gold-dark); }
+  .song .pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
+
+  /* People: pills + highlight */
+  .r-host  { --rc: #9b4d78; --rbg: #f7e8f0; }
+  .r-jimmy { --rc: #9a6a0c; --rbg: #f6ebcf; }
+  .r-dj    { --rc: #2f6690; --rbg: #e2edf6; }
+  .r-studio { --rc: #23736d; --rbg: #ddefed; }
+  .r-coor  { --rc: #4f6b5c; --rbg: #e8efe9; }
+  .role {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 9px; border-radius: 999px; border: 1px solid transparent;
+    background: var(--rbg); color: var(--rc);
+    font: 600 11px/1.5 "Raleway", sans-serif; white-space: nowrap; vertical-align: 1px;
+  }
+  .head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+  .cue { margin-top: 8px; font-size: 13px; color: #3f5d4c; }
+
+  .roles {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px;
+    margin: 0 -16px; padding: 10px 16px;
+    background: rgba(245, 240, 230, .94);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  .roles-lbl { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-right: 2px; }
+  .roles button { cursor: pointer; font-size: 12px; padding: 5px 12px; border-color: var(--rbg); }
+  .roles button:hover { border-color: var(--rc); }
+  .roles button[aria-pressed="true"] { background: var(--rc); color: #fff; border-color: var(--rc); }
+
+  .item, .song, .cue { transition: opacity .2s, background-color .2s; }
+  body[data-role] .item { opacity: .28; }
+  body[data-role="host"] .item.has-host,
+  body[data-role="jimmy"] .item.has-jimmy,
+  body[data-role="dj"] .item.has-dj,
+  body[data-role="studio"] .item.has-studio { opacity: 1; background: var(--hl); box-shadow: inset 4px 0 0 var(--hc); }
+  body[data-role="host"]  { --hc: #9b4d78; --hl: #fbf1f6; }
+  body[data-role="jimmy"] { --hc: #9a6a0c; --hl: #fcf5e3; }
+  body[data-role="dj"]    { --hc: #2f6690; --hl: #eef5fb; }
+  body[data-role="studio"] { --hc: #23736d; --hl: #edf7f6; }
+  body[data-role="jimmy"] .item.has-jimmy .song:not(.has-jimmy),
+  body[data-role="dj"] .item.has-dj .song:not(.has-dj) { opacity: .3; }
+  body[data-role="host"] .role.r-host,
+  body[data-role="studio"] .role.r-studio,
+  body[data-role="jimmy"] .song .role.r-jimmy,
+  body[data-role="dj"] .song .role.r-dj { background: var(--rc); color: #fff; }
+
+  .item.current { background: #fbf3dc; }
+  .item.current .what::after {
+    content: "Now"; margin-left: 8px; padding: 2px 7px; border-radius: 6px;
+    background: #d14b3a; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; vertical-align: 2px;
+  }
+  .item.done .what, .item.done .time { opacity: .45; }
+
+  footer { margin-top: 30px; text-align: center; font-size: 12px; color: var(--muted); }
+  footer strong { color: var(--ink); font-weight: 600; }
+  footer a { color: inherit; white-space: nowrap; }
+
+  @media (max-width: 520px) {
+    .item { grid-template-columns: 70px 20px 1fr; padding: 0 14px 0 6px; }
+    .item .time { font-size: 12px; }
+    .tick.minor { display: none; }
+    .seg { font-size: 10px; letter-spacing: .02em; }
+    .seg .long { display: none; }
+    .sec-head h2 { font-size: 24px; }
+    .song { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    @page { size: A4 portrait; margin: 12mm; }
+    body { background: #fff; }
+    header { padding: 18px 16px 16px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .seg, .item.key .rail::after, .sec-head h2::before { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    main { max-width: none; padding: 0; }
+    .card, .overview { box-shadow: none; border: 1px solid var(--line); }
+    #now, #nowLine, .roles { display: none !important; }
+    body[data-role] .item, body[data-role] .song { opacity: 1 !important; background: none !important; box-shadow: none !important; }
+    .item { break-inside: avoid; }
+    .item.current { background: none; }
+    .item.current .what::after { display: none; }
+    .item.done .what, .item.done .time { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img class="monogram" src="monogram.png" alt="A&J monogram">
+  <h1 class="names">Angelica &amp; Jordan</h1>
+  <p class="kicker">Wedding Day Timeline</p>
+  <p class="date">Friday, November 27, 2026</p>
+</header>
+
+<main>
+  <nav class="roles" aria-label="Highlight by person">
+    <span class="roles-lbl">Highlight</span>
+    <button type="button" class="role r-host" data-role="host" aria-pressed="false">&#127908; Host Saiky</button>
+    <button type="button" class="role r-jimmy" data-role="jimmy" aria-pressed="false">&#127927; Sir Jimmy</button>
+    <button type="button" class="role r-dj" data-role="dj" aria-pressed="false">&#127911; DJ</button>
+    <button type="button" class="role r-studio" data-role="studio" aria-pressed="false">&#128247; Smart Shot Studio</button>
+  </nav>
+
+  <a id="now" href="#">
+    <span class="lbl">Happening now</span>
+    <span class="val" id="nowVal"></span>
+    <span class="next" id="nextVal"></span>
+  </a>
+
+  <div class="overview">
+    <h2>The day at a glance</h2>
+    <div class="plot" id="plot"><div id="nowLine"></div></div>
+  </div>
+
+  <div id="sections"></div>
+
+  <footer>
+    Coordinated by <strong>JD Tagaytay Wedding Coordinator</strong> · <a href="tel:+639564284975">0956 428 4975</a>
+  </footer>
+</main>
+
+<script>
+// ── Program (edit here) ──
+// m = minutes after midnight, used to place items on the overview and to highlight "now".
+// key: true marks a main moment (gold dot).
+var PROGRAM = [
+  { id: 'preparation', title: 'Preparation', color: 'var(--prep)', range: '2:00 – 10:00 AM', items: [
+    { t: '2:00 AM', m: 120, what: 'Bride & Groom wake up', note: 'Preparing HMUA accessories, eat breakfast' },
+    { t: '3:00 AM', m: 180, what: 'HMUA arrives' },
+    { t: '3:30 AM', m: 210, what: 'HMUA starts', note: 'Entourage' },
+    { t: '5:00 AM', m: 300, what: 'Coordinators arrive', note: 'Endorsement of all necessary accessories' },
+    { t: '5:00 AM', m: 300, what: 'Florist arrives', note: 'Endorsement of flowers' },
+    { t: '5:00 AM', m: 300, what: 'Photo & video team arrives', who: ['studio'], note: 'Preparing cameras, eat breakfast' },
+    { t: '5:30 AM', end: 'to 10:00 AM', m: 330, what: 'Photoshoot', who: ['studio'], list: [
+      'Details',
+      'Pogi shot of the Groom / Beauty shot of the Bride',
+      'Groom with groomsmen · Bride with bridesmaids',
+      'Groom with parents · Bride with parents'
+    ] },
+    { t: '9:30 AM', m: 570, what: 'Groom proceeds to the ceremony area', note: 'Everyone proceeds to the ceremony area', key: true },
+    { t: '10:00 AM', m: 600, what: 'Bride proceeds to the ceremony area', key: true }
+  ] },
+  { id: 'ceremony', title: 'Ceremony', color: 'var(--cere)', range: '10:00 AM – 1:00 PM', items: [
+    { t: '10:00 AM', m: 600, what: 'Assembly of entourage' },
+    { t: '10:30 AM', m: 630, what: 'Entourage & bridal march', key: true, music: [
+      { label: 'Entourage march', songs: ['Pasilyo – SunKissed Lola'], how: 'Saxophone' },
+      { label: 'Bridal walk', songs: ['Goodness of God – Jenn Johnson'], how: 'Saxophone' }
+    ] },
+    { t: '11:00 AM', m: 660, what: 'Ceremony proper', key: true, music: [
+      { label: 'Contract signing / pictorial', pick: true, how: 'Saxophone' }
+    ] },
+    { t: '12:00 NN', m: 720, what: 'Photo op with the couple', who: ['studio'], listTitle: 'Suggested photo sequence', ordered: true, list: [
+      'Couple with the officiant',
+      "Couple with the Bride's parents / Groom's parents",
+      'Immediate family (Bride / Groom)',
+      'Relatives (Bride & Groom)',
+      'Principal sponsors',
+      'Bridesmaids, groomsmen, best man, maid of honor & secondary sponsors',
+      'Bearers & flower girls',
+      'Friends & workmates',
+      'Optional: other groups'
+    ] },
+    { t: '12:30 PM', m: 750, what: 'Postnup', who: ['studio'], note: 'Groom with groomsmen · Bride with bridesmaids' }
+  ] },
+  { id: 'reception', title: 'Reception', color: 'var(--recep)', range: '1:00 PM onwards', items: [
+    { t: '1:00 PM', m: 780, what: 'Cocktail', music: [
+      { label: 'Cocktails', pick: true, how: 'Saxophone', sub: 'Instrumental, as guests arrive' }
+    ] },
+    { t: '2:00 PM', m: 840, what: 'Program proper', key: true, who: ['host', 'studio'], list: [
+      'Pre-wedding video',
+      'Introduction of the host: greetings, venue, purpose, self intro',
+      'Ice breaker: Guess the commercial product. 10 × ₱200 SB GC, winning tables go to the buffet first',
+      'Products: Joy, Pampers, Nescafé, Milo, Angel Kremdensada, Knorr Sinigang Sampaloc Mix, Nido, Tang, Rejoice, Jollibee'
+    ], cues: [
+      { who: 'coor', text: 'Write down all the winning table numbers' }
+    ] },
+    { t: '', m: null, what: 'Acknowledgement of the entourage', who: ['host'], list: [
+      'Ninongs & ninangs: stand and wave only',
+      'Parents of the groom & bride: stand and wave only',
+      'Secondary sponsors, maid of honor, best man, bridesmaids & groomsmen: group entrance, Team Bride and Team Groom'
+    ], cues: [
+      { who: 'host', text: 'Announce all the names first' }
+    ], music: [
+      { label: 'Entourage march', songs: ['Pasilyo – SunKissed Lola'], how: 'Saxophone' },
+      { label: 'Team Bride', songs: ['Dancing Queen'], how: 'MP3' },
+      { label: 'Team Groom', songs: ['Sexyback – Justin Timberlake / Turn Down for What – DJ Snake, Lil Jon'], how: 'MP3' }
+    ] },
+    { t: '', m: null, what: 'Grand entrance of the couple', note: 'Mr. & Mrs. Logronio', key: true, who: ['host'], list: [
+      'Energetic entrance',
+      'Table napkin waving',
+      '10-second kiss',
+      'Quick interview'
+    ], music: [
+      { label: 'Grand entrance', songs: ["Can't Take My Eyes Off You – Frankie Valli"], how: 'Saxophone', sub: 'Chorus only, from “turut turut tuturutruttt”' }
+    ] },
+    { t: '', m: null, what: 'Dances', who: ['host'], music: [
+      { label: 'Mother & groom dance', songs: ['You Are the Reason – Calum Scott'], how: 'Saxophone' },
+      { label: 'Father & bride dance', songs: ['Because You Loved Me – Celine Dion'], how: 'Saxophone' },
+      { label: 'Sweet dance', songs: ['Risk It All – Bruno Mars'], how: 'Saxophone' },
+      { label: 'Prosperity dance', how: 'MP3', by: 'DJ', sub: 'Lace & envelopes · 2–3 songs · maid of honor & best man assist', songs: [
+        { text: 'Perfect – Ed Sheeran', url: 'https://www.youtube.com/watch?v=-E5ovOA9VM8' },
+        { text: 'Forevermore – Side A', url: 'https://www.youtube.com/watch?v=z36BoflLJYY' },
+        { text: 'Kay Tagal Kitang Hinintay – Sponge Cola', url: 'https://www.youtube.com/watch?v=aFAQ1wT4pAk' },
+        { pick: 'DJ', text: 'More songs if needed' }
+      ] }
+    ] },
+    { t: '', m: null, what: 'Cake blowing & cutting', who: ['host'], note: 'Followed by the message of the maid of honor & best man', cues: [
+      { who: 'host', text: 'While the sax plays, encourage the audience to sing along' }
+    ], music: [
+      { label: 'Cake trend', songs: ['Panalangin – APO Hiking Society'], how: 'Saxophone' }
+    ] },
+    { t: '', m: null, what: 'Prayer for the meal', who: ['host'], note: 'Led by Marcela Logronio, grandmother of the groom' },
+    { t: '', m: null, what: 'Guest vow / promise (Sharon thing)', who: ['host'], note: 'Approved' },
+    { t: '2:45 PM', m: 885, what: 'Meal time', who: ['studio'], list: [
+      'Photo op: silent cueing c/o coordinators',
+      'Photobooth by IPICSPROJECT'
+    ], music: [
+      { label: 'Dinner set', pick: true, how: 'Saxophone', sub: 'Hired saxophonist: Jimmy Rozul' }
+    ] },
+    { t: '', m: null, what: 'Well wishers', who: ['host'], note: 'Mother of the groom · parents of the bride · ninongs & ninangs' },
+    { t: '', m: null, what: 'Games (optional)', who: ['host'], list: [
+      'Game 1: Dance competition with a twist. 6 male & 6 female, open to all, single or not. 2 prizes, props: surgical masks',
+      'Game 2: Bingo with a twist, ₱5k'
+    ] },
+    { t: '3:45 PM', m: 945, what: 'Same Day Edit', who: ['host', 'studio'] },
+    { t: '', m: null, what: 'Thank-you message of the couple', who: ['host'], note: 'To the guests, parents & suppliers' },
+    { t: '', m: null, what: 'Closing spiel of the host', who: ['host'], note: 'Opens the after party / fellowship time' },
+    { t: '4:00 PM', m: 960, what: 'After party!', key: true }
+  ] }
+];
+
+// Overview axis: 2:00 AM to 5:00 PM
+var AX0 = 120, AX1 = 1020;
+var SEGMENTS = [
+  { cls: 'prep', from: 120, to: 600, label: 'Preparation', href: '#preparation' },
+  { cls: 'cere', from: 600, to: 780, label: 'Ceremony', href: '#ceremony' },
+  { cls: 'recep', from: 780, to: 960, label: 'Reception', href: '#reception' },
+  { cls: 'party', from: 960, to: 1020, label: 'Party', href: '#reception' }
+];
+var WEDDING_DATE = '2026-11-27';
+
+function pct(m) { return ((m - AX0) / (AX1 - AX0) * 100) + '%'; }
+function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function fmt(m) {
+  var h = Math.floor(m / 60), mm = m % 60, ap = h >= 12 ? 'PM' : 'AM';
+  if (h === 12 && mm === 0) return '12 NN';
+  h = h % 12 || 12;
+  return h + (mm ? ':' + (mm < 10 ? '0' : '') + mm : '') + ' ' + ap;
+}
+
+// ── Overview plot ──
+(function () {
+  var plot = document.getElementById('plot'), html = '';
+  SEGMENTS.forEach(function (s) {
+    var gap = s.from === AX0 ? 0 : 2;
+    html += '<a class="seg ' + s.cls + '" href="' + s.href + '" style="left:calc(' + pct(s.from) + ' + ' + gap + 'px);width:calc(' +
+      ((s.to - s.from) / (AX1 - AX0) * 100) + '% - ' + gap + 'px)" title="' + s.label + ' · ' + fmt(s.from) + ' – ' + fmt(s.to) + '">' + s.label + '</a>';
+  });
+  for (var m = AX0; m <= AX1; m += 120) {
+    var minor = ((m - AX0) / 120) % 2 === 1;
+    html += '<span class="tick' + (minor ? ' minor' : '') + '" style="left:' + pct(m) + '">' + fmt(m) + '</span>';
+  }
+  plot.insertAdjacentHTML('beforeend', html);
+})();
+
+// ── People (highlight filter) ──
+var ROLES = {
+  host:  { label: 'Host Saiky', icon: '&#127908;' },
+  jimmy: { label: 'Sir Jimmy',  icon: '&#127927;' },
+  dj:    { label: 'DJ',         icon: '&#127911;' },
+  studio: { label: 'Smart Shot Studio', icon: '&#128247;' }
+};
+function rolePill(r, extra) {
+  return '<span class="role r-' + r + '">' + ROLES[r].icon + ' ' + ROLES[r].label + (extra ? ' · ' + esc(extra) : '') + '</span>';
+}
+// Saxophone = Sir Jimmy, MP3 = DJ
+function songRole(x) {
+  if (x.how === 'Saxophone' || x.pick === true) return 'jimmy';
+  if (x.how === 'MP3' || x.pick === 'DJ' || x.by === 'DJ') return 'dj';
+  return null;
+}
+
+// ── Music block under an item ──
+// pick: true = Sir Jimmy picks the songs; pick: 'DJ' = the DJ picks. by: 'DJ' = whole set c/o DJ.
+function pickHtml(who) { return '<span class="pick">c/o ' + esc(who === true ? 'Sir Jimmy' : who) + '</span>'; }
+function songText(s) {
+  if (typeof s === 'string') return esc(s);
+  if (s.url) return '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">' + esc(s.text) + ' &#8599;</a>';
+  return esc(s.text) + ' — ' + pickHtml(s.pick);
+}
+function musicHtml(music) {
+  if (!music) return '';
+  return '<div class="music"><p class="list-title">&#9835; Music</p>' + music.map(function (x) {
+    var r = songRole(x), tune;
+    if (x.pick && !x.songs) tune = pickHtml(x.pick);
+    else if (x.songs.length === 1) tune = songText(x.songs[0]);
+    else tune = '<ol>' + x.songs.map(function (s) { return '<li>' + songText(s) + '</li>'; }).join('') + '</ol>';
+    var pill = r ? rolePill(r, x.how) : (x.how ? '<span class="how">' + esc(x.how) + '</span>' : '');
+    if (x.by) pill += ' ' + pickHtml(x.by);
+    var multi = x.songs && x.songs.length > 1;
+    return '<div class="song' + (r ? ' has-' + r : '') + '"><span class="lbl">' + esc(x.label) + '</span><span class="tune">' +
+      (multi ? '<span class="pills">' + pill + '</span>' + tune : tune + ' ' + pill) +
+      (x.sub ? '<span class="sub">' + esc(x.sub) + '</span>' : '') + '</span></div>';
+  }).join('') + '</div>';
+}
+
+function cuesHtml(cues) {
+  if (!cues) return '';
+  return cues.map(function (c) {
+    var who = ROLES[c.who] ? rolePill(c.who) : '<span class="role r-coor">Coordinators</span>';
+    return '<p class="cue' + (ROLES[c.who] ? ' has-' + c.who : '') + '">' + who + ' ' + esc(c.text) + '</p>';
+  }).join('');
+}
+
+function itemRoles(it) {
+  var set = {};
+  (it.who || []).forEach(function (r) { set[r] = 1; });
+  (it.cues || []).forEach(function (c) { if (ROLES[c.who]) set[c.who] = 1; });
+  (it.music || []).forEach(function (x) { var r = songRole(x); if (r) set[r] = 1; });
+  return Object.keys(set);
+}
+
+// ── Timeline sections ──
+(function () {
+  var out = '';
+  PROGRAM.forEach(function (sec) {
+    out += '<section id="' + sec.id + '" style="--c:' + sec.color + '">' +
+      '<div class="sec-head"><h2>' + sec.title + '</h2><span class="range">' + sec.range + '</span></div><div class="card">';
+    var prevT = null;
+    sec.items.forEach(function (it, i) {
+      var same = it.t && it.t === prevT;
+      prevT = it.t;
+      var list = '';
+      if (it.list) {
+        var tag = it.ordered ? 'ol' : 'ul';
+        list = (it.listTitle ? '<p class="list-title">' + esc(it.listTitle) + '</p>' : '') +
+          '<' + tag + '>' + it.list.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</' + tag + '>';
+      }
+      var roles = itemRoles(it);
+      var whoPills = (it.who || []).map(function (r) { return rolePill(r); }).join(' ');
+      out += '<div class="item' + (it.key ? ' key' : '') + roles.map(function (r) { return ' has-' + r; }).join('') +
+          '" data-m="' + (it.m == null ? '' : it.m) + '" id="' + sec.id + '-' + i + '">' +
+        '<div class="time' + (same ? ' same' : '') + '">' + esc(it.t || '') + (it.end ? '<small>' + esc(it.end) + '</small>' : '') + '</div>' +
+        '<div class="rail"></div>' +
+        '<div class="body"><div class="head"><p class="what">' + esc(it.what) + '</p>' + whoPills + '</div>' +
+          (it.note ? '<p class="note">' + esc(it.note) + '</p>' : '') + list + cuesHtml(it.cues) + musicHtml(it.music) + '</div>' +
+      '</div>';
+    });
+    out += '</div></section>';
+  });
+  document.getElementById('sections').innerHTML = out;
+})();
+
+// ── "Now" on the wedding day (Philippine time). Preview any time with ?now=11:15 ──
+function manilaNow() {
+  var q = new URLSearchParams(location.search).get('now');
+  if (q && /^\d{1,2}:\d{2}$/.test(q)) { var p = q.split(':'); return { date: WEDDING_DATE, m: +p[0] * 60 + +p[1] }; }
+  var parts = {};
+  new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+    .formatToParts(new Date()).forEach(function (x) { parts[x.type] = x.value; });
+  return { date: parts.year + '-' + parts.month + '-' + parts.day, m: +parts.hour * 60 + +parts.minute };
+}
+
+function updateNow() {
+  var n = manilaNow(), items = [].slice.call(document.querySelectorAll('.item'));
+  var banner = document.getElementById('now'), line = document.getElementById('nowLine');
+  items.forEach(function (el) { el.classList.remove('current', 'done'); });
+  if (n.date !== WEDDING_DATE) { banner.classList.remove('show'); line.style.display = 'none'; return; }
+
+  if (n.m >= AX0 && n.m <= AX1) { line.style.left = pct(n.m); line.style.display = 'block'; } else line.style.display = 'none';
+
+  var timed = items.filter(function (el) { return el.dataset.m !== ''; });
+  var started = timed.filter(function (el) { return +el.dataset.m <= n.m; });
+  if (!started.length) {
+    banner.classList.add('show');
+    document.getElementById('nowVal').textContent = 'Day starts at 2:00 AM';
+    document.getElementById('nextVal').textContent = '';
+    banner.href = '#preparation';
+    return;
+  }
+  var curM = +started[started.length - 1].dataset.m;
+  var current = started.filter(function (el) { return +el.dataset.m === curM; });
+  current.forEach(function (el) { el.classList.add('current'); });
+  items.forEach(function (el) {
+    if (el.classList.contains('current')) return;
+    if (el.dataset.m !== '' && +el.dataset.m < curM) el.classList.add('done');
+  });
+
+  var next = timed.filter(function (el) { return +el.dataset.m > n.m; })[0];
+  banner.classList.add('show');
+  banner.href = '#' + current[0].id;
+  document.getElementById('nowVal').textContent = current.map(function (el) { return el.querySelector('.what').textContent; }).join(' · ');
+  document.getElementById('nextVal').textContent = next ? 'Next: ' + next.querySelector('.time').firstChild.textContent + ' ' + next.querySelector('.what').textContent : '';
+  if (!next) document.querySelector('#now .lbl').textContent = 'Now';
+}
+updateNow();
+setInterval(updateNow, 30000);
+
+// ── Highlight one person's parts; tap again to clear. Link straight to one with ?who=host|jimmy|dj ──
+function setRole(r) {
+  if (r && ROLES[r]) document.body.dataset.role = r; else { delete document.body.dataset.role; r = null; }
+  document.querySelectorAll('.roles button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.role === r)); });
+}
+document.querySelectorAll('.roles button').forEach(function (b) {
+  b.addEventListener('click', function () { setRole(document.body.dataset.role === b.dataset.role ? null : b.dataset.role); });
+});
+setRole(new URLSearchParams(location.search).get('who'));
+</script>
+</body>
+</html>
