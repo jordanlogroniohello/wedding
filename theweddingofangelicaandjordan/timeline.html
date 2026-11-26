@@ -175,53 +175,66 @@
   .song .pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 4px; }
 
   /* People: pills + highlight */
-  .r-host  { --rc: #9b4d78; --rbg: #f7e8f0; }
-  .r-jimmy { --rc: #9a6a0c; --rbg: #f6ebcf; }
-  .r-dj    { --rc: #2f6690; --rbg: #e2edf6; }
+  .r-host   { --rc: #9b4d78; --rbg: #f7e8f0; }
+  .r-jimmy  { --rc: #9a6a0c; --rbg: #f6ebcf; }
+  .r-dj     { --rc: #2f6690; --rbg: #e2edf6; }
   .r-studio { --rc: #23736d; --rbg: #ddefed; }
-  .r-hmua  { --rc: #b24a3c; --rbg: #f8e4df; }
-  .r-coor  { --rc: #4f6b5c; --rbg: #e8efe9; }
+  .r-hmua   { --rc: #b24a3c; --rbg: #f8e4df; }
+  .r-coor   { --rc: #4f6b5c; --rbg: #e8efe9; }
+  .r-all    { --rc: #1a3c2c; --rbg: #dfe7e2; }
   .role {
-    display: inline-flex; align-items: center; gap: 4px;
-    padding: 2px 9px; border-radius: 999px; border: 1px solid transparent;
-    background: var(--rbg); color: var(--rc);
-    font: 600 11px/1.5 "Raleway", sans-serif; white-space: nowrap; vertical-align: 1px;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 999px; border: 0;
+    background: var(--rc); color: #fff;
+    font: 700 11.5px/1.5 "Raleway", sans-serif; letter-spacing: .01em; white-space: nowrap; vertical-align: 1px;
+    box-shadow: 0 1px 3px rgba(14, 36, 24, .18);
   }
-  .head { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+  .head { display: flex; flex-wrap: wrap; align-items: center; gap: 5px 8px; }
   .cue { margin-top: 8px; font-size: 13px; color: #3f5d4c; }
 
   .roles {
     position: sticky; top: 0; z-index: 10;
-    display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
     margin: 0 -16px; padding: 10px 16px;
-    background: rgba(245, 240, 230, .94);
+    background: rgba(245, 240, 230, .95);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     border-bottom: 1px solid var(--line);
   }
-  .roles-lbl { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-right: 2px; }
-  .roles button { cursor: pointer; font-size: 12px; padding: 5px 12px; border-color: var(--rbg); }
-  .roles button:hover { border-color: var(--rc); }
-  .roles button[aria-pressed="true"] { background: var(--rc); color: #fff; border-color: var(--rc); }
+  .roles::-webkit-scrollbar { display: none; }
+  .roles-lbl { font-size: 10px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; }
+  .roles button {
+    flex-shrink: 0; cursor: pointer;
+    font-size: 12.5px; padding: 6px 13px;
+    background: #fff; color: var(--rc); box-shadow: inset 0 0 0 1.5px var(--rc);
+    transition: background-color .15s, color .15s, box-shadow .15s;
+  }
+  .roles button:hover { background: var(--rbg); }
+  .roles button[aria-pressed="true"] { background: var(--rc); color: #fff; box-shadow: 0 0 0 3px var(--rbg), 0 2px 6px rgba(14, 36, 24, .2); }
+  .roles .clear { --rc: #6f8f7a; --rbg: #eee9df; box-shadow: inset 0 0 0 1.5px #cfc6b6; }
+  .roles .clear:disabled { opacity: .45; cursor: default; background: #fff; }
 
-  .item, .song, .cue { transition: opacity .2s, background-color .2s; }
-  body[data-role] .item { opacity: .28; }
+  .item, .song, .cue, .role { transition: opacity .2s, background-color .2s; }
+  /* One person: dim everything else */
+  body[data-role]:not([data-role="all"]) .item { opacity: .28; }
   body[data-role="host"] .item.has-host,
   body[data-role="jimmy"] .item.has-jimmy,
   body[data-role="dj"] .item.has-dj,
   body[data-role="studio"] .item.has-studio,
-  body[data-role="hmua"] .item.has-hmua { opacity: 1; background: var(--hl); box-shadow: inset 4px 0 0 var(--hc); }
-  body[data-role="host"]  { --hc: #9b4d78; --hl: #fbf1f6; }
-  body[data-role="jimmy"] { --hc: #9a6a0c; --hl: #fcf5e3; }
-  body[data-role="dj"]    { --hc: #2f6690; --hl: #eef5fb; }
+  body[data-role="hmua"] .item.has-hmua { opacity: 1; background: var(--hl); box-shadow: inset 5px 0 0 var(--hc); }
+  body[data-role="host"]   { --hc: #9b4d78; --hl: #fbf1f6; }
+  body[data-role="jimmy"]  { --hc: #9a6a0c; --hl: #fcf5e3; }
+  body[data-role="dj"]     { --hc: #2f6690; --hl: #eef5fb; }
   body[data-role="studio"] { --hc: #23736d; --hl: #edf7f6; }
   body[data-role="hmua"]   { --hc: #b24a3c; --hl: #fcf0ed; }
   body[data-role="jimmy"] .item.has-jimmy .song:not(.has-jimmy),
   body[data-role="dj"] .item.has-dj .song:not(.has-dj) { opacity: .3; }
-  body[data-role="host"] .role.r-host,
-  body[data-role="studio"] .role.r-studio,
-  body[data-role="hmua"] .role.r-hmua,
-  body[data-role="jimmy"] .song .role.r-jimmy,
-  body[data-role="dj"] .song .role.r-dj { background: var(--rc); color: #fff; }
+  body[data-role="host"] .body .role:not(.r-host),
+  body[data-role="jimmy"] .body .role:not(.r-jimmy),
+  body[data-role="dj"] .body .role:not(.r-dj),
+  body[data-role="studio"] .body .role:not(.r-studio),
+  body[data-role="hmua"] .body .role:not(.r-hmua) { opacity: .35; box-shadow: none; }
+  /* Everyone: color bar per person on every item they're part of */
+  body[data-role="all"] .item.has-any { box-shadow: var(--bars); background: #fffaf1; }
 
   .item.current { background: #fbf3dc; }
   .item.current .what::after {
@@ -242,6 +255,10 @@
     .seg .long { display: none; }
     .sec-head h2 { font-size: 24px; }
     .song { grid-template-columns: 1fr; }
+    /* Phones: one scrollable row, Clear first so it's always reachable */
+    .roles { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+    .roles .clear { order: -1; }
+    .roles-lbl { order: -2; }
   }
 
   @media print {
@@ -252,7 +269,9 @@
     main { max-width: none; padding: 0; }
     .card, .overview { box-shadow: none; border: 1px solid var(--line); }
     #now, #nowLine, .roles { display: none !important; }
-    body[data-role] .item, body[data-role] .song { opacity: 1 !important; background: none !important; box-shadow: none !important; }
+    body[data-role] .item, body[data-role] .song, body[data-role] .role { opacity: 1 !important; }
+    body[data-role] .item { background: none !important; box-shadow: none !important; }
+    .role { box-shadow: none; }
     .item { break-inside: avoid; }
     .item.current { background: none; }
     .item.current .what::after { display: none; }
@@ -272,11 +291,13 @@
 <main>
   <nav class="roles" aria-label="Highlight by person">
     <span class="roles-lbl">Highlight</span>
+    <button type="button" class="role r-all" data-role="all" aria-pressed="false">&#10024; All</button>
     <button type="button" class="role r-host" data-role="host" aria-pressed="false">&#127908; Host Saiky</button>
     <button type="button" class="role r-jimmy" data-role="jimmy" aria-pressed="false">&#127927; Sir Jimmy</button>
     <button type="button" class="role r-dj" data-role="dj" aria-pressed="false">&#127911; DJ</button>
     <button type="button" class="role r-studio" data-role="studio" aria-pressed="false">&#128247; Smart Shot Studio</button>
     <button type="button" class="role r-hmua" data-role="hmua" aria-pressed="false">&#128132; HMUA</button>
+    <button type="button" class="role clear" id="clearRoles" disabled>&#10005; Clear</button>
   </nav>
 
   <a id="now" href="#">
@@ -449,11 +470,11 @@ function fmt(m) {
 
 // ── People (highlight filter) ──
 var ROLES = {
-  host:  { label: 'Host Saiky', icon: '&#127908;' },
-  jimmy: { label: 'Sir Jimmy',  icon: '&#127927;' },
-  dj:    { label: 'DJ',         icon: '&#127911;' },
-  studio: { label: 'Smart Shot Studio', icon: '&#128247;' },
-  hmua:  { label: 'HMUA',       icon: '&#128132;' }
+  host:   { label: 'Host Saiky',        icon: '&#127908;', color: '#9b4d78' },
+  jimmy:  { label: 'Sir Jimmy',         icon: '&#127927;', color: '#9a6a0c' },
+  dj:     { label: 'DJ',                icon: '&#127911;', color: '#2f6690' },
+  studio: { label: 'Smart Shot Studio', icon: '&#128247;', color: '#23736d' },
+  hmua:   { label: 'HMUA',              icon: '&#128132;', color: '#b24a3c' }
 };
 function rolePill(r, extra) {
   return '<span class="role r-' + r + '">' + ROLES[r].icon + ' ' + ROLES[r].label + (extra ? ' · ' + esc(extra) : '') + '</span>';
@@ -524,8 +545,10 @@ function itemRoles(it) {
       }
       var roles = itemRoles(it);
       var whoPills = (it.who || []).map(function (r) { return rolePill(r); }).join(' ');
-      out += '<div class="item' + (it.key ? ' key' : '') + roles.map(function (r) { return ' has-' + r; }).join('') +
-          '" data-m="' + (it.m == null ? '' : it.m) + '" id="' + sec.id + '-' + i + '">' +
+      // "All" view: one 5px color bar per person, side by side
+      var bars = roles.map(function (r, n) { return 'inset ' + (5 * (n + 1)) + 'px 0 0 ' + ROLES[r].color; }).join(',');
+      out += '<div class="item' + (it.key ? ' key' : '') + (roles.length ? ' has-any' : '') + roles.map(function (r) { return ' has-' + r; }).join('') +
+          '"' + (bars ? ' style="--bars:' + bars + '"' : '') + ' data-m="' + (it.m == null ? '' : it.m) + '" id="' + sec.id + '-' + i + '">' +
         '<div class="time' + (same ? ' same' : '') + '">' + esc(it.t || '') + (it.end ? '<small>' + esc(it.end) + '</small>' : '') + '</div>' +
         '<div class="rail"></div>' +
         '<div class="body"><div class="head"><p class="what">' + esc(it.what) + '</p>' + whoPills + '</div>' +
@@ -584,12 +607,17 @@ setInterval(updateNow, 30000);
 
 // ── Highlight one person's parts; tap again to clear. Link straight to one with ?who=host|jimmy|dj ──
 function setRole(r) {
-  if (r && ROLES[r]) document.body.dataset.role = r; else { delete document.body.dataset.role; r = null; }
-  document.querySelectorAll('.roles button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.role === r)); });
+  if (r && (ROLES[r] || r === 'all')) document.body.dataset.role = r; else { delete document.body.dataset.role; r = null; }
+  document.querySelectorAll('.roles button[data-role]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.role === r)); });
+  document.getElementById('clearRoles').disabled = !r;
+  // On phones the bar scrolls sideways: bring the chosen button into view
+  var nav = document.querySelector('.roles'), on = r && nav.querySelector('[data-role="' + r + '"]');
+  if (on && nav.scrollWidth > nav.clientWidth) nav.scrollLeft = on.offsetLeft - nav.clientWidth / 2 + on.offsetWidth / 2;
 }
-document.querySelectorAll('.roles button').forEach(function (b) {
+document.querySelectorAll('.roles button[data-role]').forEach(function (b) {
   b.addEventListener('click', function () { setRole(document.body.dataset.role === b.dataset.role ? null : b.dataset.role); });
 });
+document.getElementById('clearRoles').addEventListener('click', function () { setRole(null); });
 setRole(new URLSearchParams(location.search).get('who'));
 </script>
 </body>
