@@ -12,7 +12,7 @@ Keys:
   letters  play one of the peeks right now, for testing (the list is in H). Not needed on the day
   0      all the peeks non-stop, one after another (for testing)
   9      stop all the peeks now (P or 0 turns them on again)
-  2      play "Piggyback run", then back to the monogram
+  1      "Piggyback run" with the "THANK YOU FOR CELEBRATING WITH US" banner: back and forth across the bottom, non-stop. Press 1 again (or any other key) to stop it; F and H don't stop it
   Esc    stop a scene, back to the monogram
   H      show / hide this list of keys on screen
 
