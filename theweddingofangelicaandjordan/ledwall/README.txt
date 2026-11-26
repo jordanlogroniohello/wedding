@@ -12,9 +12,7 @@ Keys:
   letters  play one of the peeks right now, for testing (the list is in H). Not needed on the day
   0      all the peeks non-stop, one after another (for testing)
   9      stop all the peeks now (P or 0 turns them on again)
-  1      play "Toast", then back to the monogram
   2      play "Piggyback run", then back to the monogram
-  3      play "Candles and a kiss", then back to the monogram
   Esc    stop a scene, back to the monogram
   H      show / hide this list of keys on screen
 
