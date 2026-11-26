@@ -326,12 +326,12 @@
 var PROGRAM = [
   { id: 'preparation', title: 'Preparation', color: 'var(--prep)', range: '2:00 – 10:00 AM', place: 'Tierra Montephine, Alfonso', items: [
     { t: '2:00 AM', m: 120, what: 'Bride & Groom wake up', note: 'Preparing HMUA accessories, eat breakfast' },
-    { t: '3:00 AM', end: 'to 3:30 AM', m: 180, what: 'HMUA ingress & setup', who: ['hmua'], note: '30 min' },
+    { t: '3:00 AM', end: 'to 3:30 AM', m: 180, what: 'HMUA call time · ingress & setup', who: ['hmua', 'coor'], note: 'Aimee D Cruz HMUA · entourage: Hair and Makeup by Mel & Josh · 30 min' },
     { t: '3:30 AM', end: 'to 5:30 AM', m: 210, what: "HMUA starts: Bride's prep look", who: ['hmua'], note: '2 hrs · Entourage' },
-    { t: '4:00 AM', m: 240, what: 'Crew meal delivery', who: ['coor'], note: 'c/o Sir Dane' },
+    { t: '4:00 AM', m: 240, what: 'Crew meal delivery', who: ['coor'], note: 'Hiraya Crew Meals · c/o Sir Dane' },
     { t: '5:00 AM', m: 300, what: 'Coordinators arrive', who: ['coor'], note: 'Endorsement of all necessary accessories' },
-    { t: '5:00 AM', m: 300, what: 'Florist arrives', note: 'Endorsement of flowers' },
-    { t: '5:00 AM', m: 300, what: 'Photo & video team arrives', who: ['studio'], note: 'Preparing cameras, eat breakfast' },
+    { t: '5:00 AM', m: 300, what: 'Florist / stylist call time', who: ['coor'], note: 'Fleur by CJD · endorsement of flowers' },
+    { t: '5:00 AM', m: 300, what: 'Photo & video call time', who: ['studio', 'coor'], note: 'Smart Shot Studio Co · preparing cameras, eat breakfast' },
     { t: '5:00 AM', end: 'to 5:30 AM', m: 300, what: "Groom's grooming", who: ['hmua'], note: '30 min' },
     { t: '5:30 AM', end: 'to 10:00 AM', m: 330, what: 'Photoshoot', who: ['studio'], list: [
       'Details',
@@ -342,19 +342,28 @@ var PROGRAM = [
     { t: '5:30 AM', end: 'to 6:30 AM', m: 330, what: "Groom's mother HMU", who: ['hmua', 'studio'], note: '1 hr · P/V shoot' },
     { t: '6:30 AM', end: 'to 7:30 AM', m: 390, what: "Bride's mother HMU", who: ['hmua', 'studio'], note: '1 hr · P/V shoot' },
     { t: '7:30 AM', end: 'to 8:00 AM', m: 450, what: "Bride's ceremony look", who: ['hmua', 'studio'], note: '30 min · P/V shoot' },
+    { t: '8:00 AM', m: 480, what: 'Lights & sounds / LED wall call time', who: ['coor'], note: 'Jager Lights & Sounds · at Maharlika Events (reception)' },
     { t: '9:30 AM', m: 570, what: 'Retouch groom & mothers', who: ['hmua'] },
+    { t: '9:30 AM', m: 570, what: 'Crew meal delivery', who: ['coor'], note: 'Hiraya Crew Meals · c/o Sir Dane' },
     { t: '9:30 AM', m: 570, what: 'Groom proceeds to the ceremony area', note: 'Everyone proceeds to the ceremony area', key: true },
     { t: '10:00 AM', m: 600, what: 'Bride proceeds to the ceremony area', key: true }
   ] },
-  { id: 'ceremony', title: 'Ceremony', color: 'var(--cere)', range: '10:00 AM – 1:00 PM', place: 'St. John Nepomucene Parish, Alfonso', items: [
+  { id: 'ceremony', title: 'Ceremony', color: 'var(--cere)', range: '10:00 AM – 1:00 PM', place: 'St. John Nepomucene Parish Church, Alfonso', items: [
     { t: '10:00 AM', m: 600, what: 'Assembly of entourage' },
     { t: '10:00 AM', m: 600, what: 'Retouch bride before the bridal march', who: ['hmua'] },
+    { t: '10:00 AM', m: 600, what: 'Musician call time', who: ['jimmy', 'coor'], note: 'Asweettwist · saxophone for the entourage & bridal march' },
     { t: '10:30 AM', m: 630, what: 'Entourage & bridal march', key: true, music: [
       { label: 'Entourage march', songs: ['Pasilyo – SunKissed Lola'], how: 'Saxophone' },
       { label: 'Bridal walk', songs: ['Goodness of God – Jenn Johnson'], how: 'Saxophone' }
     ] },
     { t: '11:00 AM', m: 660, what: 'Ceremony proper', key: true, music: [
       { label: 'Contract signing / pictorial', pick: true, how: 'Saxophone' }
+    ] },
+    { t: '11:00 AM', m: 660, what: 'Reception suppliers call time', who: ['coor'], note: 'At Maharlika Events (reception)', list: [
+      'Cake: Asweettwist',
+      "Appetizers: Cocktails Manila · Angelo's Tagaytay Grazing Table · Kanto Pizzeria",
+      'Ice cream: Kanto Sorbetero',
+      'Photo booth: IPICS Project Photobooth'
     ] },
     { t: '12:00 NN', m: 720, what: 'Photo op with the couple', who: ['studio'], listTitle: 'Suggested photo sequence', ordered: true, list: [
       'Couple with the officiant',
@@ -367,6 +376,8 @@ var PROGRAM = [
       'Friends & workmates',
       'Optional: other groups'
     ] },
+    { t: '12:00 NN', m: 720, what: 'Host call time', who: ['host', 'coor'], note: 'Host Saiky · at Maharlika Events (reception)' },
+    { t: '12:00 NN', m: 720, what: 'Lechon call time', who: ['coor'], note: 'JM Cebu Lechon · at Maharlika Events (reception)' },
     { t: '12:30 PM', m: 750, what: 'Retouch bride & groom for the P/V shoot', who: ['hmua'] },
     { t: '12:30 PM', m: 750, what: 'Postnup', who: ['studio'], note: 'Groom with groomsmen · Bride with bridesmaids' }
   ] },
@@ -374,6 +385,7 @@ var PROGRAM = [
     { t: '1:00 PM', m: 780, what: 'Cocktail', music: [
       { label: 'Cocktails', pick: true, how: 'Saxophone', sub: 'Instrumental, as guests arrive' }
     ] },
+    { t: '1:00 PM', m: 780, what: 'Crew meal delivery', who: ['coor'], note: 'Hiraya Crew Meals · c/o Sir Dane' },
     { t: '1:30 PM', end: 'to 2:00 PM', m: 810, what: "Bride's reception look · retouch groom", who: ['hmua'], note: '30 min' },
     { t: '2:00 PM', m: 840, what: 'Program proper', key: true, who: ['host', 'studio'], list: [
       'Pre-wedding video',
@@ -426,7 +438,7 @@ var PROGRAM = [
     { t: '', m: null, what: 'Guest vow / promise (Sharon thing)', who: ['host'], note: 'Approved' },
     { t: '2:45 PM', m: 885, what: 'Meal time', who: ['studio', 'coor'], list: [
       'Photo op: silent cueing c/o coordinators',
-      'Photobooth by IPICSPROJECT'
+      'Photo booth by IPICS Project Photobooth'
     ], music: [
       { label: 'Dinner set', pick: true, how: 'Saxophone', sub: 'Hired saxophonist: Jimmy Rozul' }
     ] },
