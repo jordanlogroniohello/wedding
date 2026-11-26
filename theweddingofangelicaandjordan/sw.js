@@ -20,6 +20,8 @@ self.addEventListener('activate', function(e) {
 });
 
 self.addEventListener('fetch', function(e) {
+  // the LED wall (ledwall/) is not the dashboard's: left to the network, never this cache (a cached copy never updates)
+  if (e.request.url.indexOf('/ledwall/') !== -1) return;
   if (e.request.url.indexOf('supabase.co') !== -1) {
     e.respondWith(fetch(e.request));
     return;
