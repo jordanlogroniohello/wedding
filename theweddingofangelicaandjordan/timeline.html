@@ -177,7 +177,7 @@
   /* People: pills + highlight */
   .r-host   { --rc: #9b4d78; --rbg: #f7e8f0; }
   .r-jimmy  { --rc: #9a6a0c; --rbg: #f6ebcf; }
-  .r-dj     { --rc: #2f6690; --rbg: #e2edf6; }
+  .r-lights { --rc: #2f6690; --rbg: #e2edf6; }
   .r-studio { --rc: #23736d; --rbg: #ddefed; }
   .r-hmua   { --rc: #b24a3c; --rbg: #f8e4df; }
   .r-coor   { --rc: #56607a; --rbg: #e6e8ef; }
@@ -218,21 +218,21 @@
   body[data-role]:not([data-role="all"]) .item { opacity: .28; }
   body[data-role="host"] .item.has-host,
   body[data-role="jimmy"] .item.has-jimmy,
-  body[data-role="dj"] .item.has-dj,
+  body[data-role="lights"] .item.has-lights,
   body[data-role="studio"] .item.has-studio,
   body[data-role="hmua"] .item.has-hmua,
   body[data-role="coor"] .item.has-coor { opacity: 1; background: var(--hl); box-shadow: inset 5px 0 0 var(--hc); }
   body[data-role="host"]   { --hc: #9b4d78; --hl: #fbf1f6; }
   body[data-role="jimmy"]  { --hc: #9a6a0c; --hl: #fcf5e3; }
-  body[data-role="dj"]     { --hc: #2f6690; --hl: #eef5fb; }
+  body[data-role="lights"] { --hc: #2f6690; --hl: #eef5fb; }
   body[data-role="studio"] { --hc: #23736d; --hl: #edf7f6; }
   body[data-role="hmua"]   { --hc: #b24a3c; --hl: #fcf0ed; }
   body[data-role="coor"]   { --hc: #56607a; --hl: #f1f2f7; }
   body[data-role="jimmy"] .item.has-jimmy .song:not(.has-jimmy),
-  body[data-role="dj"] .item.has-dj .song:not(.has-dj) { opacity: .3; }
+  body[data-role="lights"] .item.has-lights .song:not(.has-lights) { opacity: .3; }
   body[data-role="host"] .body .role:not(.r-host),
   body[data-role="jimmy"] .body .role:not(.r-jimmy),
-  body[data-role="dj"] .body .role:not(.r-dj),
+  body[data-role="lights"] .body .role:not(.r-lights),
   body[data-role="studio"] .body .role:not(.r-studio),
   body[data-role="hmua"] .body .role:not(.r-hmua),
   body[data-role="coor"] .body .role:not(.r-coor) { opacity: .35; box-shadow: none; }
@@ -297,7 +297,7 @@
     <button type="button" class="role r-all" data-role="all" aria-pressed="false">&#10024; All</button>
     <button type="button" class="role r-host" data-role="host" aria-pressed="false">&#127908; Host Saiky</button>
     <button type="button" class="role r-jimmy" data-role="jimmy" aria-pressed="false">&#127927; Sir Jimmy</button>
-    <button type="button" class="role r-dj" data-role="dj" aria-pressed="false">&#127911; DJ</button>
+    <button type="button" class="role r-lights" data-role="lights" aria-pressed="false">&#128266; Lights &amp; Sounds</button>
     <button type="button" class="role r-studio" data-role="studio" aria-pressed="false">&#128247; Smart Shot Studio</button>
     <button type="button" class="role r-hmua" data-role="hmua" aria-pressed="false">&#128132; HMUA</button>
     <button type="button" class="role r-coor" data-role="coor" aria-pressed="false">&#128203; Coordinators</button>
@@ -342,7 +342,7 @@ var PROGRAM = [
     { t: '5:30 AM', end: 'to 6:30 AM', m: 330, what: "Groom's mother HMU", who: ['hmua', 'studio'], note: '1 hr · P/V shoot' },
     { t: '6:30 AM', end: 'to 7:30 AM', m: 390, what: "Bride's mother HMU", who: ['hmua', 'studio'], note: '1 hr · P/V shoot' },
     { t: '7:30 AM', end: 'to 8:00 AM', m: 450, what: "Bride's ceremony look", who: ['hmua', 'studio'], note: '30 min · P/V shoot' },
-    { t: '8:00 AM', m: 480, what: 'Lights & sounds / LED wall call time', who: ['coor'], note: 'Jager Lights & Sounds · at Maharlika Events (reception)' },
+    { t: '8:00 AM', m: 480, what: 'Lights & sounds / LED wall call time', who: ['lights', 'coor'], note: 'Jager Lights & Sounds · at Maharlika Events (reception)' },
     { t: '9:30 AM', m: 570, what: 'Retouch groom & mothers', who: ['hmua'] },
     { t: '9:30 AM', m: 570, what: 'Crew meal delivery', who: ['coor'], note: 'Hiraya Crew Meals · c/o Sir Dane' },
     { t: '9:30 AM', m: 570, what: 'Groom proceeds to the ceremony area', note: 'Everyone proceeds to the ceremony area', key: true },
@@ -418,7 +418,7 @@ var PROGRAM = [
       { label: 'Mother & groom dance', songs: ['You Are the Reason – Calum Scott'], how: 'Saxophone' },
       { label: 'Father & bride dance', songs: ['Because You Loved Me – Celine Dion'], how: 'Saxophone' },
       { label: 'Sweet dance', songs: ['Risk It All – Bruno Mars'], how: 'Saxophone' },
-      { label: 'Prosperity dance', how: 'MP3', by: 'DJ', sub: 'Lace & envelopes · maid of honor & best man assist', songs: [
+      { label: 'Prosperity dance', how: 'MP3', by: 'Lights & Sounds', sub: 'Lace & envelopes · maid of honor & best man assist', songs: [
         'Kay Tagal Kitang Hinintay – Sponge Cola',
         'Perfect – Ed Sheeran',
         'Easy On Me – Adele',
@@ -426,7 +426,7 @@ var PROGRAM = [
         "Can't Take My Eyes Off You – Frankie Valli",
         'When I Met You – APO Hiking Society',
         'A Thousand Years',
-        { pick: 'DJ', text: 'More songs if needed' }
+        { pick: 'Lights & Sounds', text: 'More songs if needed' }
       ] }
     ] },
     { t: '', m: null, what: 'Cake blowing & cutting', who: ['host'], note: 'Followed by the message of the maid of honor & best man', cues: [
@@ -493,7 +493,7 @@ function fmt(m) {
 var ROLES = {
   host:   { label: 'Host Saiky',        icon: '&#127908;', color: '#9b4d78' },
   jimmy:  { label: 'Sir Jimmy',         icon: '&#127927;', color: '#9a6a0c' },
-  dj:     { label: 'DJ',                icon: '&#127911;', color: '#2f6690' },
+  lights: { label: 'Lights & Sounds',   icon: '&#128266;', color: '#2f6690' },
   studio: { label: 'Smart Shot Studio', icon: '&#128247;', color: '#23736d' },
   hmua:   { label: 'HMUA',              icon: '&#128132;', color: '#b24a3c' },
   coor:   { label: 'Coordinators',      icon: '&#128203;', color: '#56607a' }
@@ -501,15 +501,15 @@ var ROLES = {
 function rolePill(r, extra) {
   return '<span class="role r-' + r + '">' + ROLES[r].icon + ' ' + ROLES[r].label + (extra ? ' · ' + esc(extra) : '') + '</span>';
 }
-// Saxophone = Sir Jimmy, MP3 = DJ
+// Saxophone = Sir Jimmy, MP3 = Lights & Sounds
 function songRole(x) {
   if (x.how === 'Saxophone' || x.pick === true) return 'jimmy';
-  if (x.how === 'MP3' || x.pick === 'DJ' || x.by === 'DJ') return 'dj';
+  if (x.how === 'MP3' || x.pick === 'Lights & Sounds' || x.by === 'Lights & Sounds') return 'lights';
   return null;
 }
 
 // ── Music block under an item ──
-// pick: true = Sir Jimmy picks the songs; pick: 'DJ' = the DJ picks. by: 'DJ' = whole set c/o DJ.
+// pick: true = Sir Jimmy picks the songs; pick: 'Lights & Sounds' = they pick. by: 'Lights & Sounds' = whole set c/o them.
 function pickHtml(who) { return '<span class="pick">c/o ' + esc(who === true ? 'Sir Jimmy' : who) + '</span>'; }
 function songText(s) {
   if (typeof s === 'string') return esc(s);
@@ -627,7 +627,7 @@ function updateNow() {
 updateNow();
 setInterval(updateNow, 30000);
 
-// ── Highlight one person's parts; tap again to clear. Link straight to one with ?who=host|jimmy|dj ──
+// ── Highlight one person's parts; tap again to clear. Link straight to one with ?who=host|jimmy|lights ──
 function setRole(r) {
   if (r && (ROLES[r] || r === 'all')) document.body.dataset.role = r; else { delete document.body.dataset.role; r = null; }
   document.querySelectorAll('.roles button[data-role]').forEach(function (x) { x.setAttribute('aria-pressed', String(x.dataset.role === r)); });
@@ -640,7 +640,9 @@ document.querySelectorAll('.roles button[data-role]').forEach(function (b) {
   b.addEventListener('click', function () { setRole(document.body.dataset.role === b.dataset.role ? null : b.dataset.role); });
 });
 document.getElementById('clearRoles').addEventListener('click', function () { setRole(null); });
-setRole(new URLSearchParams(location.search).get('who'));
+// ?who=dj links from before the rename still work
+var who = new URLSearchParams(location.search).get('who');
+setRole(who === 'dj' ? 'lights' : who);
 </script>
 </body>
 </html>
