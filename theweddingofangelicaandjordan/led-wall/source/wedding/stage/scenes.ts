@@ -1,9 +1,6 @@
 import type { ComponentType } from "react";
 import list from "./scenes.json";
-import { Candles, CANDLES } from "./Candles";
-import { CandlesFront, CANDLES_FRONT } from "./CandlesFront";
 import { Piggyback, PIGGY_RUNNER, PIGGYBACK, type RunnerSpec } from "./Piggyback";
-import { Toast, TOAST } from "./Toast";
 
 // the LED stage's scenes, by key: scenes.json (key, composition id, name; build.mjs --render reads it too), each a
 // transparent 4:3 composition (also in src/wedding/Root.tsx). The stage plays its rendered video (scenes/<id>.webm,
@@ -11,7 +8,9 @@ import { Toast, TOAST } from "./Toast";
 // (a scene that only crosses the bottom, like the piggyback run). `runner`: it runs across the whole screen instead
 // (Runner.tsx), from its stride's strip (scenes/<id>.webp, rendered from scenes.json's `strip` composition). `fit:
 // "bottom"`: a wide scene (not 4:3) shown across the screen's whole width, along its bottom (the candles, round 23; facing
-// the front, round 24)
+// the front, round 24). Round 39 (2026-11-26, the user: "remove the wine toasting, and cake blowing 1 and 3 keys"): the
+// toast (key 1) and the candles (key 3) are off the stage; their compositions stay in Root.tsx. To bring one back: its
+// line in scenes.json + its import and COMPS entry here (Toast / CandlesFront, as before)
 export type Scene = {
   id: string;
   name: string;
@@ -25,10 +24,7 @@ export type Scene = {
   runner?: RunnerSpec;
 };
 const COMPS: Record<string, Omit<Scene, "id" | "name" | "dim">> = {
-  Toast: { component: Toast, ...TOAST },
   Piggyback: { component: Piggyback, ...PIGGYBACK, runner: PIGGY_RUNNER },
-  Candles: { component: Candles, ...CANDLES },
-  CandlesFront: { component: CandlesFront, ...CANDLES_FRONT },
 };
 export const SCENES: Record<string, Scene> = Object.fromEntries(
   list.map((s: { key: string; id: string; name: string; dim?: boolean; fit?: string }) => [
